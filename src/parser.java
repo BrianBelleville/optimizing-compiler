@@ -1,4 +1,8 @@
 public class parser {
+    public void parse() {
+	computation();
+    }
+
     // the next token to be parsed
     private String sym;
 
@@ -7,7 +11,16 @@ public class parser {
 
     private void ident()
     {
-	if(sym.matches("^[a-z][a-z0-9]*")) {
+	if(sym.matches("^[a-z][a-z0-9]*$")) {
+	    next();
+	} else {
+	    syntax_error();
+	}
+    }
+
+    private void number()
+    {
+	if(sym.matches("^[0-9]+$")){
 	    next();
 	} else {
 	    syntax_error();
@@ -42,8 +55,8 @@ public class parser {
 	    next();
 	    funcCall_rest();
 	} else if (sym.matches("[0-9]+")) {
-	    // number
-	    next();
+	    // don't consume
+	    number();
 	} else {
 	    designator();
 	}
@@ -171,7 +184,146 @@ public class parser {
 	}
     }
 
+    private void statSequence()
+    {
+	statement();
+	while(sym.equals(";")) {
+	    statement();
+	}
+    }
+
+    private void typeDecl()
+    {
+	if(sym.equals("var")) {
+	    next();
+	} else if (sym.equals("array")) {
+	    next();
+	    if(sym.equals("[")) {
+		while(sym.equals("[")) {
+		    next();
+		    number();
+		    if(sym.equals("]")) {
+			next();
+		    } else {
+			syntax_error();
+		    }
+		}
+	    } else {
+		// must be at least one boundary description
+		syntax_error();
+	    }
+	}
+    }
+
+    private void varDecl()
+    {
+	typeDecl();
+	ident();
+	while(sym.equals(",")) {
+	    next();
+	    ident();
+	}
+    }
+
+    private void funcDecl()
+    {
+	if(sym.matches("function|procedure")) {
+	    next();
+	    ident();
+	    if(!sym.equals(";")) {
+		formalParam();
+	    }
+	    // still need to look for this since formalParam may have
+	    // parsed successfully, but there could still be a syntax
+	    // error if no ';'
+	    if(sym.equals(";")) {
+		next();
+		funcBody();
+		if(sym.equals(";")) {
+		    next();
+		} else {
+		    syntax_error();
+		}
+	    } else {
+		syntax_error();
+	    }
+	} else {
+	    syntax_error();
+	}
+    }
+
+    private void formalParam()
+    {
+	if(sym.equals("(")) {
+	    next();
+	    if(!sym.equals(")")) {
+		ident();
+		while(sym.equals(",")) {
+		    next();
+		    ident();
+		}
+	    }
+	    if(sym.equals(")")) {
+		next();
+	    } else {
+		syntax_error();
+	    }
+	} else {
+	    syntax_error();
+	}
+    }
+
+    private void funcBody()
+    {
+	if(sym.matches("var|array")) {
+	    varDecl();
+	}
+	if(sym.equals("{")) {
+	    next();
+	    if(!sym.equals("}")) {
+		statSequence();
+	    }
+	    if(sym.equals("}")) {
+		next();
+	    } else {
+		syntax_error();
+	    }
+	} else {
+	    syntax_error();
+	}
+    }
+    
+    private void computation()
+    {
+	if(sym.equals("main")) {
+	    next();
+	    while(sym.matches("var|array")) {
+		varDecl();
+	    }
+	    while(sym.matches("function|procedure")) {
+		funcDecl();
+	    }
+	    if(sym.equals("{")) {
+		next();
+		statSequence();
+		if(sym.equals("}")) {
+		    next();
+		    if(sym.equals(".")) {
+			next();
+		    } else {
+			syntax_error();
+		    }
+		} else {
+		    syntax_error();
+		}
+	    }
+	} else {
+	    syntax_error();
+	}
+    }		    
+
     private void syntax_error()
     {
+	
     }
 }
