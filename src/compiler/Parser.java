@@ -1,6 +1,6 @@
 package compiler;
 
-public class parser {
+public class Parser {
     public void parse() throws Exception {
         computation();
     }
