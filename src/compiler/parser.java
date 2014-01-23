@@ -1,3 +1,5 @@
+package compiler;
+
 public class parser {
     public void parse() throws Exception {
         computation();
