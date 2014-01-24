@@ -1,19 +1,23 @@
 package compiler;
 
+import java.io.File;
+
 public class Parser {
+    public Parser(File f) throws Exception {
+	scan = new Scanner(f);
+    }
+
     public void parse() throws Exception {
         computation();
     }
 
-    // the next token to be parsed
-    private String sym;
+    private Scanner scan;
 
-    // routine to consume the current token and advance to the next
     private void next() {};
 
     private void ident() throws Exception
     {
-        if(sym.matches("^[a-z][a-z0-9]*$")) {
+        if(scan.sym == Token.ident) {
             next();
         } else {
             syntax_error("Identifier doesn't match regexp");
@@ -22,7 +26,7 @@ public class Parser {
 
     private void number() throws Exception
     {
-        if(sym.matches("^[0-9]+$")){
+        if(scan.sym == Token.num) {
             next();
         } else {
             syntax_error("Number doesn't match regexp");
@@ -32,11 +36,11 @@ public class Parser {
     private void designator() throws Exception
     {
         ident();
-        while(sym.equals("[")) {
-            next();
+        while(scan.sym == Token.opensquare) {
+            scan.next();
             expression();
-            if(sym.equals("]")) {
-                next();
+            if(scan.sym == Token.closesqare) {
+                scan.next();
             } else {
                 syntax_error("Designator: no closing ']'");
             }
@@ -45,20 +49,19 @@ public class Parser {
 
     private void factor() throws Exception
     {
-        if(sym.equals("(")) {
-            next();
+        if(scan.sym == Token.openparen) {
+            scan.next();
             expression();
-            if(sym.equals(")")) {
-                next();
+            if(scan.sym == Token.closeparen) {
+                scan.next();
             } else {
                 syntax_error("Factor: no closing ')'");
             }
-        } else if (sym.equals("call")) {
-            next();
+        } else if (scan.sym == Token.call) {
+            scan.next();
             funcCall_rest();
-        } else if (sym.matches("[0-9]+")) {
-            // don't consume
-            number();
+        } else if (scan.sym == Token.num) {
+	    scan.next();
         } else {
             designator();
         }
@@ -67,8 +70,8 @@ public class Parser {
     private void term() throws Exception
     {
         factor();
-        while(sym.matches("\\*|/")) {
-            next();
+        while(scan.sym == Token.mul || scan.sym == Token.div) {
+            scan.next();
             factor();
         }
     }
@@ -76,8 +79,8 @@ public class Parser {
     private void expression() throws Exception
     {
         term();
-        while(sym.matches("\\+|-")) {
-            next();
+        while(scan.sym == Token.add || scan.sym == Token.sub) {
+            scan.next();
             term();
         }
     }
@@ -85,9 +88,14 @@ public class Parser {
     private void relation() throws Exception
     {
         expression();
-        if(sym.matches("==|!=|<|<=|>|>=")) {
+        if(scan.sym == Token.eq
+	   || scan.sym == Token.neq
+	   || scan.sym == Token.lt
+	   || scan.sym == Token.lte
+	   || scan.sym == Token.gt
+	   || scan.sym == Token.gte) {
             // relOp
-            next();
+            scan.next();
         } else {
             syntax_error("Relation: incorrect relation operator");
         }
@@ -97,8 +105,8 @@ public class Parser {
     private void assignment_rest() throws Exception
     {
         designator();
-        if(sym.equals("<-")) {
-            next();
+        if(scan.sym == Token.assign) {
+            scan.next();
         } else {
             syntax_error("Assignment: incorrect assignment operator");
         }
@@ -108,19 +116,19 @@ public class Parser {
     private void funcCall_rest() throws Exception
     {
         ident();
-	if(sym.equals("(")) {
-	    next();
-	    if(sym.equals(")")) {
-		next();
+	if(scan.sym == Token.openparen) {
+	    scan.next();
+	    if(scan.sym == Token.closeparen) {
+		scan.next();
 		return;
 	    }
 	    expression();
-	    while(sym.equals(",")) {
-		next();
+	    while(scan.sym == Token.comma) {
+		scan.next();
 		expression();
 	    }
-	    if(sym.equals(")")) {
-		next();
+	    if(scan.sym == Token.closeparen) {
+		scan.next();
 		return;
 	    }
 	    syntax_error("funcCall: no closing ')'");
@@ -130,18 +138,18 @@ public class Parser {
     private void ifStatement_rest() throws Exception
     {
         relation();
-	if(!sym.equals("then")) {
+	if(scan.sym != Token.then) {
 	    syntax_error("Misformed if statement, no 'then' keyword");
 	}
 	// sym == "then"
-	next();
+	scan.next();
 	statSequence();
-	if(sym.equals("else")) {
-	    next();
+	if(scan.sym == Token.else_t) {
+	    scan.next();
 	    statSequence();
 	}
-	if(sym.equals("fi")) {
-	    next();
+	if(scan.sym == Token.fi) {
+	    scan.next();
 	} else {
 	    syntax_error("Misformed if statement, no 'fi' keyword");
 	}
@@ -150,11 +158,11 @@ public class Parser {
     private void whileStatement_rest() throws Exception
     {
         relation();
-        if(sym.equals("do")) {
-            next();
+        if(scan.sym == Token.do_t) {
+            scan.next();
             statSequence();
-            if(sym.equals("od")) {
-                next();
+            if(scan.sym == Token.od) {
+                scan.next();
             } else {
                 syntax_error("While statement: no 'od'");
             }
@@ -165,27 +173,27 @@ public class Parser {
 
     private void returnStatement_rest() throws Exception
     {
-        if(sym.equals("}") || sym.equals(";"))
+        if(scan.sym == Token.closecurly || scan.sym == Token.semicolon)
 	    return; 		// no expression
         expression();
     }
 
     private void statement() throws Exception
     {
-        if(sym.equals("let")) {
-            next();
+        if(scan.sym == Token.let) {
+            scan.next();
             assignment_rest();
-        } else if(sym.equals("call")) {
-            next();
+        } else if(scan.sym == Token.call) {
+            scan.next();
             funcCall_rest();
-        } else if(sym.equals("if")) {
-            next();
+        } else if(scan.sym == Token.if_t) {
+            scan.next();
             ifStatement_rest();
-        } else if(sym.equals("while")) {
-            next();
+        } else if(scan.sym == Token.while_t) {
+            scan.next();
             whileStatement_rest();
-        } else if(sym.equals("return")) {
-            next();
+        } else if(scan.sym == Token.return_t) {
+            scan.next();
             returnStatement_rest();
         } else {
             syntax_error("Statement: unrecognized statement type");
@@ -195,23 +203,23 @@ public class Parser {
     private void statSequence() throws Exception
     {
         statement();
-        while(sym.equals(";")) {
+        while(scan.sym == Token.semicolon) {
             statement();
         }
     }
 
     private void typeDecl() throws Exception
     {
-        if(sym.equals("var")) {
-            next();
-        } else if (sym.equals("array")) {
-            next();
-            if(sym.equals("[")) {
-                while(sym.equals("[")) {
-                    next();
+        if(scan.sym == Token.var) {
+            scan.next();
+        } else if (scan.sym == Token.array) {
+            scan.next();
+            if(scan.sym == Token.opensquare) {
+                while(scan.sym == Token.opensquare) {
+                    scan.next();
                     number();
-                    if(sym.equals("]")) {
-                        next();
+                    if(scan.sym == Token.closesqare) {
+                        scan.next();
                     } else {
                         syntax_error("Type declaration: no closing ']'");
                     }
@@ -227,31 +235,31 @@ public class Parser {
     {
         typeDecl();
         ident();
-        while(sym.equals(",")) {
-            next();
+        while(scan.sym == Token.comma) {
+            scan.next();
             ident();
         }
     }
 
     private void funcDecl() throws Exception
     {
-        if(!sym.matches("function|procedure")) {
+        if(!(scan.sym == Token.function || scan.sym == Token.procedure)) {
 	    syntax_error("Function declaration: incorrect keyword");
 	}
-	// sym matches "function|procedure"
-	next();
+	// sym matches is function or procedure
+	scan.next();
 	ident();
-	if(!sym.equals(";")) {
+	if(scan.sym != Token.semicolon) {
 	    formalParam();
 	}
 	// still need to look for this since formalParam may have
 	// parsed successfully, but there could still be a syntax
 	// error if no ';'
-	if(sym.equals(";")) {
-	    next();
+	if(scan.sym == Token.semicolon) {
+	    scan.next();
 	    funcBody();
-	    if(sym.equals(";")) {
-		next();
+	    if(scan.sym == Token.semicolon) {
+		scan.next();
 	    } else {
 		syntax_error("Function declaration: no ';' after function body");
 	    }
@@ -262,17 +270,17 @@ public class Parser {
 
     private void formalParam() throws Exception
     {
-        if(sym.equals("(")) {
-            next();
-            if(!sym.equals(")")) {
+        if(scan.sym == Token.openparen) {
+            scan.next();
+            if(scan.sym != Token.closeparen) {
                 ident();
-                while(sym.equals(",")) {
-                    next();
+                while(scan.sym == Token.comma) {
+                    scan.next();
                     ident();
                 }
             }
-            if(sym.equals(")")) {
-                next();
+            if(scan.sym == Token.closeparen) {
+                scan.next();
             } else {
                 syntax_error("Formal parameters: no closing ')'");
             }
@@ -283,16 +291,16 @@ public class Parser {
 
     private void funcBody() throws Exception
     {
-        if(sym.matches("var|array")) {
+        if(scan.sym == Token.var || scan.sym == Token.array) {
             varDecl();
         }
-        if(sym.equals("{")) {
-            next();
-            if(!sym.equals("}")) {
+        if(scan.sym == Token.opencurly) {
+            scan.next();
+            if(scan.sym != Token.closecurly) {
                 statSequence();
             }
-            if(sym.equals("}")) {
-                next();
+            if(scan.sym == Token.closecurly) {
+                scan.next();
             } else {
                 syntax_error("Funcion body: no closing '}'");
             }
@@ -303,21 +311,21 @@ public class Parser {
 
     private void computation() throws Exception
     {
-        if(sym.equals("main")) {
-            next();
-            while(sym.matches("var|array")) {
+        if(scan.sym == Token.main) {
+            scan.next();
+            while(scan.sym == Token.var || scan.sym == Token.array) {
                 varDecl();
             }
-            while(sym.matches("function|procedure")) {
+            while(scan.sym == Token.function || scan.sym == Token.procedure) {
                 funcDecl();
             }
-            if(sym.equals("{")) {
-                next();
+            if(scan.sym == Token.opencurly) {
+                scan.next();
                 statSequence();
-                if(sym.equals("}")) {
-                    next();
-                    if(sym.equals(".")) {
-                        next();
+                if(scan.sym == Token.closecurly) {
+                    scan.next();
+                    if(scan.sym == Token.period) {
+                        scan.next();
                     } else {
                         syntax_error("Computation: no '.' ending program");
                     }
