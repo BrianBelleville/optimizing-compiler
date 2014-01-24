@@ -4,7 +4,7 @@ import java.io.File;
 
 public class Parser {
     public Parser(File f) throws Exception {
-	scan = new Scanner(f);
+        scan = new Scanner(f);
     }
 
     public void parse() throws Exception {
@@ -61,7 +61,7 @@ public class Parser {
             scan.next();
             funcCall_rest();
         } else if (scan.sym == Token.num) {
-	    scan.next();
+            scan.next();
         } else {
             designator();
         }
@@ -89,11 +89,11 @@ public class Parser {
     {
         expression();
         if(scan.sym == Token.eq
-	   || scan.sym == Token.neq
-	   || scan.sym == Token.lt
-	   || scan.sym == Token.lte
-	   || scan.sym == Token.gt
-	   || scan.sym == Token.gte) {
+           || scan.sym == Token.neq
+           || scan.sym == Token.lt
+           || scan.sym == Token.lte
+           || scan.sym == Token.gt
+           || scan.sym == Token.gte) {
             // relOp
             scan.next();
         } else {
@@ -116,43 +116,43 @@ public class Parser {
     private void funcCall_rest() throws Exception
     {
         ident();
-	if(scan.sym == Token.openparen) {
-	    scan.next();
-	    if(scan.sym == Token.closeparen) {
-		scan.next();
-		return;
-	    }
-	    expression();
-	    while(scan.sym == Token.comma) {
-		scan.next();
-		expression();
-	    }
-	    if(scan.sym == Token.closeparen) {
-		scan.next();
-		return;
-	    }
-	    syntax_error("funcCall: no closing ')'");
-	}
+        if(scan.sym == Token.openparen) {
+            scan.next();
+            if(scan.sym == Token.closeparen) {
+                scan.next();
+                return;
+            }
+            expression();
+            while(scan.sym == Token.comma) {
+                scan.next();
+                expression();
+            }
+            if(scan.sym == Token.closeparen) {
+                scan.next();
+                return;
+            }
+            syntax_error("funcCall: no closing ')'");
+        }
     }
 
     private void ifStatement_rest() throws Exception
     {
         relation();
-	if(scan.sym != Token.then) {
-	    syntax_error("Misformed if statement, no 'then' keyword");
-	}
-	// sym == "then"
-	scan.next();
-	statSequence();
-	if(scan.sym == Token.else_t) {
-	    scan.next();
-	    statSequence();
-	}
-	if(scan.sym == Token.fi) {
-	    scan.next();
-	} else {
-	    syntax_error("Misformed if statement, no 'fi' keyword");
-	}
+        if(scan.sym != Token.then) {
+            syntax_error("Misformed if statement, no 'then' keyword");
+        }
+        // sym == "then"
+        scan.next();
+        statSequence();
+        if(scan.sym == Token.else_t) {
+            scan.next();
+            statSequence();
+        }
+        if(scan.sym == Token.fi) {
+            scan.next();
+        } else {
+            syntax_error("Misformed if statement, no 'fi' keyword");
+        }
     }
 
     private void whileStatement_rest() throws Exception
@@ -174,7 +174,7 @@ public class Parser {
     private void returnStatement_rest() throws Exception
     {
         if(scan.sym == Token.closecurly || scan.sym == Token.semicolon)
-	    return; 		// no expression
+            return;             // no expression
         expression();
     }
 
@@ -244,28 +244,28 @@ public class Parser {
     private void funcDecl() throws Exception
     {
         if(!(scan.sym == Token.function || scan.sym == Token.procedure)) {
-	    syntax_error("Function declaration: incorrect keyword");
-	}
-	// sym matches is function or procedure
-	scan.next();
-	ident();
-	if(scan.sym != Token.semicolon) {
-	    formalParam();
-	}
-	// still need to look for this since formalParam may have
-	// parsed successfully, but there could still be a syntax
-	// error if no ';'
-	if(scan.sym == Token.semicolon) {
-	    scan.next();
-	    funcBody();
-	    if(scan.sym == Token.semicolon) {
-		scan.next();
-	    } else {
-		syntax_error("Function declaration: no ';' after function body");
-	    }
-	} else {
-	    syntax_error("Function declaration: no ';' after formal parameters");
-	}
+            syntax_error("Function declaration: incorrect keyword");
+        }
+        // sym matches is function or procedure
+        scan.next();
+        ident();
+        if(scan.sym != Token.semicolon) {
+            formalParam();
+        }
+        // still need to look for this since formalParam may have
+        // parsed successfully, but there could still be a syntax
+        // error if no ';'
+        if(scan.sym == Token.semicolon) {
+            scan.next();
+            funcBody();
+            if(scan.sym == Token.semicolon) {
+                scan.next();
+            } else {
+                syntax_error("Function declaration: no ';' after function body");
+            }
+        } else {
+            syntax_error("Function declaration: no ';' after formal parameters");
+        }
     }
 
     private void formalParam() throws Exception
@@ -333,8 +333,8 @@ public class Parser {
                     syntax_error("Computation: no '}' ending the statSequence");
                 }
             } else {
-		syntax_error("Computation: no '{' starting the statSequence");
-	    }
+                syntax_error("Computation: no '{' starting the statSequence");
+            }
         } else {
             syntax_error("Computation: no 'main'");
         }
@@ -342,6 +342,6 @@ public class Parser {
 
     private void syntax_error(String msg) throws Exception
     {
-    	throw new Exception(msg);
+        throw new Exception(msg);
     }
 }
