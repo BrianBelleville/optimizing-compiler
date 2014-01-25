@@ -13,12 +13,10 @@ public class Parser {
 
     private Scanner scan;
 
-    private void next() {};
-
     private void ident() throws Exception
     {
         if(scan.sym == Token.ident) {
-            next();
+            scan.next();
         } else {
             syntax_error("Identifier doesn't match regexp");
         }
@@ -27,7 +25,7 @@ public class Parser {
     private void number() throws Exception
     {
         if(scan.sym == Token.num) {
-            next();
+            scan.next();
         } else {
             syntax_error("Number doesn't match regexp");
         }
@@ -204,6 +202,7 @@ public class Parser {
     {
         statement();
         while(scan.sym == Token.semicolon) {
+        	scan.next();
             statement();
         }
     }
@@ -239,6 +238,11 @@ public class Parser {
             scan.next();
             ident();
         }
+	// look for error
+	if(scan.sym == Token.semicolon)
+	    scan.next();
+	else
+	    throw new Exception("var declaration: no semicolon terminating declaration");
     }
 
     private void funcDecl() throws Exception
@@ -291,7 +295,7 @@ public class Parser {
 
     private void funcBody() throws Exception
     {
-        if(scan.sym == Token.var || scan.sym == Token.array) {
+        while(scan.sym == Token.var || scan.sym == Token.array) {
             varDecl();
         }
         if(scan.sym == Token.opencurly) {
