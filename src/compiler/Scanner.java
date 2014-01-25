@@ -1,7 +1,6 @@
 package compiler;
 
 import java.io.File;
-import java.util.regex.Pattern;
 
 public class Scanner {
     // the current symbol being looked at
@@ -12,28 +11,50 @@ public class Scanner {
     // not be set.
     public int val;
 
-    private java.util.Scanner scan;
+    private java.io.FileReader reader;
+    private int next;
 
     // different patterns used by the scanner
-    private Pattern identifier = Pattern.compile("[a-z][a-z0-9]*");
-    private Pattern operators = Pattern.compile("==|!=|<|<=|>|>=|*|/|+|-|<-");
-    private Pattern syntax = Pattern.compile("(|)|[|]|{|}|.|,|;");
+    private String whitespace = " \t\n\013\f\r";
+    private String letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    private String numbers = "0123456789";
+    private String alnum = letters + numbers;
+
+    // this will set next to be the next character from the stream
+    private void consume() throws Exception {
+	next = reader.read();
+    }
+
+    private void comment() throws Exception {
+	while(next != -1 && (char)next != '\n') {
+	    consume();
+	}
+    }
 
     // the main interface to the scanner
     public void next() throws Exception {
-        if(!scan.hasNext()) {
+	// eat whitespace
+	while(whitespace.indexOf((char)next) != -1) {
+	    consume();
+	}
+	if(next == -1) {
             sym = Token.eof;
             return;
         }
-        if(scan.hasNext("//") || scan.hasNext("#")) {
-            scan.nextLine();
-            next();
-            return;
-        }
-        if(scan.hasNext(identifier)) {
-            String k = scan.next(identifier);
-            // the keywords are lexically identical to an identifier
-            switch (k) {
+	// scan an identifier
+	if(letters.indexOf((char)next) != -1) {
+	    StringBuilder b = new StringBuilder();
+	    b.append((char)next);
+	    consume();
+	    while(alnum.indexOf((char)next) != -1) {
+		b.append((char)next);
+		consume();
+	    }
+	    String s = b.toString();
+
+	    // keywords are lexically identical to identifiers, so
+	    // match against the list of keywords
+	    switch (s) {
             case "let":
                 sym = Token.let;
                 return;
@@ -80,94 +101,137 @@ public class Scanner {
                 sym = Token.main;
                 return;
             }
-            sym = Token.ident;
-            // todo: insert the string into the string table
-            val = 1;
-            return;
-        }
-        if(scan.hasNext(operators)) {
-            String r = scan.next(operators);
-            switch (r) {
-            case "==":
-                sym = Token.eq;
-                return;
-            case "!=":
-                sym = Token.neq;
-                return;
-            case "<":
-                sym = Token.lt;
-                return;
-            case "<=":
-                sym = Token.lte;
-                return;
-            case ">":
-                sym = Token.gt;
-                return;
-            case ">=":
-                sym = Token.gte;
-                return;
-            case "*":
-                sym = Token.mul;
-                return;
-            case "/":
-                sym = Token.div;
-                return;
-            case "+":
-                sym = Token.add;
-                return;
-            case "-":
-                sym = Token.sub;
-                return;
-            case "<-":
-                sym = Token.assign;
-                return;
-            }
-            // if we are here, something went wrong
-            throw new Exception("Error scanning operator");
-        }
-        if(scan.hasNext(syntax)) {
-            String s = scan.next(syntax);
-            switch (s) {
-            case "(":
-                sym = Token.openparen;
-                return;
-            case ")":
-                sym = Token.closeparen;
-                return;
-            case "[":
-                sym = Token.opensquare;
-                return;
-            case "]":
-                sym = Token.closesqare;
-                return;
-            case "{":
-                sym = Token.opencurly;
-                return;
-            case "}":
-                sym = Token.closecurly;
-                return;
-            case ".":
-                sym = Token.period;
-                return;
-            case ",":
-                sym = Token.comma;
-                return;
-            case ";":
-                sym = Token.semicolon;
-                return;
-            }
-            // if we are here, something went wrong
-            throw new Exception("Error scanning syntax symbol");
-        }
-        if(scan.hasNextInt()) {
-            val = scan.nextInt();
-            sym = Token.num;
-            return;
-        }
-        // if we got here, we don't know how to scan the input
-        throw new Exception("Scan error: unable to tokenize next input");
+	    sym = Token.ident;
+	    val = 1;		// todo: val should be index in stringtab
+	    return;
+	}
+	// scan numbers
+	if(numbers.indexOf((char)next) != -1) {
+	    StringBuilder b = new StringBuilder();
+	    while(numbers.indexOf((char)next) != -1) {
+		b.append((char)next);
+		consume();
+	    }
+	    sym = Token.num;
+	    val = new Integer(b.toString());
+	    return;
+	}
+	if((char)next == '*') {
+	    consume();
+	    sym = Token.mul;
+	    return;
+	}
+	if((char)next == '<') {
+	    consume();
+	    if((char)next == '=') {
+		consume();
+		sym = Token.lte;
+		return;
+	    }
+	    if((char)next == '-') {
+		consume();
+		sym = Token.assign;
+		return;
+	    }
+	    sym = Token.lt;
+	    return;
+	}
+	if((char)next == '>') {
+	    consume();
+	    if((char)next == '=') {
+		consume();
+		sym = Token.gte;
+		return;
+	    }
+	    sym = Token.gt;
+	    return;
+	}
+	if((char)next == '=') {
+	    consume();
+	    if((char)next == '=') {
+		consume();
+		sym = Token.eq;
+		return;
+	    }
+	    throw new Exception("Scan error: unrecognized operator '='");
+	}
+	if((char)next == '+') {
+	    consume();
+	    sym = Token.add;
+	    return;
+	}
+	if((char)next == '-') {
+	    consume();
+	    sym = Token.sub;
+	    return;
+	}
+	if((char)next == '(') {
+	    consume();
+	    sym = Token.openparen;
+	    return;
+	}
+	if((char)next == ')') {
+	    consume();
+	    sym = Token.closeparen;
+	    return;
+	}
+	if((char)next == '{') {
+	    consume();
+	    sym = Token.opencurly;
+	    return;
+	}
+	if((char)next == '}') {
+	    consume();
+	    sym = Token.closecurly;
+	    return;
+	}
+	if((char)next == '[') {
+	    consume();
+	    sym = Token.opensquare;
+	    return;
+	}
+	if((char)next == ']') {
+	    consume();
+	    sym = Token.closesqare;
+	    return;
+	}
+	if((char)next == ',') {
+	    consume();
+	    sym = Token.comma;
+	    return;
+	}
+	if((char)next == '.') {
+	    consume();
+	    sym = Token.period;
+	    return;
+	}
+	if((char)next == ';') {
+	    consume();
+	    sym = Token.semicolon;
+	    return;
+	}
+	if((char)next == '#') {
+	    comment();
+	    next();
+	    return;
+	}
+	if((char)next == '/') {
+	    consume();
+	    if((char)next == '/') {
+		comment();
+		next();
+		return;
+	    }
+	    sym = Token.div;
+	    return;
+	}
+	// if we are here, something went wrong
+	throw new Exception("Scan error: unable to scan next token");
     }
+
     public Scanner(File f) throws Exception{
-        scan = new java.util.Scanner(f);
+	reader = new java.io.FileReader(f);
+	next = reader.read();
+	next();
     }
 }
