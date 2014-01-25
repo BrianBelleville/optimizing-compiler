@@ -9,6 +9,7 @@ public class Main {
             File f = new File(args[0]);
             Parser parse = new Parser(f);
             parse.parse();
+            System.out.println("Good parse?");
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
