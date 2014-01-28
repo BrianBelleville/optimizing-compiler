@@ -7,12 +7,15 @@ public class Parser {
         scan = new Scanner(f);
     }
 
+    // parse should return a cfg, should basically be a list of functions
     public void parse() throws Exception {
         computation();
     }
 
     private Scanner scan;
 
+    // this should return the instruction that cooresponds to the last
+    // value of the identifier, this will be from the scope table
     private void ident() throws Exception
     {
         if(scan.sym == Token.ident) {
@@ -22,6 +25,10 @@ public class Parser {
         }
     }
 
+    // this should return an "instruction" that represents an
+    // immediate value. This instruction won't be added to any basic
+    // block, it will just be used for the argument to whatever
+    // operation is being used.
     private void number() throws Exception
     {
         if(scan.sym == Token.num) {
@@ -31,6 +38,10 @@ public class Parser {
         }
     }
 
+    // this should emit an adda instruction to get the offset of the
+    // value in the array, multi-dimensional array will need to be
+    // handled here, the array dimension will have to be known, so
+    // will need to be recorded in the environment.
     private void designator() throws Exception
     {
         ident();
@@ -45,6 +56,7 @@ public class Parser {
         }
     }
 
+    // basically return the instruction that will represent the entire value.
     private void factor() throws Exception
     {
         if(scan.sym == Token.openparen) {
@@ -74,6 +86,18 @@ public class Parser {
         }
     }
 
+    // maybe inside of expression do deleyed code generation as
+    // presented in lecture to do partial evaluation of constant
+    // expressions. Can be simplified from what was discussed in
+    // lecture since we won't be worried about registers at this
+    // point, just coalesce literal numbers if possible. Shouldn't be
+    // too bad, for the productions that have an operation, if both of
+    // the arguments are immediates, do the calculation and return a
+    // new immediate. If not, emit code that does the operation using
+    // the supplied args. If the expression turns out to be a literal,
+    // don't even emit code at this point, for example if it is part
+    // of a relation, it is possible you may not have to emit
+    // anything.
     private void expression() throws Exception
     {
         term();
@@ -83,6 +107,12 @@ public class Parser {
         }
     }
 
+    // this will emit the relation, which must be returned, the actual
+    // branch will be emited by either the 'if' or 'while', making use
+    // of what relation is returned. Possible to emit a literal
+    // boolean in the case that the values of the operation can be
+    // statically determined. In that case probably can eliminate some
+    // dead code.
     private void relation() throws Exception
     {
         expression();
@@ -100,6 +130,12 @@ public class Parser {
         expression();
     }
 
+    // shouldn't need to actually emit any code for the assignment,
+    // the one exception being that if the result of the expression is
+    // a literal, should emit the load immediate instruction. The main
+    // thing that the assignment must do is update the join block with
+    // Phis, and update the environment with the current value of the
+    // variable.
     private void assignment_rest() throws Exception
     {
         designator();
@@ -111,6 +147,9 @@ public class Parser {
         expression();
     }
 
+    // this should result in a call instruction, if that is permited,
+    // the exception being the built in methods which can just use the
+    // single instructions in the IR
     private void funcCall_rest() throws Exception
     {
         ident();
@@ -133,6 +172,8 @@ public class Parser {
         }
     }
 
+    // this should handle creating the different basic blocks and the
+    // join node for the two branches.
     private void ifStatement_rest() throws Exception
     {
         relation();
@@ -153,6 +194,12 @@ public class Parser {
         }
     }
 
+    // the loop header needs to be the join node between the loop body
+    // and the following code. One wrinkle, if a phi is created new,
+    // need to go through the loop body and look for cases where the
+    // old value was used and replace it with the value of the phi.
+    // This seems like it will be one of the more difficult things to
+    // do.
     private void whileStatement_rest() throws Exception
     {
         relation();
@@ -190,7 +237,9 @@ public class Parser {
         } else if(scan.sym == Token.while_t) {
             scan.next();
             whileStatement_rest();
-        } else if(scan.sym == Token.return_t) {
+	} else if(scan.sym == Token.return_t) {
+	    // after a return statement, you can eliminate any
+	    // following code in the stat sequence.
             scan.next();
             returnStatement_rest();
         } else {
