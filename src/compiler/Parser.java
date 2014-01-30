@@ -241,7 +241,7 @@ public class Parser {
     {
 	BasicBlock oldCurrent = currentBB;
 	BasicBlock oldJoin = currentJoinBlock;
-	BasicBlock loopHeader = new BasicBlock(oldCurrent);
+	BasicBlock loopHeader = new LoopHeader(oldCurrent);
 	BasicBlock loopBody = new BasicBlock(loopHeader);
 	BasicBlock nextBB = new BasicBlock(loopHeader);
 	currentBB = loopHeader;
