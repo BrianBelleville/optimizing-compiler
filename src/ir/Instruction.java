@@ -29,7 +29,9 @@ public abstract class Instruction {
 
     // returns the last instruction this was deleted for.
     public final Instruction getDeleted() {
-        Instruction d = deleted;
+	if(deleted == null)
+	    return null;
+	Instruction d = deleted;
         while(d.deleted != null) {
             d = d.deleted;
         }
