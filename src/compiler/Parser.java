@@ -1,8 +1,12 @@
 package compiler;
 
 import java.io.File;
+import ir.*;
 
 public class Parser {
+    private BasicBlock currentBB;
+    private BasicBlock currentJoinBlock;
+
     public Parser(File f) throws Exception {
         scan = new Scanner(f);
     }
@@ -98,13 +102,14 @@ public class Parser {
     // don't even emit code at this point, for example if it is part
     // of a relation, it is possible you may not have to emit
     // anything.
-    private void expression() throws Exception
+    private Instruction expression() throws Exception
     {
         term();
         while(scan.sym == Token.add || scan.sym == Token.sub) {
             scan.next();
             term();
         }
+	return null;
     }
 
     // this will emit the relation, which must be returned, the actual
@@ -113,7 +118,7 @@ public class Parser {
     // boolean in the case that the values of the operation can be
     // statically determined. In that case probably can eliminate some
     // dead code.
-    private void relation() throws Exception
+    private Instruction relation() throws Exception
     {
         expression();
         if(scan.sym == Token.eq
@@ -128,6 +133,7 @@ public class Parser {
             syntax_error("Relation: incorrect relation operator");
         }
         expression();
+	return null;
     }
 
     // shouldn't need to actually emit any code for the assignment,
@@ -174,21 +180,45 @@ public class Parser {
 
     // this should handle creating the different basic blocks and the
     // join node for the two branches.
+    //
+    // The if statement will need to create new basic blocks for each
+    // branch, as well as a new basic block that will be the join
+    // node/ next basic block following the if statement.
     private void ifStatement_rest() throws Exception
     {
-        relation();
+	// make basic blocks preemptivly
+	BasicBlock oldCurrent = currentBB;
+	BasicBlock oldJoin = currentJoinBlock;
+	BasicBlock ifBB = new BasicBlock(oldCurrent);
+	BasicBlock elseBB = new BasicBlock(oldCurrent);
+	BasicBlock nextBB = new BasicBlock(oldCurrent);
+
+	relation();
+	// will need to emit the proper branch here
         if(scan.sym != Token.then) {
             syntax_error("Misformed if statement, no 'then' keyword");
         }
         // sym == "then"
         scan.next();
+
+	currentBB = ifBB;
+	currentJoinBlock = nextBB;
+
         statSequence();
         if(scan.sym == Token.else_t) {
             scan.next();
-            statSequence();
+	    currentBB = elseBB;
+	    // add branch target from oldCurrent to elseBB;
+	    statSequence();
         }
-        if(scan.sym == Token.fi) {
-            scan.next();
+	if(scan.sym == Token.fi) {
+	    // if we didn't add a branch target for the else, need a
+	    // branch from current to the following block
+	    scan.next();
+	    // todo: still need to push the phis from the join block out to the
+	    // enclosing join block
+	    currentBB = nextBB;
+	    currentJoinBlock = oldJoin; // restore the join block
         } else {
             syntax_error("Misformed if statement, no 'fi' keyword");
         }
@@ -200,14 +230,32 @@ public class Parser {
     // old value was used and replace it with the value of the phi.
     // This seems like it will be one of the more difficult things to
     // do.
+    //
+    // The while statement will need to create a new basic block for
+    // the loop header/join node as well as a new basic block for the
+    // loop body, and a new basic block for the code that follows the
+    // loop. The loop header will be dominated by what was previously
+    // the current block, the loop header will dominate the loop body,
+    // and the basic block that comes after the loop.
     private void whileStatement_rest() throws Exception
     {
-        relation();
+	BasicBlock oldCurrent = currentBB;
+	BasicBlock oldJoin = currentJoinBlock;
+	BasicBlock loopHeader = new BasicBlock(oldCurrent);
+	BasicBlock loopBody = new BasicBlock(loopHeader);
+	BasicBlock nextBB = new BasicBlock(loopHeader);
+	currentBB = loopHeader;
+	currentJoinBlock = loopHeader; // relations can't perform assignment, so it's all good
+	relation();
         if(scan.sym == Token.do_t) {
             scan.next();
+
+	    currentBB = loopBody;
             statSequence();
             if(scan.sym == Token.od) {
                 scan.next();
+		currentBB = nextBB;
+		currentJoinBlock = oldJoin; // still need to move phis out to the old join block
             } else {
                 syntax_error("While statement: no 'od'");
             }
@@ -251,7 +299,7 @@ public class Parser {
     {
         statement();
         while(scan.sym == Token.semicolon) {
-        	scan.next();
+	    scan.next();
             statement();
         }
     }
@@ -294,7 +342,12 @@ public class Parser {
 	    throw new Exception("var declaration: no semicolon terminating declaration");
     }
 
-    private void funcDecl() throws Exception
+    // funcDecl should establish the basic block used as the start
+    // point, then the other classes should extend as they go.
+    // Probably the current basic block and the current join block
+    // should be global state to the parser. Productions like while
+    // and if will cause new basic blocks to be created.
+    private Function funcDecl() throws Exception
     {
         if(!(scan.sym == Token.function || scan.sym == Token.procedure)) {
             syntax_error("Function declaration: incorrect keyword");
@@ -313,12 +366,14 @@ public class Parser {
             funcBody();
             if(scan.sym == Token.semicolon) {
                 scan.next();
+		return null;
             } else {
                 syntax_error("Function declaration: no ';' after function body");
             }
         } else {
             syntax_error("Function declaration: no ';' after formal parameters");
         }
+	return null;		// never should be reached since syntax_error will always throw
     }
 
     private void formalParam() throws Exception
@@ -366,13 +421,23 @@ public class Parser {
     {
         if(scan.sym == Token.main) {
             scan.next();
+	    // variable declarations shouldn't actually cause any SSA
+	    // to be emited, but should be stored in an environment.
+	    // Globals can be handled with load/store instructions.
+	    // Memory allocation for them will be at some other part
+	    // of the compiler.
             while(scan.sym == Token.var || scan.sym == Token.array) {
                 varDecl();
             }
             while(scan.sym == Token.function || scan.sym == Token.procedure) {
                 funcDecl();
             }
-            if(scan.sym == Token.opencurly) {
+	    // at this point, we can examine our environment for which
+	    // globals have been used in other functions, and if used
+	    // (either read or write) we can't optimize them using
+	    // SSA, and instead can treat them as single cell arrays,
+	    // I guess.
+	    if(scan.sym == Token.opencurly) {
                 scan.next();
                 statSequence();
                 if(scan.sym == Token.closecurly) {
