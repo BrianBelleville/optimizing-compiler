@@ -25,11 +25,19 @@ public class BasicBlock {
     public BasicBlock getFallThrough() {
         return fallThrough;
     }
+    public void setFallThrough(BasicBlock b) {
+	fallThrough = b;
+    }
+    
     public BasicBlock getBranchTarget() {
-        // todo: get the branch target of the last instruction
-        // a branch instruction will always end a basic block,
-        // but not every basic block must end with a branch
-        return null;
+	if(instructions.isEmpty()) {
+	    return null;
+	}
+	Instruction i = instructions.get(instructions.size() - 1);
+	if(i instanceof BranchInstruction) {
+	    return ((BranchInstruction)i).getTarget();
+	}
+	return null;
     }
     public void emit(Instruction i) {
         instructions.add(i);
