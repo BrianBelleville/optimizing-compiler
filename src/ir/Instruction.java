@@ -36,16 +36,15 @@ public abstract class Instruction {
         return number;
     }
 
-    // returns the last instruction this was deleted for.
-    public final Instruction getDeleted() {
-	if(deleted == null)
-	    return null;
-	Instruction d = deleted;
-        while(d.deleted != null) {
-            d = d.deleted;
+    // get the instruction that should be used in place of this
+    // instruction. If this instruction has been deleted, return the
+    // instruction it has been deleted for
+    public final Instruction getSubstitute() {
+	Instruction r = this;
+        while(r.deleted != null) {
+             r = r.deleted;
         }
-        // can optimize by setting this.deleted = d, probably not necessary
-        return d;
+        return r;
     }
 
     public final boolean isDeleted() {
@@ -82,7 +81,7 @@ public abstract class Instruction {
         Instruction i = dominating;
         while(i != null) {
             if(this.isCommonSubexpression(i)) {
-                this.deleted = i.getDeleted();
+                this.deleted = i.getSubstitute();
                 return;
             }
             i = i.dominating;

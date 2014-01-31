@@ -8,7 +8,7 @@ public class UnaryInstruction extends Instruction {
 
     public UnaryInstruction( BasicBlock b, Opcode o, Instruction arg) {
         super( b, o);
-        argument = arg.getDeleted();
+        argument = arg.getSubstitute();
         argument.addUse(this);
     }
 

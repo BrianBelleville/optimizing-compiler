@@ -9,8 +9,8 @@ public class BinaryInstruction extends Instruction {
 
     public BinaryInstruction(BasicBlock b, Opcode o, Instruction a1, Instruction a2) {
         super(b, o);
-        arg1 = a1.getDeleted();
-        arg2 = a2.getDeleted();
+        arg1 = a1.getSubstitute();
+        arg2 = a2.getSubstitute();
         arg1.addUse(this);
         arg2.addUse(this);
     }

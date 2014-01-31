@@ -11,7 +11,7 @@ public class NaryInstruction extends Instruction {
         super( b, o);
         arguments = new ArrayList<Instruction>();
         for(Instruction i: args) {
-            Instruction a = i.getDeleted();
+            Instruction a = i.getSubstitute();
             arguments.add(a);
             a.addUse(this);
         }
