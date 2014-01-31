@@ -4,9 +4,14 @@ import ir.Opcode;
 import ir.NoArgInstruction;
 
 public class Immediate extends NoArgInstruction {
+    private int value;
 
-    public Immediate(){
-        super(Opcode.immediate);
+    public Immediate(int value){
+	super(Opcode.immediate);
+	this.value = value;
     }
 
+    public int getValue() {
+	return value;
+    }
 }
