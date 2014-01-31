@@ -36,7 +36,15 @@ public class BasicBlock {
         i.performCSE();
     }
 
-    public void addPhi(Identifier var, Instruction oldVal, Instruction newVal) throws Exception
+    public void addPhi(Identifier var, Instruction oldVal, Instruction newVal)
+	throws Exception
+    {
+	addPhiInternal(var, oldVal, newVal);
+    }
+
+    // if a new Phi instruction was added, return it, else return null
+    protected final Phi addPhiInternal(Identifier var, Instruction oldVal, Instruction newVal)
+	throws Exception
     {
 	for(Instruction i : instructions) {
 	    if(i instanceof Phi) {
@@ -44,8 +52,8 @@ public class BasicBlock {
 		if(p.getVariable() == var) {
 		    // update the phi since there is already one for this variable
 		    p.replaceArgument(oldVal, newVal);
-		    // we are now done
-		    return;
+		    // we are now done, didn't add a new Phi
+		    return null;
 		}
 	    } else {
 		// all phis must occur at the begining of the basic
@@ -57,5 +65,7 @@ public class BasicBlock {
 	// if we are here, we need to add a new phi.
 	Phi p = new Phi(this, var, oldVal, newVal);
 	instructions.add(0, p);
+	// return the new Phi
+	return p;
     }
 }
