@@ -14,9 +14,17 @@ public class BasicBlock {
     private BasicBlock dominator;
     public ArrayList<Instruction> instructions;
     private BasicBlock fallThrough;
+    private static int blockNum = 0;
+    private int number;
+
+    private int getNextBlockNum() {
+	blockNum += 1;
+	return blockNum;
+    }
 
     public BasicBlock(BasicBlock dominator) {
 	this.dominator = dominator;
+	number = getNextBlockNum();
     }
 
     public BasicBlock getFallThrough() {
