@@ -1,15 +1,10 @@
 package ir;
 
 import java.util.ArrayList;
-// todo: make setting the dominator part of the constructor
+import support.Identifier;
+import ir.instructions.Phi;
 // todo: have a table containing the most recent instance of a
 //       opcode, this can be used to perform CSE faster
-// todo: have a separate option for adding phi instructions,
-//       maybe just search for a phi with the on the correct identifier
-//       and allow the parser to modify that instruction.
-// todo: maybe have a special basic block for a loop header that will
-//       search through it's instructions and instructions it dominates
-//       in order to replace variable uses when a phi is added.
 public class BasicBlock {
     private BasicBlock dominator;
     public ArrayList<Instruction> instructions;
@@ -39,5 +34,28 @@ public class BasicBlock {
     public void emit(Instruction i) {
         instructions.add(i);
         i.performCSE();
+    }
+
+    public void addPhi(Identifier var, Instruction oldVal, Instruction newVal) throws Exception
+    {
+	for(Instruction i : instructions) {
+	    if(i instanceof Phi) {
+		Phi p = (Phi)i;
+		if(p.getVariable() == var) {
+		    // update the phi since there is already one for this variable
+		    p.replaceArgument(oldVal, newVal);
+		    // we are now done
+		    return;
+		}
+	    } else {
+		// all phis must occur at the begining of the basic
+		// block, if we get to an instruction that is not a
+		// phi, we can stop our search
+		break;
+	    }
+	}
+	// if we are here, we need to add a new phi.
+	Phi p = new Phi(this, var, oldVal, newVal);
+	instructions.add(0, p);
     }
 }
