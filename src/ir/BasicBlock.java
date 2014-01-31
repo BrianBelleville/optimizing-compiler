@@ -39,7 +39,7 @@ public class BasicBlock {
 	}
 	return null;
     }
-    public void emit(Instruction i) {
+    public void addInstruction(Instruction i) {
         instructions.add(i);
         i.performCSE();
     }
