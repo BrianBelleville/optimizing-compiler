@@ -3,8 +3,8 @@ package ir;
 import java.util.ArrayList;
 
 public class NoArgInstruction extends Instruction {
-    public NoArgInstruction(int num, Opcode o) {
-	super(num, null, o);
+    public NoArgInstruction(Opcode o) {
+	super( null, o);
     }
 
     @Override

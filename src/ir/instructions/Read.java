@@ -5,8 +5,8 @@ import ir.Opcode;
 
 public class Read extends NoArgInstruction {
 
-    public Read(int num) {
-        super(num, Opcode.read);
+    public Read(){
+        super(Opcode.read);
     }
 
 }

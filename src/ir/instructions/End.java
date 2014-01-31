@@ -5,8 +5,8 @@ import ir.NoArgInstruction;
 
 public class End extends NoArgInstruction {
 
-    public End(int num) {
-        super(num, Opcode.end);
+    public End(){
+        super(Opcode.end);
     }
 
 }

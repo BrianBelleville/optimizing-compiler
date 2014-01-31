@@ -6,8 +6,8 @@ public class UnaryInstruction extends Instruction {
 
     private Instruction argument;
 
-    public UnaryInstruction(int num, BasicBlock b, Opcode o, Instruction arg) {
-        super(num, b, o);
+    public UnaryInstruction( BasicBlock b, Opcode o, Instruction arg) {
+        super( b, o);
         argument = arg.getDeleted();
         argument.addUse(this);
     }

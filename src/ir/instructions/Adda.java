@@ -7,8 +7,8 @@ import ir.Opcode;
 
 public class Adda extends BinaryInstruction {
 
-    public Adda(int num, BasicBlock b, Instruction a1, Instruction a2) {
-        super(num, b, Opcode.adda, a1, a2);
+    public Adda(BasicBlock b, Instruction a1, Instruction a2) {
+        super(b, Opcode.adda, a1, a2);
     }
 
 }

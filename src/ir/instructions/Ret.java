@@ -7,7 +7,7 @@ import ir.UnaryInstruction;
 
 public class Ret extends UnaryInstruction {
 
-    public Ret(int num, BasicBlock b, Instruction arg) {
-        super(num, b, Opcode.ret, arg);
+    public Ret(BasicBlock b, Instruction arg) {
+        super(b, Opcode.ret, arg);
     }
 }

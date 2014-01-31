@@ -7,8 +7,8 @@ import ir.Opcode;
 
 public class Div extends BinaryInstruction {
 
-    public Div(int num, BasicBlock b, Instruction a1, Instruction a2) {
-        super(num, b, Opcode.div, a1, a2);
+    public Div(BasicBlock b, Instruction a1, Instruction a2) {
+        super(b, Opcode.div, a1, a2);
     }
 
 }

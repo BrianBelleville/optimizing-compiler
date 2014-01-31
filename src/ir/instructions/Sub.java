@@ -7,8 +7,8 @@ import ir.Opcode;
 
 public class Sub extends BinaryInstruction {
 
-    public Sub(int num, BasicBlock b, Instruction a1, Instruction a2) {
-        super(num, b, Opcode.sub, a1, a2);
+    public Sub(BasicBlock b, Instruction a1, Instruction a2) {
+        super(b, Opcode.sub, a1, a2);
     }
 
 }

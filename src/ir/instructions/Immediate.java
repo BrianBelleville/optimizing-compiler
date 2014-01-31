@@ -5,8 +5,8 @@ import ir.NoArgInstruction;
 
 public class Immediate extends NoArgInstruction {
 
-    public Immediate(int num) {
-        super(num, Opcode.immediate);
+    public Immediate(){
+        super(Opcode.immediate);
     }
 
 }

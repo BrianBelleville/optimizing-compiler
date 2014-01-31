@@ -5,8 +5,8 @@ import java.util.ArrayList;
 public class BranchInstruction extends Instruction {
     private BasicBlock target;
 
-    public BranchInstruction(int num, BasicBlock containing, Opcode o, BasicBlock target) {
-	super(num, containing, o);
+    public BranchInstruction(BasicBlock containing, Opcode o, BasicBlock target) {
+	super(containing, o);
 	this.target = target;
     }
 

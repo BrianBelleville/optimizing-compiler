@@ -7,8 +7,8 @@ import ir.Opcode;
 
 public class Mul extends BinaryInstruction {
 
-    public Mul(int num, BasicBlock b, Instruction a1, Instruction a2) {
-        super(num, b, Opcode.mul, a1, a2);
+    public Mul(BasicBlock b, Instruction a1, Instruction a2) {
+        super(b, Opcode.mul, a1, a2);
     }
 
 }

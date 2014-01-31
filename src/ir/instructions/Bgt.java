@@ -6,7 +6,7 @@ import ir.Opcode;
 
 public class Bgt extends BranchInstruction {
 
-    public Bgt(int num, BasicBlock containing, BasicBlock target) {
-        super(num, containing, Opcode.bgt, target);
+    public Bgt(BasicBlock containing, BasicBlock target) {
+        super(containing, Opcode.bgt, target);
     }
 }

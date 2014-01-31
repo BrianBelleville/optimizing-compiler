@@ -3,6 +3,8 @@ package ir;
 import java.util.ArrayList;
 
 public abstract class Instruction {
+    private static int instructionNum = 0;
+
     public BasicBlock bb;
     private int number;
     private Instruction deleted;
@@ -13,10 +15,17 @@ public abstract class Instruction {
 
     abstract public ArrayList<Instruction> getArguments();
 
-    public Instruction(int num, BasicBlock b, Opcode o) {
-        number = num;
+    public Instruction(BasicBlock b, Opcode o) {
+        number = getNextInstructionNum();
         bb = b;
         opcode = o;
+    }
+    
+    // this is obviously horribly not thread safe, but doesn't matter
+    // for this
+    private final int getNextInstructionNum() {
+	instructionNum += 1;
+	return instructionNum;
     }
 
     public final void setDominating(Instruction i) {

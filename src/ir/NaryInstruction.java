@@ -6,9 +6,9 @@ public class NaryInstruction extends Instruction {
 
     private ArrayList<Instruction> arguments;
 
-    public NaryInstruction(int num, BasicBlock b, Opcode o,
+    public NaryInstruction(BasicBlock b, Opcode o,
                            ArrayList<Instruction> args) {
-        super(num, b, o);
+        super( b, o);
         arguments = new ArrayList<Instruction>();
         for(Instruction i: args) {
             Instruction a = i.getDeleted();

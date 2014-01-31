@@ -7,8 +7,8 @@ public class BinaryInstruction extends Instruction {
     private Instruction arg1;
     private Instruction arg2;
 
-    public BinaryInstruction(int num, BasicBlock b, Opcode o, Instruction a1, Instruction a2) {
-        super(num, b, o);
+    public BinaryInstruction(BasicBlock b, Opcode o, Instruction a1, Instruction a2) {
+        super(b, o);
         arg1 = a1.getDeleted();
         arg2 = a2.getDeleted();
         arg1.addUse(this);

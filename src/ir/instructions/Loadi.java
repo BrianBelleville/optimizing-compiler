@@ -7,7 +7,7 @@ import ir.UnaryInstruction;
 
 public class Loadi extends UnaryInstruction {
 
-    public Loadi(int num, BasicBlock b, Instruction arg) {
-        super(num, b, Opcode.loadi, arg);
+    public Loadi(BasicBlock b, Instruction arg) {
+        super(b, Opcode.loadi, arg);
     }
 }

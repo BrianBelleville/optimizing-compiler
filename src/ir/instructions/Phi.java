@@ -7,8 +7,8 @@ import ir.Opcode;
 
 public class Phi extends BinaryInstruction {
 
-    public Phi(int num, BasicBlock b, Instruction a1, Instruction a2) {
-        super(num, b, Opcode.phi, a1, a2);
+    public Phi(BasicBlock b, Instruction a1, Instruction a2) {
+        super(b, Opcode.phi, a1, a2);
     }
 
 }

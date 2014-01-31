@@ -7,8 +7,8 @@ import ir.Opcode;
 
 public class Move extends BinaryInstruction {
 
-    public Move(int num, BasicBlock b, Instruction a1, Instruction a2) {
-        super(num, b, Opcode.move, a1, a2);
+    public Move(BasicBlock b, Instruction a1, Instruction a2) {
+        super(b, Opcode.move, a1, a2);
     }
 
 }

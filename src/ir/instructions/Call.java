@@ -9,8 +9,7 @@ import ir.Opcode;
 
 public class Call extends NaryInstruction {
 
-    public Call(int num, BasicBlock b,  ArrayList<Instruction> args) {
-        super(num, b, Opcode.call, args);
+    public Call(BasicBlock b,  ArrayList<Instruction> args) {
+        super(b, Opcode.call, args);
     }
-
 }
