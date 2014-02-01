@@ -2,13 +2,16 @@ package compiler;
 
 import java.io.File;
 import ir.*;
+import support.*;
 
 public class Parser {
     private BasicBlock currentBB;
     private BasicBlock currentJoinBlock;
+    private IdentifierTable idTable;
 
-    public Parser(File f) throws Exception {
-        scan = new Scanner(f);
+    public Parser(File f, IdentifierTable t) throws Exception {
+        scan = new Scanner(f, t);
+	idTable = t;
     }
 
     // parse should return a cfg, should basically be a list of functions
@@ -20,12 +23,14 @@ public class Parser {
 
     // this should return the instruction that cooresponds to the last
     // value of the identifier, this will be from the scope table
-    private void ident() throws Exception
+    private Identifier ident() throws Exception
     {
         if(scan.sym == Token.ident) {
             scan.next();
+	    return scan.idVal;
         } else {
             syntax_error("Identifier doesn't match regexp");
+	    return null;
         }
     }
 

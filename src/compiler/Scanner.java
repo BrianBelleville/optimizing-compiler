@@ -1,18 +1,23 @@
 package compiler;
 
 import java.io.File;
+import support.*;
 
 public class Scanner {
     // the current symbol being looked at
     public Token sym;
+    
     // The current value of the symbol. If sym is a number, it will be
-    // the integer value, if sym is an identifier, it will be the
-    // index in the symbol table, if sym is an other token, val will
-    // not be set.
+    // the integer value, val will not be set.
     public int val;
-
+    // the current value of the symbol as an Identifier. If sym is
+    // identifier, it will be the identifier read from the stream, if
+    // sym is another token type, val will not be set.
+    public Identifier idVal;
     private java.io.FileReader reader;
     private int next;
+
+    private IdentifierTable idTable;
 
     // different patterns used by the scanner
     private String whitespace = " \t\n\013\f\r";
@@ -102,7 +107,7 @@ public class Scanner {
                 return;
             }
 	    sym = Token.ident;
-	    val = 1;		// todo: val should be index in stringtab
+	    idVal = idTable.addToTable(s);
 	    return;
 	}
 	// scan numbers
@@ -229,8 +234,9 @@ public class Scanner {
 	throw new Exception("Scan error: unable to scan next token");
     }
 
-    public Scanner(File f) throws Exception{
+    public Scanner(File f, IdentifierTable t) throws Exception{
 	reader = new java.io.FileReader(f);
+	idTable = t;
 	next = reader.read();
 	next();
     }
