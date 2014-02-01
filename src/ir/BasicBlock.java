@@ -58,7 +58,7 @@ public class BasicBlock {
 	for(Instruction i : instructions) {
 	    if(i instanceof Phi) {
 		Phi p = (Phi)i;
-		if(p.getVariable() == var) {
+		if(p.getVariable().equals(var)) {
 		    // update the phi since there is already one for this variable
 		    p.replaceArgument(oldVal, newVal);
 		    // we are now done, didn't add a new Phi
