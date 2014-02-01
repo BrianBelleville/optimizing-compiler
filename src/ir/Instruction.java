@@ -15,9 +15,8 @@ public abstract class Instruction {
 
     abstract public ArrayList<Instruction> getArguments();
 
-    public Instruction(BasicBlock b, Opcode o) {
+    public Instruction(Opcode o) {
         number = getNextInstructionNum();
-        bb = b;
         opcode = o;
     }
     
@@ -30,6 +29,10 @@ public abstract class Instruction {
 
     public final void setDominating(Instruction i) {
         dominating = i;
+    }
+
+    public final void setContainingBB(BasicBlock b) {
+	bb = b;
     }
 
     public final int getNumber() {

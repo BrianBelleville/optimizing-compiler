@@ -6,9 +6,8 @@ public class NaryInstruction extends Instruction {
 
     private ArrayList<Instruction> arguments;
 
-    public NaryInstruction(BasicBlock b, Opcode o,
-                           ArrayList<Instruction> args) {
-        super( b, o);
+    public NaryInstruction(Opcode o, ArrayList<Instruction> args) {
+        super( o);
         arguments = new ArrayList<Instruction>();
         for(Instruction i: args) {
             Instruction a = i.getSubstitute();

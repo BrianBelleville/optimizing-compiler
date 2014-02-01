@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class NoArgInstruction extends Instruction {
     public NoArgInstruction(Opcode o) {
-	super( null, o);
+	super(o);
     }
 
     @Override

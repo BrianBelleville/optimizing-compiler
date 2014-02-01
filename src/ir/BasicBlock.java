@@ -41,6 +41,7 @@ public class BasicBlock {
     }
     public void addInstruction(Instruction i) {
         instructions.add(i);
+	i.setContainingBB(this);
         i.performCSE();
     }
 
@@ -71,8 +72,9 @@ public class BasicBlock {
 	    }
 	}
 	// if we are here, we need to add a new phi.
-	Phi p = new Phi(this, var, oldVal, newVal);
+	Phi p = new Phi(var, oldVal, newVal);
 	instructions.add(0, p);
+	p.setContainingBB(this);
 	// return the new Phi
 	return p;
     }

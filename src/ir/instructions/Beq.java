@@ -6,7 +6,7 @@ import ir.Opcode;
 
 public class Beq extends BranchInstruction {
 
-    public Beq(BasicBlock containing, BasicBlock target) {
-        super(containing, Opcode.beq, target);
+    public Beq(BasicBlock target) {
+        super(Opcode.beq, target);
     }
 }

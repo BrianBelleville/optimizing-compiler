@@ -6,7 +6,7 @@ import ir.Opcode;
 
 public class Bne extends BranchInstruction {
 
-    public Bne(BasicBlock containing, BasicBlock target) {
-        super(containing, Opcode.bne, target);
+    public Bne(BasicBlock target) {
+        super(Opcode.bne, target);
     }
 }
