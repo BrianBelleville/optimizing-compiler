@@ -13,7 +13,15 @@ public class Identifier {
 	return table.getString(table_index);
     }
 
-    public Boolean equals(Identifier i) {
+    public boolean equals(Identifier i) {
 	return table == i.table && table_index == i.table_index;
     }
+
+    @Override
+    public boolean equals(Object o) {
+	if(o instanceof Identifier) {
+	    return this.equals((Identifier)o);
+	}
+	return false;
+    }    
 }
