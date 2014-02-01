@@ -2,6 +2,7 @@ package compiler;
 
 import java.io.File;
 import ir.*;
+import ir.instructions.*;
 import support.*;
 
 public class Parser {
@@ -123,7 +124,7 @@ public class Parser {
     // boolean in the case that the values of the operation can be
     // statically determined. In that case probably can eliminate some
     // dead code.
-    private Instruction relation() throws Exception
+    private Cmp relation() throws Exception
     {
         expression();
         if(scan.sym == Token.eq
@@ -191,6 +192,9 @@ public class Parser {
     // node/ next basic block following the if statement.
     private void ifStatement_rest() throws Exception
     {
+	// won't know this until we see if there is an else branch
+	BasicBlock branchTarget;
+
 	// make basic blocks preemptivly
 	BasicBlock oldCurrent = currentBB;
 	BasicBlock oldJoin = currentJoinBlock;
@@ -198,8 +202,10 @@ public class Parser {
 	BasicBlock elseBB = new BasicBlock(oldCurrent);
 	BasicBlock nextBB = new BasicBlock(oldCurrent);
 
-	relation();
-	// will need to emit the proper branch here
+	// if branch must exist
+	oldCurrent.setFallThrough(ifBB);
+
+	Cmp comp = relation();
         if(scan.sym != Token.then) {
             syntax_error("Misformed if statement, no 'then' keyword");
         }
@@ -213,12 +219,20 @@ public class Parser {
         if(scan.sym == Token.else_t) {
             scan.next();
 	    currentBB = elseBB;
-	    // add branch target from oldCurrent to elseBB;
+	    elseBB.setFallThrough(nextBB);
+
+	    // the else block will be the target of the branch
+	    oldCurrent.addInstruction(makeProperBranch(comp, elseBB));
+	    // also add unconditional branch over the else block
+	    ifBB.addInstruction(new Bra(nextBB));
 	    statSequence();
-        }
+        } else {
+	    // otherwise, no else, so the next block will be the target of the branch
+	    oldCurrent.addInstruction(makeProperBranch(comp, nextBB));
+	    // ifBB will fall through
+	    ifBB.setFallThrough(nextBB);
+	}
 	if(scan.sym == Token.fi) {
-	    // if we didn't add a branch target for the else, need a
-	    // branch from current to the following block
 	    scan.next();
 	    // todo: still need to push the phis from the join block out to the
 	    // enclosing join block
@@ -228,6 +242,26 @@ public class Parser {
             syntax_error("Misformed if statement, no 'fi' keyword");
         }
     }
+
+    private BranchInstruction makeProperBranch(Cmp c, BasicBlock t) {
+	switch (c.getType()) {
+	case eq:
+	    return new Bne(t);
+	case neq:
+	    return new Beq(t);
+	case lt:
+	    return new Bge(t);
+	case lte:
+	    return new Bgt(t);
+	case gt:
+	    return new Ble(t);
+	case gte:
+	    return new Blt(t);
+	default:
+	    return null;
+	}
+    }
+
 
     // the loop header needs to be the join node between the loop body
     // and the following code. One wrinkle, if a phi is created new,
