@@ -12,8 +12,8 @@ public class Parser {
     private IdentifierTable idTable;
 
     public Parser(File f, IdentifierTable t) throws Exception {
-        scan = new Scanner(f, t);
         idTable = t;
+	scan = new Scanner(f, idTable);
     }
 
     // parse should return a cfg, should basically be a list of functions
