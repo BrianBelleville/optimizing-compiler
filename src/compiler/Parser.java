@@ -1,6 +1,7 @@
 package compiler;
 
 import java.io.File;
+import java.util.ArrayList;
 import ir.*;
 import ir.instructions.*;
 import support.*;
@@ -12,7 +13,7 @@ public class Parser {
 
     public Parser(File f, IdentifierTable t) throws Exception {
         scan = new Scanner(f, t);
-	idTable = t;
+        idTable = t;
     }
 
     // parse should return a cfg, should basically be a list of functions
@@ -27,11 +28,13 @@ public class Parser {
     private Identifier ident() throws Exception
     {
         if(scan.sym == Token.ident) {
+            // extract the value before advancing the input
+            Identifier rval = scan.idVal;
             scan.next();
-	    return scan.idVal;
+            return rval;
         } else {
             syntax_error("Identifier doesn't match regexp");
-	    return null;
+            return null;
         }
     }
 
@@ -39,12 +42,15 @@ public class Parser {
     // immediate value. This instruction won't be added to any basic
     // block, it will just be used for the argument to whatever
     // operation is being used.
-    private void number() throws Exception
+    private Immediate number() throws Exception
     {
         if(scan.sym == Token.num) {
+            Immediate rval = new Immediate(scan.val);
             scan.next();
+            return rval;
         } else {
             syntax_error("Number doesn't match regexp");
+            return null;
         }
     }
 
@@ -52,7 +58,10 @@ public class Parser {
     // value in the array, multi-dimensional array will need to be
     // handled here, the array dimension will have to be known, so
     // will need to be recorded in the environment.
-    private void designator() throws Exception
+    //
+    // todo: implement designators. This will require having a scope
+    // environment data structure.
+    private Instruction designator() throws Exception
     {
         ident();
         while(scan.sym == Token.opensquare) {
@@ -64,14 +73,16 @@ public class Parser {
                 syntax_error("Designator: no closing ']'");
             }
         }
+        return null;
     }
 
     // basically return the instruction that will represent the entire value.
-    private void factor() throws Exception
+    private Instruction factor() throws Exception
     {
+        Instruction rval;
         if(scan.sym == Token.openparen) {
             scan.next();
-            expression();
+            rval = expression();
             if(scan.sym == Token.closeparen) {
                 scan.next();
             } else {
@@ -79,25 +90,17 @@ public class Parser {
             }
         } else if (scan.sym == Token.call) {
             scan.next();
-            funcCall_rest();
+            rval = funcCall_rest();
         } else if (scan.sym == Token.num) {
-            scan.next();
+            rval = number();
         } else {
-            designator();
+            rval = designator();
         }
+        return rval;
     }
 
-    private void term() throws Exception
-    {
-        factor();
-        while(scan.sym == Token.mul || scan.sym == Token.div) {
-            scan.next();
-            factor();
-        }
-    }
-
-    // maybe inside of expression do deleyed code generation as
-    // presented in lecture to do partial evaluation of constant
+    // todo: inside of expression and term do deleyed code generation
+    // as presented in lecture to do partial evaluation of constant
     // expressions. Can be simplified from what was discussed in
     // lecture since we won't be worried about registers at this
     // point, just coalesce literal numbers if possible. Shouldn't be
@@ -108,14 +111,42 @@ public class Parser {
     // don't even emit code at this point, for example if it is part
     // of a relation, it is possible you may not have to emit
     // anything.
+    private Instruction term() throws Exception
+    {
+        Instruction previous, rval;
+        previous = rval = factor();
+        while(scan.sym == Token.mul || scan.sym == Token.div) {
+            Token op = scan.sym;
+            scan.next();
+            previous = rval;
+            Instruction next = factor();
+            if(op == Token.mul) {
+                rval = new Mul(previous, next);
+            } else {            // op == Token.div
+                rval = new Div(previous, next);
+            }
+            currentBB.addInstruction(rval);
+        }
+        return rval;
+    }
+
     private Instruction expression() throws Exception
     {
-        term();
+        Instruction previous, rval;
+        previous = rval = term();
         while(scan.sym == Token.add || scan.sym == Token.sub) {
+            Token op = scan.sym;
             scan.next();
-            term();
+            previous = rval;
+            Instruction next = term();
+            if(op == Token.add) {
+                rval = new Add(previous, next);
+            } else {            // op == Token.sub
+                rval = new Sub(previous, next);
+            }
+            currentBB.addInstruction(rval);
         }
-	return null;
+        return rval;
     }
 
     // this will emit the relation, which must be returned, the actual
@@ -139,7 +170,7 @@ public class Parser {
             syntax_error("Relation: incorrect relation operator");
         }
         expression();
-	return null;
+        return null;
     }
 
     // shouldn't need to actually emit any code for the assignment,
@@ -162,26 +193,33 @@ public class Parser {
     // this should result in a call instruction, if that is permited,
     // the exception being the built in methods which can just use the
     // single instructions in the IR
-    private void funcCall_rest() throws Exception
+    private Instruction funcCall_rest() throws Exception
     {
-        ident();
-        if(scan.sym == Token.openparen) {
-            scan.next();
-            if(scan.sym == Token.closeparen) {
+        Identifier funcName = ident();
+        ArrayList<Instruction> args = new ArrayList<Instruction>();
+        do {
+            if(scan.sym == Token.openparen) {
                 scan.next();
-                return;
+                if(scan.sym == Token.closeparen) {
+                    scan.next();
+                    break;
+                }
+                args.add(expression());
+                while(scan.sym == Token.comma) {
+                    scan.next();
+                    args.add(expression());
+                }
+                if(scan.sym == Token.closeparen) {
+                    scan.next();
+                    break;
+                }
+                syntax_error("funcCall: no closing ')'");
             }
-            expression();
-            while(scan.sym == Token.comma) {
-                scan.next();
-                expression();
-            }
-            if(scan.sym == Token.closeparen) {
-                scan.next();
-                return;
-            }
-            syntax_error("funcCall: no closing ')'");
-        }
+        } while (false);
+        // todo: check for builtin functions
+        Instruction rval = new Call(funcName, args);
+        currentBB.addInstruction(rval);
+        return rval;
     }
 
     // this should handle creating the different basic blocks and the
@@ -192,74 +230,74 @@ public class Parser {
     // node/ next basic block following the if statement.
     private void ifStatement_rest() throws Exception
     {
-	// won't know this until we see if there is an else branch
-	BasicBlock branchTarget;
+        // won't know this until we see if there is an else branch
+        BasicBlock branchTarget;
 
-	// make basic blocks preemptivly
-	BasicBlock oldCurrent = currentBB;
-	BasicBlock oldJoin = currentJoinBlock;
-	BasicBlock ifBB = new BasicBlock(oldCurrent);
-	BasicBlock elseBB = new BasicBlock(oldCurrent);
-	BasicBlock nextBB = new BasicBlock(oldCurrent);
+        // make basic blocks preemptivly
+        BasicBlock oldCurrent = currentBB;
+        BasicBlock oldJoin = currentJoinBlock;
+        BasicBlock ifBB = new BasicBlock(oldCurrent);
+        BasicBlock elseBB = new BasicBlock(oldCurrent);
+        BasicBlock nextBB = new BasicBlock(oldCurrent);
 
-	// if branch must exist
-	oldCurrent.setFallThrough(ifBB);
+        // if branch must exist
+        oldCurrent.setFallThrough(ifBB);
 
-	Cmp comp = relation();
+        Cmp comp = relation();
         if(scan.sym != Token.then) {
             syntax_error("Misformed if statement, no 'then' keyword");
         }
         // sym == "then"
         scan.next();
 
-	currentBB = ifBB;
-	currentJoinBlock = nextBB;
+        currentBB = ifBB;
+        currentJoinBlock = nextBB;
 
         statSequence();
         if(scan.sym == Token.else_t) {
             scan.next();
-	    currentBB = elseBB;
-	    elseBB.setFallThrough(nextBB);
+            currentBB = elseBB;
+            elseBB.setFallThrough(nextBB);
 
-	    // the else block will be the target of the branch
-	    oldCurrent.addInstruction(makeProperBranch(comp, elseBB));
-	    // also add unconditional branch over the else block
-	    ifBB.addInstruction(new Bra(nextBB));
-	    statSequence();
+            // the else block will be the target of the branch
+            oldCurrent.addInstruction(makeProperBranch(comp, elseBB));
+            // also add unconditional branch over the else block
+            ifBB.addInstruction(new Bra(nextBB));
+            statSequence();
         } else {
-	    // otherwise, no else, so the next block will be the target of the branch
-	    oldCurrent.addInstruction(makeProperBranch(comp, nextBB));
-	    // ifBB will fall through
-	    ifBB.setFallThrough(nextBB);
-	}
-	if(scan.sym == Token.fi) {
-	    scan.next();
-	    // todo: still need to push the phis from the join block out to the
-	    // enclosing join block
-	    currentBB = nextBB;
-	    currentJoinBlock = oldJoin; // restore the join block
+            // otherwise, no else, so the next block will be the target of the branch
+            oldCurrent.addInstruction(makeProperBranch(comp, nextBB));
+            // ifBB will fall through
+            ifBB.setFallThrough(nextBB);
+        }
+        if(scan.sym == Token.fi) {
+            scan.next();
+            // todo: still need to push the phis from the join block out to the
+            // enclosing join block
+            currentBB = nextBB;
+            currentJoinBlock = oldJoin; // restore the join block
         } else {
             syntax_error("Misformed if statement, no 'fi' keyword");
         }
     }
 
     private BranchInstruction makeProperBranch(Cmp c, BasicBlock t) {
-	switch (c.getType()) {
-	case eq:
-	    return new Bne(t);
-	case neq:
-	    return new Beq(t);
-	case lt:
-	    return new Bge(t);
-	case lte:
-	    return new Bgt(t);
-	case gt:
-	    return new Ble(t);
-	case gte:
-	    return new Blt(t);
-	default:
-	    return null;
-	}
+        switch (c.getType()) {
+        case eq:
+            return new Bne(t);
+        case neq:
+            return new Beq(t);
+        case lt:
+            return new Bge(t);
+        case lte:
+            return new Bgt(t);
+        case gt:
+            return new Ble(t);
+        case gte:
+            return new Blt(t);
+        default:
+            return null;
+        }
     }
 
 
@@ -278,23 +316,23 @@ public class Parser {
     // and the basic block that comes after the loop.
     private void whileStatement_rest() throws Exception
     {
-	BasicBlock oldCurrent = currentBB;
-	BasicBlock oldJoin = currentJoinBlock;
-	BasicBlock loopHeader = new LoopHeader(oldCurrent);
-	BasicBlock loopBody = new BasicBlock(loopHeader);
-	BasicBlock nextBB = new BasicBlock(loopHeader);
-	currentBB = loopHeader;
-	currentJoinBlock = loopHeader; // relations can't perform assignment, so it's all good
-	relation();
+        BasicBlock oldCurrent = currentBB;
+        BasicBlock oldJoin = currentJoinBlock;
+        BasicBlock loopHeader = new LoopHeader(oldCurrent);
+        BasicBlock loopBody = new BasicBlock(loopHeader);
+        BasicBlock nextBB = new BasicBlock(loopHeader);
+        currentBB = loopHeader;
+        currentJoinBlock = loopHeader; // relations can't perform assignment, so it's all good
+        relation();
         if(scan.sym == Token.do_t) {
             scan.next();
 
-	    currentBB = loopBody;
+            currentBB = loopBody;
             statSequence();
             if(scan.sym == Token.od) {
                 scan.next();
-		currentBB = nextBB;
-		currentJoinBlock = oldJoin; // still need to move phis out to the old join block
+                currentBB = nextBB;
+                currentJoinBlock = oldJoin; // still need to move phis out to the old join block
             } else {
                 syntax_error("While statement: no 'od'");
             }
@@ -324,9 +362,9 @@ public class Parser {
         } else if(scan.sym == Token.while_t) {
             scan.next();
             whileStatement_rest();
-	} else if(scan.sym == Token.return_t) {
-	    // after a return statement, you can eliminate any
-	    // following code in the stat sequence.
+        } else if(scan.sym == Token.return_t) {
+            // after a return statement, you can eliminate any
+            // following code in the stat sequence.
             scan.next();
             returnStatement_rest();
         } else {
@@ -338,7 +376,7 @@ public class Parser {
     {
         statement();
         while(scan.sym == Token.semicolon) {
-	    scan.next();
+            scan.next();
             statement();
         }
     }
@@ -374,11 +412,11 @@ public class Parser {
             scan.next();
             ident();
         }
-	// look for error
-	if(scan.sym == Token.semicolon)
-	    scan.next();
-	else
-	    throw new Exception("var declaration: no semicolon terminating declaration");
+        // look for error
+        if(scan.sym == Token.semicolon)
+            scan.next();
+        else
+            throw new Exception("var declaration: no semicolon terminating declaration");
     }
 
     // funcDecl should establish the basic block used as the start
@@ -405,14 +443,14 @@ public class Parser {
             funcBody();
             if(scan.sym == Token.semicolon) {
                 scan.next();
-		return null;
+                return null;
             } else {
                 syntax_error("Function declaration: no ';' after function body");
             }
         } else {
             syntax_error("Function declaration: no ';' after formal parameters");
         }
-	return null;		// never should be reached since syntax_error will always throw
+        return null;            // never should be reached since syntax_error will always throw
     }
 
     private void formalParam() throws Exception
@@ -460,23 +498,23 @@ public class Parser {
     {
         if(scan.sym == Token.main) {
             scan.next();
-	    // variable declarations shouldn't actually cause any SSA
-	    // to be emited, but should be stored in an environment.
-	    // Globals can be handled with load/store instructions.
-	    // Memory allocation for them will be at some other part
-	    // of the compiler.
+            // variable declarations shouldn't actually cause any SSA
+            // to be emited, but should be stored in an environment.
+            // Globals can be handled with load/store instructions.
+            // Memory allocation for them will be at some other part
+            // of the compiler.
             while(scan.sym == Token.var || scan.sym == Token.array) {
                 varDecl();
             }
             while(scan.sym == Token.function || scan.sym == Token.procedure) {
                 funcDecl();
             }
-	    // at this point, we can examine our environment for which
-	    // globals have been used in other functions, and if used
-	    // (either read or write) we can't optimize them using
-	    // SSA, and instead can treat them as single cell arrays,
-	    // I guess.
-	    if(scan.sym == Token.opencurly) {
+            // at this point, we can examine our environment for which
+            // globals have been used in other functions, and if used
+            // (either read or write) we can't optimize them using
+            // SSA, and instead can treat them as single cell arrays,
+            // I guess.
+            if(scan.sym == Token.opencurly) {
                 scan.next();
                 statSequence();
                 if(scan.sym == Token.closecurly) {
