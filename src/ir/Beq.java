@@ -1,6 +1,5 @@
-package ir.instructions;
+package ir;
 
-import ir.base.BasicBlock;
 import ir.base.BranchInstruction;
 import ir.base.Opcode;
 

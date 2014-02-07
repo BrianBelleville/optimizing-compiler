@@ -1,7 +1,7 @@
-package ir.base;
+package ir;
 
 import support.Identifier;
-import ir.instructions.Phi;
+import ir.base.Instruction;
 
 // the difference between this and a normal BasicBlock is that this
 // one will search through all of the instructions that it dominates

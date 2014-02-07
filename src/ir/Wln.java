@@ -1,4 +1,4 @@
-package ir.instructions;
+package ir;
 
 import ir.base.NoArgInstruction;
 import ir.base.Opcode;

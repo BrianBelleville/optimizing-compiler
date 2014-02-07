@@ -1,14 +1,14 @@
-package ir.instructions;
+package ir;
 
 import ir.base.BinaryInstruction;
 import ir.base.Opcode;
 import ir.base.Value;
 import support.Identifier;
 
-public class Phi extends BinaryInstruction {
+public class Store extends BinaryInstruction {
     private Identifier variable;
-    public Phi(Identifier var, Value a1, Value a2) {
-        super(Opcode.phi, a1, a2);
+    public Store(Identifier var, Value a1, Value a2) {
+	super(Opcode.store, a1, a2);
 	variable = var;
     }
 

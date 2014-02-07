@@ -1,8 +1,9 @@
-package ir.base;
+package ir;
 
 import java.util.ArrayList;
 import support.Identifier;
-import ir.instructions.Phi;
+import ir.base.BranchInstruction;
+import ir.base.Instruction;
 // todo: have a table containing the most recent instance of a
 //       opcode, this can be used to perform CSE faster
 public class BasicBlock {

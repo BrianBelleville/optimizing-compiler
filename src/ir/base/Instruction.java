@@ -1,6 +1,8 @@
 package ir.base;
 
 
+import ir.BasicBlock;
+
 import java.util.ArrayList;
 
 public abstract class Instruction extends Value {
