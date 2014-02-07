@@ -162,20 +162,34 @@ public class Parser {
     // dead code.
     private Cmp relation() throws Exception
     {
-        expression();
-        if(scan.sym == Token.eq
-           || scan.sym == Token.neq
-           || scan.sym == Token.lt
-           || scan.sym == Token.lte
-           || scan.sym == Token.gt
-           || scan.sym == Token.gte) {
-            // relOp
-            scan.next();
-        } else {
+        Value left = expression();
+	Cmp.CmpType op;
+	// relOp
+	switch (scan.sym) {
+	case eq:
+	    op = Cmp.CmpType.eq;
+	    break;
+	case neq:
+	    op = Cmp.CmpType.neq;
+	    break;
+	case lt:
+	    op = Cmp.CmpType.lt;
+	    break;
+	case lte:
+	    op = Cmp.CmpType.lte;
+	    break;
+	case gt:
+	    op = Cmp.CmpType.gt;
+	    break;
+	case gte:
+	    op = Cmp.CmpType.gte;
+	    break;
+	default:
             throw new Exception("Relation: incorrect relation operator");
-        }
-        expression();
-        return null;
+	}
+	scan.next();
+	Value right = expression();
+        return new Cmp(op, left, right);
     }
 
     // shouldn't need to actually emit any code for the assignment,
