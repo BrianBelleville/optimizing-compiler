@@ -1,7 +1,7 @@
 package ir.instructions;
 
 import ir.BinaryInstruction;
-import ir.Instruction;
+import ir.Value;
 import ir.Opcode;
 
 public class Cmp extends BinaryInstruction {
@@ -14,7 +14,7 @@ public class Cmp extends BinaryInstruction {
 	gte
     }
     private CmpType cmpType;
-    public Cmp(CmpType type, Instruction a1, Instruction a2) {
+    public Cmp(CmpType type, Value a1, Value a2) {
         super(Opcode.cmp, a1, a2);
 	cmpType = type;
     }

@@ -4,25 +4,25 @@ import java.util.ArrayList;
 
 public class NaryInstruction extends Instruction {
 
-    private ArrayList<Instruction> arguments;
+    private ArrayList<Value> arguments;
 
-    public NaryInstruction(Opcode o, ArrayList<Instruction> args) {
+    public NaryInstruction(Opcode o, ArrayList<Value> args) {
         super( o);
-        arguments = new ArrayList<Instruction>();
-        for(Instruction i: args) {
-            Instruction a = i.getSubstitute();
+        arguments = new ArrayList<Value>();
+        for(Value v: args) {
+            Value a = v.getSubstitute();
             arguments.add(a);
             a.addUse(this);
         }
     }
 
     @Override
-    public ArrayList<Instruction> getArguments() {
+    public ArrayList<Value> getArguments() {
         return arguments;
     }
 
     @Override
-    public void replaceArgument(Instruction replace, Instruction i)
+    public void replaceArgument(Value replace, Value i)
         throws Exception {
         int index = arguments.indexOf(i);
         if(index == -1) {

@@ -8,12 +8,12 @@ public class NoArgInstruction extends Instruction {
     }
 
     @Override
-    public ArrayList<Instruction> getArguments() {
+    public ArrayList<Value> getArguments() {
 	return null;
     }
 
     @Override
-    public void replaceArgument(Instruction replace, Instruction i)
+    public void replaceArgument(Value replace, Value i)
 	throws Exception {
 	throw new Exception("Error, attempt to replace the argument of a psuedo instruction");
     }

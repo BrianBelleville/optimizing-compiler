@@ -1,12 +1,12 @@
 package ir.instructions;
 
 import ir.BinaryInstruction;
-import ir.Instruction;
+import ir.Value;
 import ir.Opcode;
 
 public class Div extends BinaryInstruction {
 
-    public Div(Instruction a1, Instruction a2) {
+    public Div(Value a1, Value a2) {
         super(Opcode.div, a1, a2);
     }
 

@@ -4,10 +4,10 @@ import java.util.ArrayList;
 
 public class BinaryInstruction extends Instruction {
 
-    private Instruction arg1;
-    private Instruction arg2;
+    private Value arg1;
+    private Value arg2;
 
-    public BinaryInstruction(Opcode o, Instruction a1, Instruction a2) {
+    public BinaryInstruction(Opcode o, Value a1, Value a2) {
         super(o);
         arg1 = a1.getSubstitute();
         arg2 = a2.getSubstitute();
@@ -16,15 +16,15 @@ public class BinaryInstruction extends Instruction {
     }
 
     @Override
-    public ArrayList<Instruction> getArguments() {
-        ArrayList<Instruction> r = new ArrayList<Instruction>();
+    public ArrayList<Value> getArguments() {
+        ArrayList<Value> r = new ArrayList<Value>();
         r.add(arg1);
         r.add(arg2);
         return r;
     }
 
     @Override
-    public void replaceArgument(Instruction replace, Instruction i)
+    public void replaceArgument(Value replace, Value i)
         throws Exception {
         boolean found = false;
         if(arg1 == replace) {

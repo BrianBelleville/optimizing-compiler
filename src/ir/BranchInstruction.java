@@ -15,7 +15,7 @@ public class BranchInstruction extends Instruction {
     }
 
     @Override
-    public void replaceArgument(Instruction replace, Instruction i)
+    public void replaceArgument(Value replace, Value i)
 	throws Exception {
 	throw new Exception("Error, attempt to replace arguments of a branch instruction");
     }
@@ -36,7 +36,7 @@ public class BranchInstruction extends Instruction {
     }
 
     @Override
-    public ArrayList<Instruction> getArguments() {
+    public ArrayList<Value> getArguments() {
 	return null;		// branch instructions real argument is the target
     }
 

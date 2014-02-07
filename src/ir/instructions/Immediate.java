@@ -1,13 +1,11 @@
 package ir.instructions;
 
-import ir.Opcode;
-import ir.NoArgInstruction;
+import ir.Value;
 
-public class Immediate extends NoArgInstruction {
+public class Immediate extends Value {
     private int value;
 
     public Immediate(int value){
-	super(Opcode.immediate);
 	this.value = value;
     }
 

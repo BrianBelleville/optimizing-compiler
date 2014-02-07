@@ -62,7 +62,7 @@ public class Parser {
     //
     // todo: implement designators. This will require having a scope
     // environment data structure.
-    private Instruction designator() throws Exception
+    private Value designator() throws Exception
     {
         Identifier id = ident();
         // todo: handle arrays, should emit the indexing, adda, and load all in here
@@ -79,9 +79,9 @@ public class Parser {
     }
 
     // basically return the instruction that will represent the entire value.
-    private Instruction factor() throws Exception
+    private Value factor() throws Exception
     {
-        Instruction rval;
+        Value rval;
         if(scan.sym == Token.openparen) {
             scan.next();
             rval = expression();
@@ -113,40 +113,44 @@ public class Parser {
     // don't even emit code at this point, for example if it is part
     // of a relation, it is possible you may not have to emit
     // anything.
-    private Instruction term() throws Exception
+    private Value term() throws Exception
     {
-        Instruction previous, rval;
+        Value previous, rval;
         previous = rval = factor();
         while(scan.sym == Token.mul || scan.sym == Token.div) {
             Token op = scan.sym;
             scan.next();
             previous = rval;
-            Instruction next = factor();
+            Value next = factor();
+	    Instruction ins;
             if(op == Token.mul) {
-                rval = new Mul(previous, next);
+                ins = new Mul(previous, next);
             } else {            // op == Token.div
-                rval = new Div(previous, next);
+                ins = new Div(previous, next);
             }
-            currentBB.addInstruction(rval);
+            currentBB.addInstruction(ins);
+	    rval = ins;
         }
         return rval;
     }
 
-    private Instruction expression() throws Exception
+    private Value expression() throws Exception
     {
-        Instruction previous, rval;
+        Value previous, rval;
         previous = rval = term();
         while(scan.sym == Token.add || scan.sym == Token.sub) {
             Token op = scan.sym;
             scan.next();
             previous = rval;
-            Instruction next = term();
+            Value next = term();
+	    Instruction ins;
             if(op == Token.add) {
-                rval = new Add(previous, next);
+                ins = new Add(previous, next);
             } else {            // op == Token.sub
-                rval = new Sub(previous, next);
+                ins = new Sub(previous, next);
             }
-            currentBB.addInstruction(rval);
+            currentBB.addInstruction(ins);
+	    rval = ins;
         }
         return rval;
     }
@@ -195,10 +199,10 @@ public class Parser {
     // this should result in a call instruction, if that is permited,
     // the exception being the built in methods which can just use the
     // single instructions in the IR
-    private Instruction funcCall_rest() throws Exception
+    private Value funcCall_rest() throws Exception
     {
         Identifier funcName = ident();
-        ArrayList<Instruction> args = new ArrayList<Instruction>();
+        ArrayList<Value> args = new ArrayList<Value>();
         do {
             if(scan.sym == Token.openparen) {
                 scan.next();

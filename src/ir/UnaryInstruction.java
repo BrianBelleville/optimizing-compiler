@@ -4,23 +4,23 @@ import java.util.ArrayList;
 
 public class UnaryInstruction extends Instruction {
 
-    private Instruction argument;
+    private Value argument;
 
-    public UnaryInstruction(Opcode o, Instruction arg) {
+    public UnaryInstruction(Opcode o, Value arg) {
         super( o);
         argument = arg.getSubstitute();
         argument.addUse(this);
     }
 
     @Override
-    public ArrayList<Instruction> getArguments() {
-        ArrayList<Instruction> r = new ArrayList<Instruction>();
+    public ArrayList<Value> getArguments() {
+        ArrayList<Value> r = new ArrayList<Value>();
         r.add(argument);
         return r;
     }
 
     @Override
-    public void replaceArgument(Instruction replace, Instruction i) throws Exception {
+    public void replaceArgument(Value replace, Value i) throws Exception {
         if(argument == replace) {
             argument = replace;
         } else {

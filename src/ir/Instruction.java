@@ -2,7 +2,7 @@ package ir;
 
 import java.util.ArrayList;
 
-public abstract class Instruction {
+public abstract class Instruction extends Value {
     private static int instructionNum = 0;
 
     public BasicBlock bb;
@@ -13,7 +13,7 @@ public abstract class Instruction {
     private Opcode opcode;
     public ArrayList<Instruction> uses;
 
-    abstract public ArrayList<Instruction> getArguments();
+    abstract public ArrayList<Value> getArguments();
 
     public Instruction(Opcode o) {
         number = getNextInstructionNum();
@@ -42,7 +42,7 @@ public abstract class Instruction {
     // get the instruction that should be used in place of this
     // instruction. If this instruction has been deleted, return the
     // instruction it has been deleted for
-    public final Instruction getSubstitute() {
+    public final Value getSubstitute() {
 	Instruction r = this;
         while(r.deleted != null) {
              r = r.deleted;
@@ -84,7 +84,7 @@ public abstract class Instruction {
         Instruction i = dominating;
         while(i != null) {
             if(this.isCommonSubexpression(i)) {
-                this.deleted = i.getSubstitute();
+                this.deleted = (Instruction)i.getSubstitute(); // should always be an instruction, not ideal
                 return;
             }
             i = i.dominating;
@@ -93,6 +93,6 @@ public abstract class Instruction {
 
     // replace the argument that is eq to replace with i, this will
     // need to be done if replace has been deleted for i.
-    abstract public void replaceArgument(Instruction replace, Instruction i) throws Exception;
+    abstract public void replaceArgument(Value replace, Value i) throws Exception;
 }
 
