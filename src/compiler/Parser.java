@@ -12,19 +12,18 @@ public class Parser {
     private BasicBlock currentJoinBlock;
     private IdentifierTable idTable;
     private Environment env;
+    private Scanner scan;
 
     public Parser(File f, IdentifierTable t) throws Exception {
         idTable = t;
         scan = new Scanner(f, idTable);
-	env = new Environment();
+        env = new Environment();
     }
 
     // parse should return a cfg, should basically be a list of functions
-    public void parse() throws Exception {
-        computation();
+    public ArrayList<Function> parse() throws Exception {
+        return computation();
     }
-
-    private Scanner scan;
 
     // this should return the instruction that cooresponds to the last
     // value of the identifier, this will be from the scope table
@@ -122,14 +121,14 @@ public class Parser {
             scan.next();
             previous = rval;
             Value next = factor();
-	    Instruction ins;
+            Instruction ins;
             if(op == Token.mul) {
                 ins = new Mul(previous, next);
             } else {            // op == Token.div
                 ins = new Div(previous, next);
             }
             currentBB.addInstruction(ins);
-	    rval = ins;
+            rval = ins;
         }
         return rval;
     }
@@ -143,14 +142,14 @@ public class Parser {
             scan.next();
             previous = rval;
             Value next = term();
-	    Instruction ins;
+            Instruction ins;
             if(op == Token.add) {
                 ins = new Add(previous, next);
             } else {            // op == Token.sub
                 ins = new Sub(previous, next);
             }
             currentBB.addInstruction(ins);
-	    rval = ins;
+            rval = ins;
         }
         return rval;
     }
@@ -425,7 +424,7 @@ public class Parser {
     {
         typeDecl();
         Identifier varName = ident();
-	// todo: use the default value to detect uninitialized variables
+        // todo: use the default value to detect uninitialized variables
         env.put(varName, new NamedValue("var_" + varName.getString()));
         while(scan.sym == Token.comma) {
             scan.next();
@@ -446,13 +445,17 @@ public class Parser {
     // and if will cause new basic blocks to be created.
     private Function funcDecl() throws Exception
     {
+	Function rval = new Function();
+	currentBB = new BasicBlock(null);
+	currentJoinBlock = null;
+	rval.entryPoint = currentBB;
 	env.enter();
-	if(!(scan.sym == Token.function || scan.sym == Token.procedure)) {
+        if(!(scan.sym == Token.function || scan.sym == Token.procedure)) {
             throw new Exception("Function declaration: incorrect keyword");
         }
-        // sym matches is function or procedure
+        // sym matches function or procedure
         scan.next();
-        ident();
+        rval.name = ident();
         if(scan.sym != Token.semicolon) {
             formalParam();
         }
@@ -465,8 +468,8 @@ public class Parser {
             if(scan.sym == Token.semicolon) {
                 scan.next();
                 env.exit();
-		return null;
-	    } else {
+                return rval;
+            } else {
                 throw new Exception("Function declaration: no ';' after function body");
             }
         } else {
@@ -480,11 +483,11 @@ public class Parser {
             scan.next();
             if(scan.sym != Token.closeparen) {
                 Identifier i = ident();
-		env.put(i, new NamedValue("arg_" + i.getString()));
+                env.put(i, new NamedValue("arg_" + i.getString()));
                 while(scan.sym == Token.comma) {
                     scan.next();
                     i = ident();
-		    env.put(i, new NamedValue("arg_" + i.getString()));
+                    env.put(i, new NamedValue("arg_" + i.getString()));
                 }
             }
             if(scan.sym == Token.closeparen) {
@@ -517,8 +520,9 @@ public class Parser {
         }
     }
 
-    private void computation() throws Exception
+    private ArrayList<Function> computation() throws Exception
     {
+	ArrayList<Function> rval = new ArrayList<Function>();
         env.enter();
         if(scan.sym == Token.main) {
             scan.next();
@@ -531,7 +535,7 @@ public class Parser {
                 varDecl();
             }
             while(scan.sym == Token.function || scan.sym == Token.procedure) {
-                funcDecl();
+                rval.add(funcDecl());
             }
             // at this point, we can examine our environment for which
             // globals have been used in other functions, and if used
@@ -539,13 +543,20 @@ public class Parser {
             // SSA, and instead can treat them as single cell arrays,
             // I guess.
             if(scan.sym == Token.opencurly) {
-                scan.next();
+		currentBB = new BasicBlock(null);
+		currentJoinBlock = null;
+		Function main = new Function();
+		main.name = idTable.addToTable("__MAIN__");
+		main.entryPoint = currentBB;
+		rval.add(main);
+		scan.next();
                 statSequence();
                 if(scan.sym == Token.closecurly) {
                     scan.next();
                     if(scan.sym == Token.period) {
                         scan.next();
                         env.exit();
+			return rval;
                     } else {
                         throw new Exception("Computation: no '.' ending program");
                     }

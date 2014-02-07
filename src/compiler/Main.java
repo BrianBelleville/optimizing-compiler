@@ -2,6 +2,8 @@ package compiler;
 
 import java.io.File;
 import support.IdentifierTable;
+import java.util.ArrayList;
+import ir.Function;
 
 public class Main {
 
@@ -10,7 +12,7 @@ public class Main {
             File f = new File(args[0]);
 	    IdentifierTable t = new IdentifierTable();
             Parser parse = new Parser(f, t);
-            parse.parse();
+            ArrayList<Function> program = parse.parse();
             System.out.println("Good parse?");
         } catch (Exception e) {
             System.out.println(e.getMessage());
