@@ -16,6 +16,7 @@ public class Parser {
     public Parser(File f, IdentifierTable t) throws Exception {
         idTable = t;
         scan = new Scanner(f, idTable);
+	env = new Environment();
     }
 
     // parse should return a cfg, should basically be a list of functions
