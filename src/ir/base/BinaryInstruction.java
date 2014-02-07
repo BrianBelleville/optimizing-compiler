@@ -28,11 +28,11 @@ public class BinaryInstruction extends Instruction {
     public void replaceArgument(Value replace, Value i)
         throws Exception {
         boolean found = false;
-        if(arg1 == replace) {
+        if(arg1.equals(replace)) {
             arg1 = i;
             found = true;
         }
-        if(arg2 == replace) {
+        if(arg2.equals(replace)) {
             arg2 = i;
             found = true;
         }

@@ -22,7 +22,7 @@ public class UnaryInstruction extends Instruction {
 
     @Override
     public void replaceArgument(Value replace, Value i) throws Exception {
-        if(argument == replace) {
+        if(argument.equals(replace)) {
             argument = replace;
         } else {
             throw new Exception("error replacing argument, argument not present in instruction");
