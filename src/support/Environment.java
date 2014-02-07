@@ -7,6 +7,10 @@ import ir.base.Value;
 
 public class Environment {
     private ArrayList< HashMap<Identifier, Value>> env;
+    public Environment() {
+	env = new ArrayList< HashMap<Identifier, Value>>();
+    }
+
     public void enter() {
 	env.add(new HashMap<Identifier, Value>());
     }
