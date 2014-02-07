@@ -14,69 +14,70 @@ public class BasicBlock {
     private int number;
 
     private int getNextBlockNum() {
-	blockNum += 1;
-	return blockNum;
+        blockNum += 1;
+        return blockNum;
     }
 
     public BasicBlock(BasicBlock dominator) {
-	this.dominator = dominator;
-	number = getNextBlockNum();
+        this.dominator = dominator;
+        number = getNextBlockNum();
+        instructions = new ArrayList<Instruction>();
     }
 
     public BasicBlock getFallThrough() {
         return fallThrough;
     }
     public void setFallThrough(BasicBlock b) {
-	fallThrough = b;
+        fallThrough = b;
     }
-    
+
     public BasicBlock getBranchTarget() {
-	if(instructions.isEmpty()) {
-	    return null;
-	}
-	Instruction i = instructions.get(instructions.size() - 1);
-	if(i instanceof BranchInstruction) {
-	    return ((BranchInstruction)i).getTarget();
-	}
-	return null;
+        if(instructions.isEmpty()) {
+            return null;
+        }
+        Instruction i = instructions.get(instructions.size() - 1);
+        if(i instanceof BranchInstruction) {
+            return ((BranchInstruction)i).getTarget();
+        }
+        return null;
     }
     public void addInstruction(Instruction i) {
         instructions.add(i);
-	i.setContainingBB(this);
+        i.setContainingBB(this);
         i.performCSE();
     }
 
     public void addPhi(Identifier var, Instruction oldVal, Instruction newVal)
-	throws Exception
+        throws Exception
     {
-	addPhiInternal(var, oldVal, newVal);
+        addPhiInternal(var, oldVal, newVal);
     }
 
     // if a new Phi instruction was added, return it, else return null
     protected final Phi addPhiInternal(Identifier var, Instruction oldVal, Instruction newVal)
-	throws Exception
+        throws Exception
     {
-	for(Instruction i : instructions) {
-	    if(i instanceof Phi) {
-		Phi p = (Phi)i;
-		if(p.getVariable().equals(var)) {
-		    // update the phi since there is already one for this variable
-		    p.replaceArgument(oldVal, newVal);
-		    // we are now done, didn't add a new Phi
-		    return null;
-		}
-	    } else {
-		// all phis must occur at the begining of the basic
-		// block, if we get to an instruction that is not a
-		// phi, we can stop our search
-		break;
-	    }
-	}
-	// if we are here, we need to add a new phi.
-	Phi p = new Phi(var, oldVal, newVal);
-	instructions.add(0, p);
-	p.setContainingBB(this);
-	// return the new Phi
-	return p;
+        for(Instruction i : instructions) {
+            if(i instanceof Phi) {
+                Phi p = (Phi)i;
+                if(p.getVariable().equals(var)) {
+                    // update the phi since there is already one for this variable
+                    p.replaceArgument(oldVal, newVal);
+                    // we are now done, didn't add a new Phi
+                    return null;
+                }
+            } else {
+                // all phis must occur at the begining of the basic
+                // block, if we get to an instruction that is not a
+                // phi, we can stop our search
+                break;
+            }
+        }
+        // if we are here, we need to add a new phi.
+        Phi p = new Phi(var, oldVal, newVal);
+        instructions.add(0, p);
+        p.setContainingBB(this);
+        // return the new Phi
+        return p;
     }
 }
