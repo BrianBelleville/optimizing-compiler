@@ -36,8 +36,7 @@ public class Parser {
             scan.next();
             return rval;
         } else {
-            syntax_error("Identifier doesn't match regexp");
-            return null;
+            throw new Exception("Identifier doesn't match regexp");
         }
     }
 
@@ -52,8 +51,7 @@ public class Parser {
             scan.next();
             return rval;
         } else {
-            syntax_error("Number doesn't match regexp");
-            return null;
+            throw new Exception("Number doesn't match regexp");
         }
     }
 
@@ -74,7 +72,7 @@ public class Parser {
             if(scan.sym == Token.closesqare) {
                 scan.next();
             } else {
-                syntax_error("Designator: no closing ']'");
+                throw new Exception("Designator: no closing ']'");
             }
         }
         return env.get(id);
@@ -90,7 +88,7 @@ public class Parser {
             if(scan.sym == Token.closeparen) {
                 scan.next();
             } else {
-                syntax_error("Factor: no closing ')'");
+                throw new Exception("Factor: no closing ')'");
             }
         } else if (scan.sym == Token.call) {
             scan.next();
@@ -175,7 +173,7 @@ public class Parser {
             // relOp
             scan.next();
         } else {
-            syntax_error("Relation: incorrect relation operator");
+            throw new Exception("Relation: incorrect relation operator");
         }
         expression();
         return null;
@@ -193,7 +191,7 @@ public class Parser {
         if(scan.sym == Token.assign) {
             scan.next();
         } else {
-            syntax_error("Assignment: incorrect assignment operator");
+            throw new Exception("Assignment: incorrect assignment operator");
         }
         expression();
     }
@@ -221,7 +219,7 @@ public class Parser {
                     scan.next();
                     break;
                 }
-                syntax_error("funcCall: no closing ')'");
+                throw new Exception("funcCall: no closing ')'");
             }
         } while (false);
         // todo: check for builtin functions
@@ -253,7 +251,7 @@ public class Parser {
 
         Cmp comp = relation();
         if(scan.sym != Token.then) {
-            syntax_error("Misformed if statement, no 'then' keyword");
+            throw new Exception("Misformed if statement, no 'then' keyword");
         }
         // sym == "then"
         scan.next();
@@ -292,7 +290,7 @@ public class Parser {
             currentBB = nextBB;
             currentJoinBlock = oldJoin; // restore the join block
         } else {
-            syntax_error("Misformed if statement, no 'fi' keyword");
+            throw new Exception("Misformed if statement, no 'fi' keyword");
         }
     }
 
@@ -351,10 +349,10 @@ public class Parser {
                 currentBB = nextBB;
                 currentJoinBlock = oldJoin; // todo: still need to move phis out to the old join block
             } else {
-                syntax_error("While statement: no 'od'");
+                throw new Exception("While statement: no 'od'");
             }
         } else {
-            syntax_error("While statement: no 'do'");
+            throw new Exception("While statement: no 'do'");
         }
     }
 
@@ -385,7 +383,7 @@ public class Parser {
             scan.next();
             returnStatement_rest();
         } else {
-            syntax_error("Statement: unrecognized statement type");
+            throw new Exception("Statement: unrecognized statement type");
         }
     }
 
@@ -413,12 +411,12 @@ public class Parser {
                     if(scan.sym == Token.closesqare) {
                         scan.next();
                     } else {
-                        syntax_error("Type declaration: no closing ']'");
+                        throw new Exception("Type declaration: no closing ']'");
                     }
                 }
             } else {
                 // must be at least one boundary description
-                syntax_error("Type declaration: there must be at least one boundary description for an array");
+                throw new Exception("Type declaration: there must be at least one boundary description for an array");
             }
         }
     }
@@ -450,7 +448,7 @@ public class Parser {
     {
 	env.enter();
 	if(!(scan.sym == Token.function || scan.sym == Token.procedure)) {
-            syntax_error("Function declaration: incorrect keyword");
+            throw new Exception("Function declaration: incorrect keyword");
         }
         // sym matches is function or procedure
         scan.next();
@@ -469,12 +467,11 @@ public class Parser {
                 env.exit();
 		return null;
 	    } else {
-                syntax_error("Function declaration: no ';' after function body");
+                throw new Exception("Function declaration: no ';' after function body");
             }
         } else {
-            syntax_error("Function declaration: no ';' after formal parameters");
+            throw new Exception("Function declaration: no ';' after formal parameters");
         }
-        return null;            // never should be reached since syntax_error will always throw
     }
 
     private void formalParam() throws Exception
@@ -493,10 +490,10 @@ public class Parser {
             if(scan.sym == Token.closeparen) {
                 scan.next();
             } else {
-                syntax_error("Formal parameters: no closing ')'");
+                throw new Exception("Formal parameters: no closing ')'");
             }
         } else {
-            syntax_error("Formal parameters: no opening '('");
+            throw new Exception("Formal parameters: no opening '('");
         }
     }
 
@@ -513,10 +510,10 @@ public class Parser {
             if(scan.sym == Token.closecurly) {
                 scan.next();
             } else {
-                syntax_error("Funcion body: no closing '}'");
+                throw new Exception("Funcion body: no closing '}'");
             }
         } else {
-            syntax_error("Function body: no opening '{'");
+            throw new Exception("Function body: no opening '{'");
         }
     }
 
@@ -550,21 +547,16 @@ public class Parser {
                         scan.next();
                         env.exit();
                     } else {
-                        syntax_error("Computation: no '.' ending program");
+                        throw new Exception("Computation: no '.' ending program");
                     }
                 } else {
-                    syntax_error("Computation: no '}' ending the statSequence");
+                    throw new Exception("Computation: no '}' ending the statSequence");
                 }
             } else {
-                syntax_error("Computation: no '{' starting the statSequence");
+                throw new Exception("Computation: no '{' starting the statSequence");
             }
         } else {
-            syntax_error("Computation: no 'main'");
+            throw new Exception("Computation: no 'main'");
         }
-    }
-
-    private void syntax_error(String msg) throws Exception
-    {
-        throw new Exception(msg);
     }
 }
