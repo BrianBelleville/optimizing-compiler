@@ -1,7 +1,7 @@
 package ir.instructions;
 
-import ir.Opcode;
-import ir.NoArgInstruction;
+import ir.base.NoArgInstruction;
+import ir.base.Opcode;
 
 public class End extends NoArgInstruction {
 

@@ -1,6 +1,6 @@
 package ir.instructions;
 
-import ir.Value;
+import ir.base.Value;
 
 public class Immediate extends Value {
     private int value;

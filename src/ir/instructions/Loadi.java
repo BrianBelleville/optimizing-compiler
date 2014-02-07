@@ -1,7 +1,7 @@
 package ir.instructions;
 
-import ir.Opcode;
-import ir.UnaryInstruction;
+import ir.base.Opcode;
+import ir.base.UnaryInstruction;
 
 public class Loadi extends UnaryInstruction {
 

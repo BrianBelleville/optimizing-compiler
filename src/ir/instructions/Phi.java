@@ -1,8 +1,8 @@
 package ir.instructions;
 
-import ir.BinaryInstruction;
-import ir.Value;
-import ir.Opcode;
+import ir.base.BinaryInstruction;
+import ir.base.Opcode;
+import ir.base.Value;
 import support.Identifier;
 
 public class Phi extends BinaryInstruction {

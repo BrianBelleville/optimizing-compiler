@@ -1,9 +1,10 @@
 package ir.instructions;
 
 import java.util.ArrayList;
-import ir.NaryInstruction;
-import ir.Opcode;
-import ir.Value;
+
+import ir.base.NaryInstruction;
+import ir.base.Opcode;
+import ir.base.Value;
 import support.Identifier;
 
 public class Call extends NaryInstruction {

@@ -1,8 +1,8 @@
 package ir.instructions;
 
-import ir.Value;
-import ir.Opcode;
-import ir.UnaryInstruction;
+import ir.base.Opcode;
+import ir.base.UnaryInstruction;
+import ir.base.Value;
 
 public class Ret extends UnaryInstruction {
 

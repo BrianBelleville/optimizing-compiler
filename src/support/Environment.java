@@ -2,7 +2,8 @@ package support;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import ir.Value;
+
+import ir.base.Value;
 
 public class Environment {
     private ArrayList< HashMap<Identifier, Value>> env;

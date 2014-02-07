@@ -2,7 +2,7 @@ package compiler;
 
 import java.io.File;
 import java.util.ArrayList;
-import ir.*;
+import ir.base.*;
 import ir.instructions.*;
 import support.*;
 

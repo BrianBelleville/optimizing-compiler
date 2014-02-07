@@ -1,8 +1,8 @@
 package ir.instructions;
 
-import ir.BasicBlock;
-import ir.BranchInstruction;
-import ir.Opcode;
+import ir.base.BasicBlock;
+import ir.base.BranchInstruction;
+import ir.base.Opcode;
 
 public class Blt extends BranchInstruction {
 

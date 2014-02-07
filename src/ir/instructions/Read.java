@@ -1,7 +1,7 @@
 package ir.instructions;
 
-import ir.NoArgInstruction;
-import ir.Opcode;
+import ir.base.NoArgInstruction;
+import ir.base.Opcode;
 
 public class Read extends NoArgInstruction {
 

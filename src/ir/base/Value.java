@@ -1,4 +1,5 @@
-package ir;
+package ir.base;
+
 
 // possibly use this as a more lightweight interface for things that
 // can act as values, such as immediate numbers, rather than treating
