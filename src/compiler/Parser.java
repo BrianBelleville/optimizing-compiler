@@ -10,10 +10,11 @@ public class Parser {
     private BasicBlock currentBB;
     private BasicBlock currentJoinBlock;
     private IdentifierTable idTable;
+    private Environment env;
 
     public Parser(File f, IdentifierTable t) throws Exception {
         idTable = t;
-	scan = new Scanner(f, idTable);
+        scan = new Scanner(f, idTable);
     }
 
     // parse should return a cfg, should basically be a list of functions
@@ -63,7 +64,8 @@ public class Parser {
     // environment data structure.
     private Instruction designator() throws Exception
     {
-        ident();
+        Identifier id = ident();
+        // todo: handle arrays, should emit the indexing, adda, and load all in here
         while(scan.sym == Token.opensquare) {
             scan.next();
             expression();
@@ -73,7 +75,7 @@ public class Parser {
                 syntax_error("Designator: no closing ']'");
             }
         }
-        return null;
+        return env.get(id);
     }
 
     // basically return the instruction that will represent the entire value.
@@ -99,7 +101,7 @@ public class Parser {
         return rval;
     }
 
-    // todo: inside of expression and term do deleyed code generation
+    // todo: inside of expression and term do delayed code generation
     // as presented in lecture to do partial evaluation of constant
     // expressions. Can be simplified from what was discussed in
     // lecture since we won't be worried about registers at this
@@ -252,8 +254,12 @@ public class Parser {
 
         currentBB = ifBB;
         currentJoinBlock = nextBB;
-
+        // phi's will be generated in the join block, exit the
+        // environment so that assignments along this path will not
+        // conflict with those in the next BB
+        env.enter();
         statSequence();
+        env.exit();
         if(scan.sym == Token.else_t) {
             scan.next();
             currentBB = elseBB;
@@ -263,7 +269,10 @@ public class Parser {
             oldCurrent.addInstruction(makeProperBranch(comp, elseBB));
             // also add unconditional branch over the else block
             ifBB.addInstruction(new Bra(nextBB));
+
+            env.enter();
             statSequence();
+            env.exit();
         } else {
             // otherwise, no else, so the next block will be the target of the branch
             oldCurrent.addInstruction(makeProperBranch(comp, nextBB));
@@ -328,11 +337,13 @@ public class Parser {
             scan.next();
 
             currentBB = loopBody;
+            env.enter();
             statSequence();
+            env.exit();
             if(scan.sym == Token.od) {
                 scan.next();
                 currentBB = nextBB;
-                currentJoinBlock = oldJoin; // still need to move phis out to the old join block
+                currentJoinBlock = oldJoin; // todo: still need to move phis out to the old join block
             } else {
                 syntax_error("While statement: no 'od'");
             }
@@ -381,6 +392,8 @@ public class Parser {
         }
     }
 
+    // todo: somehow we need to provide type information to the
+    // environment
     private void typeDecl() throws Exception
     {
         if(scan.sym == Token.var) {
@@ -407,10 +420,14 @@ public class Parser {
     private void varDecl() throws Exception
     {
         typeDecl();
-        ident();
+        Identifier varName = ident();
+        env.put(varName, null); // todo: have some sort of default
+                                // value, or some value to indicate
+                                // uninitialized
         while(scan.sym == Token.comma) {
             scan.next();
-            ident();
+            varName = ident();
+            env.put(varName, null);
         }
         // look for error
         if(scan.sym == Token.semicolon)
@@ -426,7 +443,8 @@ public class Parser {
     // and if will cause new basic blocks to be created.
     private Function funcDecl() throws Exception
     {
-        if(!(scan.sym == Token.function || scan.sym == Token.procedure)) {
+	env.enter();
+	if(!(scan.sym == Token.function || scan.sym == Token.procedure)) {
             syntax_error("Function declaration: incorrect keyword");
         }
         // sym matches is function or procedure
@@ -443,8 +461,9 @@ public class Parser {
             funcBody();
             if(scan.sym == Token.semicolon) {
                 scan.next();
-                return null;
-            } else {
+                env.exit();
+		return null;
+	    } else {
                 syntax_error("Function declaration: no ';' after function body");
             }
         } else {
@@ -458,10 +477,12 @@ public class Parser {
         if(scan.sym == Token.openparen) {
             scan.next();
             if(scan.sym != Token.closeparen) {
-                ident();
+                Identifier i = ident();
+		env.put(i, null); // todo: have some standin value for function arguments
                 while(scan.sym == Token.comma) {
                     scan.next();
-                    ident();
+                    i = ident();
+		    env.put(i, null);
                 }
             }
             if(scan.sym == Token.closeparen) {
@@ -496,6 +517,7 @@ public class Parser {
 
     private void computation() throws Exception
     {
+        env.enter();
         if(scan.sym == Token.main) {
             scan.next();
             // variable declarations shouldn't actually cause any SSA
@@ -521,6 +543,7 @@ public class Parser {
                     scan.next();
                     if(scan.sym == Token.period) {
                         scan.next();
+                        env.exit();
                     } else {
                         syntax_error("Computation: no '.' ending program");
                     }
