@@ -21,6 +21,7 @@ public abstract class Instruction extends Value {
     public Instruction(Opcode o) {
         number = getNextInstructionNum();
         opcode = o;
+        uses = new ArrayList<Instruction>();
     }
     
     // this is obviously horribly not thread safe, but doesn't matter
