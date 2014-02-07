@@ -426,13 +426,12 @@ public class Parser {
     {
         typeDecl();
         Identifier varName = ident();
-        env.put(varName, null); // todo: have some sort of default
-                                // value, or some value to indicate
-                                // uninitialized
+	// todo: use the default value to detect uninitialized variables
+        env.put(varName, new NamedValue("var_" + varName.getString()));
         while(scan.sym == Token.comma) {
             scan.next();
             varName = ident();
-            env.put(varName, null);
+            env.put(varName, new NamedValue("var_" + varName.getString()));
         }
         // look for error
         if(scan.sym == Token.semicolon)
@@ -483,11 +482,11 @@ public class Parser {
             scan.next();
             if(scan.sym != Token.closeparen) {
                 Identifier i = ident();
-		env.put(i, null); // todo: have some standin value for function arguments
+		env.put(i, new NamedValue("arg_" + i.getString()));
                 while(scan.sym == Token.comma) {
                     scan.next();
                     i = ident();
-		    env.put(i, null);
+		    env.put(i, new NamedValue("arg_" + i.getString()));
                 }
             }
             if(scan.sym == Token.closeparen) {
