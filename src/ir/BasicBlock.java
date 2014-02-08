@@ -51,6 +51,9 @@ public class BasicBlock {
 		w.write(getNodeName() + " -> " + branch.getNodeName() + ";\n");
 		branch.printBlock(w);
 	    }
+	    if(dominator != null) {
+		w.write(getNodeName() + " -> " + dominator.getNodeName() + "[color=\"green\"];\n");
+	    }
 	}
     }
 
