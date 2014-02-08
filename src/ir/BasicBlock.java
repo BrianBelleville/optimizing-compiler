@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import support.Identifier;
 import ir.base.BranchInstruction;
 import ir.base.Instruction;
+
+import java.io.IOException;
+import java.io.Writer;
+
 // todo: have a table containing the most recent instance of a
 //       opcode, this can be used to perform CSE faster
 public class BasicBlock {
@@ -12,6 +16,7 @@ public class BasicBlock {
     private BasicBlock fallThrough;
     private static int blockNum = 0;
     private int number;
+    private boolean printed = false;
 
     private int getNextBlockNum() {
         blockNum += 1;
@@ -22,6 +27,31 @@ public class BasicBlock {
         this.dominator = dominator;
         number = getNextBlockNum();
         instructions = new ArrayList<Instruction>();
+    }
+
+    public String getNodeName() {
+	return "b_" + Integer.toString(number);
+    }
+
+    public void printBlock(Writer w) throws IOException {
+	if(!printed) {
+	    printed = true;
+	    w.write(getNodeName() + " [label=\"" + getNodeName() + "\\l");
+	    for(Instruction i : instructions) {
+		i.printInstruction(w);
+		w.write("\\l");
+	    }
+	    w.write("\"]\n");
+	    if(fallThrough != null) {
+		w.write(getNodeName() + " -> " + fallThrough.getNodeName() + ";\n");
+		fallThrough.printBlock(w);
+	    }
+	    BasicBlock branch = getBranchTarget();
+	    if(branch != null) {
+		w.write(getNodeName() + " -> " + branch.getNodeName() + ";\n");
+		branch.printBlock(w);
+	    }
+	}
     }
 
     public BasicBlock getFallThrough() {

@@ -1,5 +1,7 @@
 package ir.base;
 
+import java.io.IOException;
+import java.io.Writer;
 
 // possibly use this as a more lightweight interface for things that
 // can act as values, such as immediate numbers, rather than treating
@@ -10,4 +12,6 @@ public abstract class Value {
     public Value getSubstitute() {
 	return this;		// default, no substitution
     }
+
+    abstract public void printAsArg(Writer w) throws IOException;
 }

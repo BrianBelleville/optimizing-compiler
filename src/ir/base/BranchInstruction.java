@@ -1,8 +1,8 @@
 package ir.base;
 
-
 import ir.BasicBlock;
-
+import java.io.Writer;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class BranchInstruction extends Instruction {
@@ -15,6 +15,12 @@ public class BranchInstruction extends Instruction {
 
     public BasicBlock getTarget() {
 	return target;
+    }
+
+    @Override
+    public void printInstruction(Writer w) throws IOException {
+	super.printInstruction(w);
+	w.write(" " + getTarget().getNodeName());
     }
 
     @Override
@@ -40,7 +46,7 @@ public class BranchInstruction extends Instruction {
 
     @Override
     public ArrayList<Value> getArguments() {
-	return null;		// branch instructions real argument is the target
+	return new ArrayList<Value>();		// branch instructions real argument is the target
     }
 
 }

@@ -3,6 +3,8 @@ package ir.base;
 
 import ir.BasicBlock;
 
+import java.io.IOException;
+import java.io.Writer;
 import java.util.ArrayList;
 
 public abstract class Instruction extends Value {
@@ -22,6 +24,19 @@ public abstract class Instruction extends Value {
         number = getNextInstructionNum();
         opcode = o;
         uses = new ArrayList<Instruction>();
+    }
+
+    @Override
+    public void printAsArg(Writer w) throws IOException {
+	w.write(" (" + Integer.toString(number) + ")");
+    }
+
+    public void printInstruction(Writer w) throws IOException {
+	w.write(Integer.toString(number) + ": " + opcode.toString());
+	ArrayList<Value> args = getArguments();
+	for(Value v : args) {
+	    v.printAsArg(w);
+	}
     }
     
     // this is obviously horribly not thread safe, but doesn't matter

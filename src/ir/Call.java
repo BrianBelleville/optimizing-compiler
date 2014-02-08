@@ -1,7 +1,8 @@
 package ir;
 
 import java.util.ArrayList;
-
+import java.io.Writer;
+import java.io.IOException;
 import ir.base.NaryInstruction;
 import ir.base.Opcode;
 import ir.base.Value;
@@ -13,4 +14,15 @@ public class Call extends NaryInstruction {
         super(Opcode.call, args);
 	functionName = function;
     }
+
+    @Override
+    public void printInstruction(Writer w) throws IOException {
+	w.write(Integer.toString(getNumber()) + ": " + getOpcode().toString());
+	w.write(" " + functionName.getString());
+	ArrayList<Value> args = getArguments();
+	for(Value v : args) {
+	    v.printAsArg(w);
+	}
+    }
+
 }

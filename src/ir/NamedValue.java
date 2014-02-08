@@ -2,6 +2,9 @@ package ir;
 
 import ir.base.Value;
 
+import java.io.IOException;
+import java.io.Writer;
+
 public class NamedValue extends Value {
     private String name;
     public NamedValue(String name) {
@@ -21,4 +24,9 @@ public class NamedValue extends Value {
     public int hashCode() {
 	return name.hashCode();
     }
+
+    @Override
+    public void printAsArg(Writer w) throws IOException {
+	w.write(" " + name);
+    }	
 }
