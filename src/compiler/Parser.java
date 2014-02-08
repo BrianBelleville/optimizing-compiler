@@ -349,7 +349,9 @@ public class Parser {
         BasicBlock loopHeader = new LoopHeader(oldCurrent);
         BasicBlock loopBody = new BasicBlock(loopHeader);
         BasicBlock nextBB = new BasicBlock(loopHeader);
-	// the header will fall through to the loop body
+	// the previous basic block will fall through to the header
+	oldCurrent.setFallThrough(loopHeader);
+	// and the header will fall through to the loop body
 	loopHeader.setFallThrough(loopBody);
         currentBB = loopHeader;
         currentJoinBlock = loopHeader; // relations can't perform assignment, so it's all good
