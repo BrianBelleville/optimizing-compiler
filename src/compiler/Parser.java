@@ -189,7 +189,9 @@ public class Parser {
 	}
 	scan.next();
 	Value right = expression();
-        return new Cmp(op, left, right);
+	Cmp rval =  new Cmp(op, left, right);
+	currentBB.addInstruction(rval);
+	return rval;
     }
 
     // shouldn't need to actually emit any code for the assignment,
@@ -347,16 +349,22 @@ public class Parser {
         BasicBlock loopHeader = new LoopHeader(oldCurrent);
         BasicBlock loopBody = new BasicBlock(loopHeader);
         BasicBlock nextBB = new BasicBlock(loopHeader);
+	// the header will fall through to the loop body
+	loopHeader.setFallThrough(loopBody);
         currentBB = loopHeader;
         currentJoinBlock = loopHeader; // relations can't perform assignment, so it's all good
-        relation();
+        Cmp comp = relation();
+	// add the branch instruction
+	loopHeader.addInstruction(makeProperBranch(comp, nextBB));
         if(scan.sym == Token.do_t) {
             scan.next();
-
             currentBB = loopBody;
             env.enter();
             statSequence();
+	    // add branch to loop header
+	    currentBB.addInstruction(new Bra(loopHeader));
             env.exit();
+	    
             if(scan.sym == Token.od) {
                 scan.next();
                 currentBB = nextBB;
