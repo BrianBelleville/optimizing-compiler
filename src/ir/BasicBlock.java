@@ -1,6 +1,8 @@
 package ir;
 
 import java.util.ArrayList;
+
+import support.Environment;
 import support.Identifier;
 import ir.base.BranchInstruction;
 import ir.base.Instruction;
@@ -86,10 +88,29 @@ public class BasicBlock {
         addPhiInternal(var, oldVal, newVal);
     }
 
+    public void propagatePhis(Environment env, BasicBlock joinBlock) throws Exception {
+	for(Instruction i : instructions) {
+	    if(i instanceof Phi) {
+		Phi phi = (Phi)i;
+		Identifier variable = phi.getVariable();
+		Value oldVal = env.get(variable);
+		if(joinBlock != null) {
+		    joinBlock.addPhi(variable, oldVal, phi);
+		}
+		env.put(variable, phi);
+	    } else {
+		// all phis will be at the begining, first non-phi
+		// instruction we can break out of the loop
+		break;
+	    }
+	}
+    }
+
     // if a new Phi instruction was added, return it, else return null
     protected final Phi addPhiInternal(Identifier var, Value oldVal, Value newVal)
         throws Exception
     {
+	// search for phi instruction for this variable
         for(Instruction i : instructions) {
             if(i instanceof Phi) {
                 Phi p = (Phi)i;

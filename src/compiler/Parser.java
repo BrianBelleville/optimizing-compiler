@@ -322,10 +322,10 @@ public class Parser {
         }
         if(scan.sym == Token.fi) {
             scan.next();
-            // todo: still need to push the phis from the join block out to the
-            // enclosing join block
-            currentBB = nextBB;
+	    currentBB = nextBB;
             currentJoinBlock = oldJoin; // restore the join block
+	    // propogate the phis from this join block to the enclosing join block
+	    currentBB.propagatePhis(env, currentJoinBlock);
         } else {
             throw new Exception("Misformed if statement, no 'fi' keyword");
         }
@@ -392,7 +392,10 @@ public class Parser {
             if(scan.sym == Token.od) {
                 scan.next();
                 currentBB = nextBB;
-                currentJoinBlock = oldJoin; // todo: still need to move phis out to the old join block
+                currentJoinBlock = oldJoin;
+		// move phis in the loop header out to the old join
+		// block
+		loopHeader.propagatePhis(env, currentJoinBlock);
             } else {
                 throw new Exception("While statement: no 'od'");
             }
