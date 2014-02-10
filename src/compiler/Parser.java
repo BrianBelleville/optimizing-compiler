@@ -273,9 +273,6 @@ public class Parser {
     // node/ next basic block following the if statement.
     private void ifStatement_rest() throws Exception
     {
-        // won't know this until we see if there is an else branch
-        BasicBlock branchTarget;
-
         // make basic blocks preemptivly
         BasicBlock oldCurrent = currentBB;
         BasicBlock oldJoin = currentJoinBlock;
