@@ -23,23 +23,27 @@ public class LoopHeader extends BasicBlock {
             // now perform depth first search through all instructions
             // that are dominated by this block,
             // only need to do this search if the phi was newly added
-            depthFirstReplace(this, oldVal, newVal);
+            depthFirstReplace(this, p, oldVal);
         }
     }
 
-    private static void depthFirstReplace(BasicBlock b, Value oldVal, Value newVal)
+    private static void depthFirstReplace(BasicBlock b, Phi phiInst, Value oldVal)
         throws Exception
     {
         for(Instruction i : b.instructions) {
-            i.replaceArgument(oldVal, newVal);
+	    // don't want to replace the actual instruction that was
+	    // just created
+	    if(i != phiInst) {
+		i.replaceArgument(oldVal, phiInst);
+	    }
         }
         BasicBlock ch1 = b.getFallThrough();
         BasicBlock ch2 = b.getBranchTarget();
         if(ch1 != null) {
-            depthFirstReplace(ch1, oldVal, newVal);
+            depthFirstReplace(ch1, phiInst, oldVal);
         }
         if(ch2 != null) {
-            depthFirstReplace(ch2, oldVal, newVal);
+            depthFirstReplace(ch2, phiInst, oldVal);
         }
     }
 }
