@@ -115,8 +115,10 @@ public class BasicBlock {
             if(i instanceof Phi) {
                 Phi p = (Phi)i;
                 if(p.getVariable().equals(var)) {
-                    // update the phi since there is already one for this variable
-                    p.replaceArgument(oldVal, newVal);
+                    // update the phi since there is already one for
+                    // this variable, throw if the old value isn't
+                    // part of the phi
+                    p.replaceArgument(oldVal, newVal, true);
                     // we are now done, didn't add a new Phi
                     return null;
                 }
