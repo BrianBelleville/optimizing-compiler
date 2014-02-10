@@ -61,20 +61,41 @@ public class Parser {
     //
     // todo: implement designators. This will require having a scope
     // environment data structure.
-    private Value designator() throws Exception
+    private Designator designator() throws Exception
     {
         Identifier id = ident();
         // todo: handle arrays, should emit the indexing, adda, and load all in here
         while(scan.sym == Token.opensquare) {
-            scan.next();
-            expression();
-            if(scan.sym == Token.closesqare) {
-                scan.next();
-            } else {
-                throw new Exception("Designator: no closing ']'");
+            throw new Exception("Array designators not implemented");
+
+            // scan.next();
+            // expression();
+            // if(scan.sym == Token.closesqare) {
+            //     scan.next();
+            // } else {
+            //     throw new Exception("Designator: no closing ']'");
+            // }
+        }
+        return new Designator(id);
+    }
+
+    class Designator {
+        private Identifier var;
+        public Designator(Identifier v) {
+            var = v;
+        }
+        public void emitAssign(BasicBlock cur, BasicBlock join, Environment env, Value newVal)
+            throws Exception {
+            Value old = env.get(var);
+            env.put(var, newVal);
+            if(join != null) {
+                join.addPhi(var, old, newVal);
             }
         }
-        return env.get(id);
+        // may need to emit load for arrays/ globals
+        public Value getValue(BasicBlock cur) {
+            return env.get(var);
+        }
     }
 
     // basically return the instruction that will represent the entire value.
@@ -95,7 +116,7 @@ public class Parser {
         } else if (scan.sym == Token.num) {
             rval = number();
         } else {
-            rval = designator();
+            rval = designator().getValue(currentBB);
         }
         return rval;
     }
@@ -163,35 +184,35 @@ public class Parser {
     private Cmp relation() throws Exception
     {
         Value left = expression();
-	Cmp.CmpType op;
-	// relOp
-	switch (scan.sym) {
-	case eq:
-	    op = Cmp.CmpType.eq;
-	    break;
-	case neq:
-	    op = Cmp.CmpType.neq;
-	    break;
-	case lt:
-	    op = Cmp.CmpType.lt;
-	    break;
-	case lte:
-	    op = Cmp.CmpType.lte;
-	    break;
-	case gt:
-	    op = Cmp.CmpType.gt;
-	    break;
-	case gte:
-	    op = Cmp.CmpType.gte;
-	    break;
-	default:
+        Cmp.CmpType op;
+        // relOp
+        switch (scan.sym) {
+        case eq:
+            op = Cmp.CmpType.eq;
+            break;
+        case neq:
+            op = Cmp.CmpType.neq;
+            break;
+        case lt:
+            op = Cmp.CmpType.lt;
+            break;
+        case lte:
+            op = Cmp.CmpType.lte;
+            break;
+        case gt:
+            op = Cmp.CmpType.gt;
+            break;
+        case gte:
+            op = Cmp.CmpType.gte;
+            break;
+        default:
             throw new Exception("Relation: incorrect relation operator");
-	}
-	scan.next();
-	Value right = expression();
-	Cmp rval =  new Cmp(op, left, right);
-	currentBB.addInstruction(rval);
-	return rval;
+        }
+        scan.next();
+        Value right = expression();
+        Cmp rval =  new Cmp(op, left, right);
+        currentBB.addInstruction(rval);
+        return rval;
     }
 
     // shouldn't need to actually emit any code for the assignment,
@@ -202,13 +223,14 @@ public class Parser {
     // variable.
     private void assignment_rest() throws Exception
     {
-        designator();
+        Designator d = designator();
         if(scan.sym == Token.assign) {
             scan.next();
         } else {
             throw new Exception("Assignment: incorrect assignment operator");
         }
-        expression();
+        Value v = expression();
+	d.emitAssign(currentBB, currentJoinBlock, env, v);
     }
 
     // this should result in a call instruction, if that is permited,
@@ -349,24 +371,24 @@ public class Parser {
         BasicBlock loopHeader = new LoopHeader(oldCurrent);
         BasicBlock loopBody = new BasicBlock(loopHeader);
         BasicBlock nextBB = new BasicBlock(loopHeader);
-	// the previous basic block will fall through to the header
-	oldCurrent.setFallThrough(loopHeader);
-	// and the header will fall through to the loop body
-	loopHeader.setFallThrough(loopBody);
+        // the previous basic block will fall through to the header
+        oldCurrent.setFallThrough(loopHeader);
+        // and the header will fall through to the loop body
+        loopHeader.setFallThrough(loopBody);
         currentBB = loopHeader;
         currentJoinBlock = loopHeader; // relations can't perform assignment, so it's all good
         Cmp comp = relation();
-	// add the branch instruction
-	loopHeader.addInstruction(makeProperBranch(comp, nextBB));
+        // add the branch instruction
+        loopHeader.addInstruction(makeProperBranch(comp, nextBB));
         if(scan.sym == Token.do_t) {
             scan.next();
             currentBB = loopBody;
             env.enter();
             statSequence();
-	    // add branch to loop header
-	    currentBB.addInstruction(new Bra(loopHeader));
+            // add branch to loop header
+            currentBB.addInstruction(new Bra(loopHeader));
             env.exit();
-	    
+
             if(scan.sym == Token.od) {
                 scan.next();
                 currentBB = nextBB;
@@ -469,11 +491,11 @@ public class Parser {
     // and if will cause new basic blocks to be created.
     private Function funcDecl() throws Exception
     {
-	Function rval = new Function();
-	currentBB = new BasicBlock(null);
-	currentJoinBlock = null;
-	rval.entryPoint = currentBB;
-	env.enter();
+        Function rval = new Function();
+        currentBB = new BasicBlock(null);
+        currentJoinBlock = null;
+        rval.entryPoint = currentBB;
+        env.enter();
         if(!(scan.sym == Token.function || scan.sym == Token.procedure)) {
             throw new Exception("Function declaration: incorrect keyword");
         }
@@ -546,7 +568,7 @@ public class Parser {
 
     private ArrayList<Function> computation() throws Exception
     {
-	ArrayList<Function> rval = new ArrayList<Function>();
+        ArrayList<Function> rval = new ArrayList<Function>();
         env.enter();
         if(scan.sym == Token.main) {
             scan.next();
@@ -567,20 +589,20 @@ public class Parser {
             // SSA, and instead can treat them as single cell arrays,
             // I guess.
             if(scan.sym == Token.opencurly) {
-		currentBB = new BasicBlock(null);
-		currentJoinBlock = null;
-		Function main = new Function();
-		main.name = idTable.addToTable("__MAIN__");
-		main.entryPoint = currentBB;
-		rval.add(main);
-		scan.next();
+                currentBB = new BasicBlock(null);
+                currentJoinBlock = null;
+                Function main = new Function();
+                main.name = idTable.addToTable("__MAIN__");
+                main.entryPoint = currentBB;
+                rval.add(main);
+                scan.next();
                 statSequence();
                 if(scan.sym == Token.closecurly) {
                     scan.next();
                     if(scan.sym == Token.period) {
                         scan.next();
                         env.exit();
-			return rval;
+                        return rval;
                     } else {
                         throw new Exception("Computation: no '.' ending program");
                     }
