@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import support.Identifier;
 import ir.base.BranchInstruction;
 import ir.base.Instruction;
-
+import ir.base.Value;
 import java.io.IOException;
 import java.io.Writer;
 
@@ -30,31 +30,31 @@ public class BasicBlock {
     }
 
     public String getNodeName() {
-	return "b_" + Integer.toString(number);
+        return "b_" + Integer.toString(number);
     }
 
     public void printBlock(Writer w) throws IOException {
-	if(!printed) {
-	    printed = true;
-	    w.write(getNodeName() + " [label=\"" + getNodeName() + "\\l");
-	    for(Instruction i : instructions) {
-		i.printInstruction(w);
-		w.write("\\l");
-	    }
-	    w.write("\"]\n");
-	    if(fallThrough != null) {
-		w.write(getNodeName() + " -> " + fallThrough.getNodeName() + ";\n");
-		fallThrough.printBlock(w);
-	    }
-	    BasicBlock branch = getBranchTarget();
-	    if(branch != null) {
-		w.write(getNodeName() + " -> " + branch.getNodeName() + ";\n");
-		branch.printBlock(w);
-	    }
-	    if(dominator != null) {
-		w.write(getNodeName() + " -> " + dominator.getNodeName() + "[color=\"green\"];\n");
-	    }
-	}
+        if(!printed) {
+            printed = true;
+            w.write(getNodeName() + " [label=\"" + getNodeName() + "\\l");
+            for(Instruction i : instructions) {
+                i.printInstruction(w);
+                w.write("\\l");
+            }
+            w.write("\"]\n");
+            if(fallThrough != null) {
+                w.write(getNodeName() + " -> " + fallThrough.getNodeName() + ";\n");
+                fallThrough.printBlock(w);
+            }
+            BasicBlock branch = getBranchTarget();
+            if(branch != null) {
+                w.write(getNodeName() + " -> " + branch.getNodeName() + ";\n");
+                branch.printBlock(w);
+            }
+            if(dominator != null) {
+                w.write(getNodeName() + " -> " + dominator.getNodeName() + "[color=\"green\"];\n");
+            }
+        }
     }
 
     public BasicBlock getFallThrough() {
@@ -80,14 +80,14 @@ public class BasicBlock {
         i.performCSE();
     }
 
-    public void addPhi(Identifier var, Instruction oldVal, Instruction newVal)
+    public void addPhi(Identifier var, Value oldVal, Value newVal)
         throws Exception
     {
         addPhiInternal(var, oldVal, newVal);
     }
 
     // if a new Phi instruction was added, return it, else return null
-    protected final Phi addPhiInternal(Identifier var, Instruction oldVal, Instruction newVal)
+    protected final Phi addPhiInternal(Identifier var, Value oldVal, Value newVal)
         throws Exception
     {
         for(Instruction i : instructions) {
