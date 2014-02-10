@@ -24,9 +24,11 @@ public class BranchInstruction extends Instruction {
     }
 
     @Override
-    public void replaceArgument(Value replace, Value i)
+    public void replaceArgument(Value replace, Value i, boolean throwOnError)
 	throws Exception {
-	throw new Exception("Error, attempt to replace arguments of a branch instruction");
+	if(throwOnError) {
+	    throw new Exception("Error, attempt to replace arguments of a branch instruction");
+	}
     }
 
     @Override

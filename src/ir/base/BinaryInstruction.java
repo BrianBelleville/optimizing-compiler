@@ -25,7 +25,7 @@ public class BinaryInstruction extends Instruction {
     }
 
     @Override
-    public void replaceArgument(Value replace, Value i)
+    public void replaceArgument(Value replace, Value i, boolean throwOnError)
         throws Exception {
         boolean found = false;
         if(arg1.equals(replace)) {
@@ -36,7 +36,7 @@ public class BinaryInstruction extends Instruction {
             arg2 = i;
             found = true;
         }
-        if(!found) {
+        if(!found && throwOnError) {
             throw new Exception("error replacing argument, argument not present in instruction");
         }
     }

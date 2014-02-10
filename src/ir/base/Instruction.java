@@ -112,6 +112,9 @@ public abstract class Instruction extends Value {
 
     // replace the argument that is eq to replace with i, this will
     // need to be done if replace has been deleted for i.
-    abstract public void replaceArgument(Value replace, Value i) throws Exception;
+    abstract public void replaceArgument(Value replace, Value i, boolean throwOnError) throws Exception;
+    public void replaceArgument(Value replace, Value i) throws Exception {
+	replaceArgument(replace, i, false);
+    }
 }
 

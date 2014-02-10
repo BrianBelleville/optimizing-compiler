@@ -14,8 +14,10 @@ public class NoArgInstruction extends Instruction {
     }
 
     @Override
-    public void replaceArgument(Value replace, Value i)
+    public void replaceArgument(Value replace, Value i, boolean throwOnError)
 	throws Exception {
-	throw new Exception("Error, attempt to replace the argument of a psuedo instruction");
+	if(throwOnError) {
+	    throw new Exception("Error, attempt to replace the argument of a no arg instruction");
+	}
     }
 }
