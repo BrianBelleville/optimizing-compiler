@@ -79,25 +79,6 @@ public class Parser {
         return new Designator(id);
     }
 
-    class Designator {
-        private Identifier var;
-        public Designator(Identifier v) {
-            var = v;
-        }
-        public void emitAssign(BasicBlock cur, BasicBlock join, Environment env, Value newVal)
-            throws Exception {
-            Value old = env.get(var);
-            env.put(var, newVal);
-            if(join != null) {
-                join.addPhi(var, old, newVal);
-            }
-        }
-        // may need to emit load for arrays/ globals
-        public Value getValue(BasicBlock cur) {
-            return env.get(var);
-        }
-    }
-
     // basically return the instruction that will represent the entire value.
     private Value factor() throws Exception
     {
@@ -116,7 +97,9 @@ public class Parser {
         } else if (scan.sym == Token.num) {
             rval = number();
         } else {
-            rval = designator().getValue(currentBB);
+            Designator d = designator();
+            Type t = env.getType(d.getVarName());
+            rval = t.getValue(d, currentBB, env);
         }
         return rval;
     }
@@ -230,7 +213,8 @@ public class Parser {
             throw new Exception("Assignment: incorrect assignment operator");
         }
         Value v = expression();
-	d.emitAssign(currentBB, currentJoinBlock, env, v);
+	Type t = env.getType(d.getVarName());
+        t.assignValue(d, currentBB, currentJoinBlock, env, v);
     }
 
     // this should result in a call instruction, if that is permited,
@@ -448,12 +432,11 @@ public class Parser {
         }
     }
 
-    // todo: somehow we need to provide type information to the
-    // environment
-    private void typeDecl() throws Exception
+    private Type typeDecl(boolean global) throws Exception
     {
         if(scan.sym == Token.var) {
             scan.next();
+            return new VarType(global);
         } else if (scan.sym == Token.array) {
             scan.next();
             if(scan.sym == Token.opensquare) {
@@ -466,23 +449,28 @@ public class Parser {
                         throw new Exception("Type declaration: no closing ']'");
                     }
                 }
+                return new ArrayType(null, global);
             } else {
                 // must be at least one boundary description
                 throw new Exception("Type declaration: there must be at least one boundary description for an array");
             }
+        } else {
+            throw new Exception("Unexpected type declaration");
         }
     }
 
-    private void varDecl() throws Exception
+    private void varDecl(boolean global) throws Exception
     {
-        typeDecl();
+        Type type = typeDecl(global);
         Identifier varName = ident();
         // todo: use the default value to detect uninitialized variables
         env.put(varName, new NamedValue("var_" + varName.getString()));
+        env.putType(varName, type);
         while(scan.sym == Token.comma) {
             scan.next();
             varName = ident();
             env.put(varName, new NamedValue("var_" + varName.getString()));
+            env.putType(varName, type);
         }
         // look for error
         if(scan.sym == Token.semicolon)
@@ -537,10 +525,12 @@ public class Parser {
             if(scan.sym != Token.closeparen) {
                 Identifier i = ident();
                 env.put(i, new NamedValue("arg_" + i.getString()));
+                env.putType(i, new VarType(false));
                 while(scan.sym == Token.comma) {
                     scan.next();
                     i = ident();
                     env.put(i, new NamedValue("arg_" + i.getString()));
+                    env.putType(i, new VarType(false));
                 }
             }
             if(scan.sym == Token.closeparen) {
@@ -556,7 +546,7 @@ public class Parser {
     private void funcBody() throws Exception
     {
         while(scan.sym == Token.var || scan.sym == Token.array) {
-            varDecl();
+            varDecl(false);
         }
         if(scan.sym == Token.opencurly) {
             scan.next();
@@ -585,7 +575,7 @@ public class Parser {
             // Memory allocation for them will be at some other part
             // of the compiler.
             while(scan.sym == Token.var || scan.sym == Token.array) {
-                varDecl();
+                varDecl(true);
             }
             while(scan.sym == Token.function || scan.sym == Token.procedure) {
                 rval.add(funcDecl());
