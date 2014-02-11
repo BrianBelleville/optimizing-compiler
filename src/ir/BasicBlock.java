@@ -35,6 +35,10 @@ public class BasicBlock {
         return "b_" + Integer.toString(number);
     }
 
+    public boolean isEmpty() {
+	return instructions.isEmpty();
+    }
+
     public void printBlock(Writer w) throws IOException {
         if(!printed) {
             printed = true;
