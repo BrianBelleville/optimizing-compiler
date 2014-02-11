@@ -276,12 +276,12 @@ public class Parser {
         // make basic blocks preemptivly
         BasicBlock oldCurrent = currentBB;
         BasicBlock oldJoin = currentJoinBlock;
-        BasicBlock ifBB = new BasicBlock(oldCurrent);
-        BasicBlock elseBB = new BasicBlock(oldCurrent);
+        BasicBlock ifStartBB = new BasicBlock(oldCurrent);
+        BasicBlock elseStartBB = new BasicBlock(oldCurrent);
         BasicBlock nextBB = new BasicBlock(oldCurrent);
 
         // if branch must exist
-        oldCurrent.setFallThrough(ifBB);
+        oldCurrent.setFallThrough(ifStartBB);
 
         Cmp comp = relation();
         if(scan.sym != Token.then) {
@@ -290,32 +290,39 @@ public class Parser {
         // sym == "then"
         scan.next();
 
-        currentBB = ifBB;
+	// set currentBB to be the start of the 'if' body
+        currentBB = ifStartBB;
+	// set the join block to be the BB that will follow the 'if'
+	// statement
         currentJoinBlock = nextBB;
-        // phi's will be generated in the join block, exit the
-        // environment so that assignments along this path will not
-        // conflict with those in the next BB
+	
+	// generate code for the 'if' body
         env.enter();
-        statSequence();
+        statSequence();		
         env.exit();
         if(scan.sym == Token.else_t) {
-            scan.next();
-            currentBB = elseBB;
-            elseBB.setFallThrough(nextBB);
+	    scan.next();
 
             // the else block will be the target of the branch
-            oldCurrent.addInstruction(makeProperBranch(comp, elseBB));
-            // also add unconditional branch over the else block
-            ifBB.addInstruction(new Bra(nextBB));
+            oldCurrent.addInstruction(makeProperBranch(comp, elseStartBB));
+            // also add unconditional branch from the end of the 'if'
+            // statSequence over the else block
+            currentBB.addInstruction(new Bra(nextBB));
 
+	    // set the new current, this must be done AFTER the
+	    // branches are emited
+            currentBB = elseStartBB;
+
+	    // generate code for the 'else' body
             env.enter();
             statSequence();
             env.exit();
+            currentBB.setFallThrough(nextBB);
         } else {
             // otherwise, no else, so the next block will be the target of the branch
             oldCurrent.addInstruction(makeProperBranch(comp, nextBB));
-            // ifBB will fall through
-            ifBB.setFallThrough(nextBB);
+            // 'if' branch will fall through
+            currentBB.setFallThrough(nextBB);
         }
         if(scan.sym == Token.fi) {
             scan.next();
@@ -366,12 +373,12 @@ public class Parser {
         BasicBlock oldCurrent = currentBB;
         BasicBlock oldJoin = currentJoinBlock;
         BasicBlock loopHeader = new LoopHeader(oldCurrent);
-        BasicBlock loopBody = new BasicBlock(loopHeader);
+        BasicBlock loopBodyStart = new BasicBlock(loopHeader);
         BasicBlock nextBB = new BasicBlock(loopHeader);
         // the previous basic block will fall through to the header
         oldCurrent.setFallThrough(loopHeader);
         // and the header will fall through to the loop body
-        loopHeader.setFallThrough(loopBody);
+        loopHeader.setFallThrough(loopBodyStart);
         currentBB = loopHeader;
         currentJoinBlock = loopHeader; // relations can't perform assignment, so it's all good
         Cmp comp = relation();
@@ -379,7 +386,7 @@ public class Parser {
         loopHeader.addInstruction(makeProperBranch(comp, nextBB));
         if(scan.sym == Token.do_t) {
             scan.next();
-            currentBB = loopBody;
+            currentBB = loopBodyStart;
             env.enter();
             statSequence();
             // add branch to loop header
