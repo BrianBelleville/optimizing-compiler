@@ -56,4 +56,13 @@ public class Environment {
     public void putType(Identifier id, Type val) {
 	types.get(types.size() - 1).put(id, val);
     }
+
+    public void freezeGlobals() {
+        // global variables should always be in the outermost type
+        // environment
+        HashMap<Identifier, Type> globals = types.get(0);    
+        for(Identifier id : globals.keySet()) {
+            globals.get(id).freeze();
+        }
+    }
 }
