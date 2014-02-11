@@ -570,10 +570,7 @@ public class Parser {
         if(scan.sym == Token.main) {
             scan.next();
             // variable declarations shouldn't actually cause any SSA
-            // to be emited, but should be stored in an environment.
-            // Globals can be handled with load/store instructions.
-            // Memory allocation for them will be at some other part
-            // of the compiler.
+            // to be emited, but will be stored in env
             while(scan.sym == Token.var || scan.sym == Token.array) {
                 varDecl(true);
             }
@@ -581,10 +578,8 @@ public class Parser {
                 rval.add(funcDecl());
             }
             // at this point, we can examine our environment for which
-            // globals have been used in other functions, and if used
-            // (either read or write) we can't optimize them using
-            // SSA, and instead can treat them as single cell arrays,
-            // I guess.
+            // globals have been used in other functions,
+            env.freezeGlobals();
             if(scan.sym == Token.opencurly) {
                 currentBB = new BasicBlock(null);
                 currentJoinBlock = null;
