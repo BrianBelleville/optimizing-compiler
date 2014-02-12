@@ -99,18 +99,13 @@ public class Parser {
         return rval;
     }
 
-    // todo: inside of expression and term do delayed code generation
-    // as presented in lecture to do partial evaluation of constant
-    // expressions. Can be simplified from what was discussed in
-    // lecture since we won't be worried about registers at this
-    // point, just coalesce literal numbers if possible. Shouldn't be
-    // too bad, for the productions that have an operation, if both of
-    // the arguments are immediates, do the calculation and return a
-    // new immediate. If not, emit code that does the operation using
-    // the supplied args. If the expression turns out to be a literal,
-    // don't even emit code at this point, for example if it is part
-    // of a relation, it is possible you may not have to emit
-    // anything.
+    // term and expression will perform the computations at compile
+    // time if the operands are both immediate values. This can be
+    // taken further by reordering sets of long computations so that
+    // more computation can be done at compile time. For example since
+    // the grammar is parsed left to right, the expression (i * 2 * 2)
+    // will result in 2 muls, but we can reorder it to (2 * 2 * i) and
+    // then simplify to (4 * i) to only emit a single mul.
     private Value term() throws Exception
     {
         Value previous, rval;
@@ -120,14 +115,26 @@ public class Parser {
             scan.next();
             previous = rval;
             Value next = factor();
-            Instruction ins;
-            if(op == Token.mul) {
-                ins = new Mul(previous, next);
-            } else {            // op == Token.div
-                ins = new Div(previous, next);
+            if(previous instanceof Immediate && next instanceof Immediate) {
+                int val, left, right;
+                left = ((Immediate)previous).getValue();
+                right = ((Immediate)next).getValue();
+                if(op == Token.mul) {
+                    val  = left * right;
+                } else {            // op == Token.div
+                    val = left / right;
+                }
+                rval = new Immediate(val);
+            } else {
+                Instruction ins;
+                if(op == Token.mul) {
+                    ins = new Mul(previous, next);
+                } else {            // op == Token.div
+                    ins = new Div(previous, next);
+                }
+                currentBB.addInstruction(ins);
+                rval = ins;
             }
-            currentBB.addInstruction(ins);
-            rval = ins;
         }
         return rval;
     }
@@ -141,14 +148,26 @@ public class Parser {
             scan.next();
             previous = rval;
             Value next = term();
-            Instruction ins;
-            if(op == Token.add) {
-                ins = new Add(previous, next);
-            } else {            // op == Token.sub
-                ins = new Sub(previous, next);
+            if(previous instanceof Immediate && next instanceof Immediate) {
+                int val, left, right;
+                left = ((Immediate)previous).getValue();
+                right = ((Immediate)next).getValue();
+                if(op == Token.add) {
+                    val = left + right;
+                } else {            // op == Token.sub
+                    val = left - right;
+                }
+                rval = new Immediate(val);
+            } else {
+                Instruction ins;
+                if(op == Token.add) {
+                    ins = new Add(previous, next);
+                } else {            // op == Token.sub
+                    ins = new Sub(previous, next);
+                }
+                currentBB.addInstruction(ins);
+                rval = ins;
             }
-            currentBB.addInstruction(ins);
-            rval = ins;
         }
         return rval;
     }
@@ -274,10 +293,10 @@ public class Parser {
 	// set the join block to be the BB that will follow the 'if'
 	// statement
         currentJoinBlock = nextBB;
-	
+
 	// generate code for the 'if' body
         env.enter();
-        statSequence();		
+        statSequence();
         env.exit();
         if(scan.sym == Token.else_t) {
 	    scan.next();
