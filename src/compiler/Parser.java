@@ -54,29 +54,24 @@ public class Parser {
         }
     }
 
-    // this should emit an adda instruction to get the offset of the
-    // value in the array, multi-dimensional array will need to be
-    // handled here, the array dimension will have to be known, so
-    // will need to be recorded in the environment.
-    //
-    // todo: implement designators. This will require having a scope
-    // environment data structure.
     private Designator designator() throws Exception
     {
         Identifier id = ident();
-        // todo: handle arrays, should emit the indexing, adda, and load all in here
-        while(scan.sym == Token.opensquare) {
-            throw new Exception("Array designators not implemented");
-
-            // scan.next();
-            // expression();
-            // if(scan.sym == Token.closesqare) {
-            //     scan.next();
-            // } else {
-            //     throw new Exception("Designator: no closing ']'");
-            // }
+        // if variable
+        if(scan.sym != Token.opensquare) {
+            return new Designator(id);
         }
-        return new Designator(id);
+        ArrayList<Value> index = new ArrayList<Value>();
+        while(scan.sym == Token.opensquare) {
+            scan.next();
+            index.add(expression());
+            if(scan.sym == Token.closesqare) {
+                scan.next();
+            } else {
+                throw new Exception("Designator: no closing ']'");
+            }
+        }
+        return new ArrayDesignator(id, index);
     }
 
     // basically return the instruction that will represent the entire value.
@@ -440,16 +435,18 @@ public class Parser {
         } else if (scan.sym == Token.array) {
             scan.next();
             if(scan.sym == Token.opensquare) {
+                ArrayList<Integer> dimension = new ArrayList<Integer>();
                 while(scan.sym == Token.opensquare) {
                     scan.next();
-                    number();
+                    int i = number().getValue();
+                    dimension.add(i);
                     if(scan.sym == Token.closesqare) {
                         scan.next();
                     } else {
                         throw new Exception("Type declaration: no closing ']'");
                     }
                 }
-                return new ArrayType(null, global);
+                return new ArrayType(dimension, global);
             } else {
                 // must be at least one boundary description
                 throw new Exception("Type declaration: there must be at least one boundary description for an array");
