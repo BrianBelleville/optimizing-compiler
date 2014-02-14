@@ -408,11 +408,20 @@ public class Parser {
 
     private void returnStatement_rest() throws Exception
     {
-        if(scan.sym == Token.closecurly || scan.sym == Token.semicolon)
-            return;             // no expression
-        expression();
-    }
+        Value arg = null;
+        if(scan.sym == Token.closecurly || scan.sym == Token.semicolon) {
+            // if there is no expression to be returned
+            arg = new NamedValue(""); // don't want a null value, may
+                                      // want some other placeholder
+                                      // in the future;
 
+        } else {
+            // else there is an expression to be returned
+            arg = expression();
+        }
+        currentBB.addInstruction(new Ret(arg));
+    }
+    
     private void statement() throws Exception
     {
         if(scan.sym == Token.let) {
