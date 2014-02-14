@@ -26,7 +26,7 @@ public class Main {
                 }
             }
             if(input == null) {
-                throw new Exception("Error: No input file provided");
+                throw new Exception("No input file provided");
             }
             File f = new File(input);
 	    IdentifierTable t = new IdentifierTable();
@@ -37,7 +37,7 @@ public class Main {
             }
             System.exit(0);
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            System.out.println(e.getClass().getName() + ": " + e.getMessage());
             System.exit(1);
         }
     }
