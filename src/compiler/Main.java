@@ -15,7 +15,6 @@ public class Main {
 	    IdentifierTable t = new IdentifierTable();
             Parser parse = new Parser(f, t);
             ArrayList<Function> program = parse.parse();
-            System.out.println("Good parse?");
             outputCFG("out.gv", program);
         } catch (Exception e) {
             System.out.println(e.getMessage());
