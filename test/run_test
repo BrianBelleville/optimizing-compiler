@@ -1,0 +1,87 @@
+#!/usr/bin/python3
+
+import os
+import subprocess
+from sys import argv
+
+diff = "diff"
+dot = "dot"
+pl241c = "/home/brian/Code/cs241/pl241c"
+test_dir = "/home/brian/Code/cs241/test/"
+input_dir = test_dir + "input/"
+output_dir = test_dir + "output/"
+result_dir = test_dir + "results/"
+
+# run the arguments as a subprocess, with output redirected to
+# /dev/null, return true if the subprocess returns 0, otherwise return
+# false.
+def run_no_output(args):
+    null = open("/dev/null")
+    proc = subprocess.Popen(args, stdout = null, stderr = null)
+    ret = proc.wait()
+    return ret == 0;
+
+# returns true on success (files match) false on error
+def run_diff(file1, file2):
+    return run_no_output([diff, file1, file2]);
+
+def run_dot(in_file):
+    png_out = strip_file_extension(in_file) + ".png"
+    return run_no_output([dot, "-Tpng", in_file, "-o", png_out])
+
+# you can specify extra compilation options if the first line of the
+# file starts with '#%'. After that marker, the remaining contents of
+# the first line will be sent to the compiler as extra options
+def compile_pl241(in_file, out_file):
+    extra_args = []
+    fin = open(in_file)
+    first = fin.readline()
+    fin.close()
+    if(first[:2] == '#%'):
+        extra_args = first[2:].split(sep=" ")
+    return run_no_output([pl241c, in_file, "-cfg", out_file] + extra_args)
+
+def strip_file_extension(name):
+    return os.path.splitext(name)[0]
+
+# this will return an error string if the test failed, otherwise it
+# will return false. This is different than the convention I am using
+# for all of my other command running functions, but it makes things easy.
+def run_test(name):
+    infile = input_dir + name + ".txt"
+    out_ref = output_dir + name + ".gv"
+    result_file = result_dir + name + ".gv"
+    print("Running test ", name, ".. ", sep="", end="")
+    if(not compile_pl241(infile, result_file)):
+        outmsg = "Compilation error"
+        print("FAIL", outmsg)
+        return outmsg
+    if(not run_dot(result_file)):
+        outmsg = ".gv -> .png layout failed"
+        print("FAIL", outmsg)
+        return outmsg
+    if(not run_diff(out_ref, result_file)):
+        outmsg = "Output incorrect"
+        print("FAIL", outmsg)
+        return outmsg
+    print("PASS")
+    return False
+
+# use this to generate the reference output once you are confident in
+# your compiler
+def generate_ref_out(name):
+    infile = input_dir + name + ".txt"
+    out_file = output_dir + name + ".gv"
+    print("Generating reference output for ", name, ".. ", sep="", end="")
+    if(not compile_pl241(infile, out_file)):
+       print("ERROR Compilation error")
+    print("DONE")
+
+if __name__ == "__main__":
+    test_name = argv[1]
+    if(not os.path.isdir(result_dir)):
+        os.mkdir(result_dir)
+    run_test(test_name)
+
+
+
