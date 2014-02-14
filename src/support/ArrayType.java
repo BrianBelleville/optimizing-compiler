@@ -16,12 +16,15 @@ public class ArrayType extends Type {
     // this stores the multipliers used to index into the array
     private int[] multipliers;
     private boolean global;
+    private int word_size = 4;  // assume 32 bit machine, may have to change this, or make it configurable
 
     public ArrayType(ArrayList<Integer> dimension, boolean global) {
         int size = 1;
         multipliers = new int[dimension.size()];
         for(int i = dimension.size() - 1; i >= 0; i--) {
-            multipliers[i] = size;
+            // factor the word size into the multipliers to avoid
+            // having to perform another multiplication at runtime.
+            multipliers[i] = size * word_size;
             size = dimension.get(i) * size;
         }
         this.global = global;
@@ -58,24 +61,65 @@ public class ArrayType extends Type {
         if(index.size() != multipliers.length) {
             throw new Exception("Error, incorrect number of array indexes");
         }
-        Instruction acc = null;
+        Value acc = null;
         int s = multipliers.length;
+        int immediateAcc = 0;   // accumulate immediate offsets
         for(int i = 0; i < s; i++) {
-            Mul mul = new Mul(index.get(i), new Immediate(multipliers[i]));
-            cur.addInstruction(mul);
-            if(acc != null) {
-                acc = new Add(acc, mul);
-                cur.addInstruction(acc);
+            Value v = index.get(i);
+            if(v instanceof Immediate) {
+                int val = ((Immediate)v).getValue();
+                immediateAcc = immediateAcc + (val * multipliers[i]);
             } else {
-                acc = mul;
+                Value currentOffset;
+                // if multiplier is 1, don't need a mul inst
+                if(multipliers[i] == 1) {
+                    currentOffset = v;
+                } else {
+                    Mul mul = new Mul(v, new Immediate(multipliers[i]));
+                    cur.addInstruction(mul);
+                    currentOffset = mul;
+                }
+                if(acc != null) {
+                    Add add = new Add(acc, currentOffset);
+                    cur.addInstruction(add);
+                    acc = add;
+                } else {
+                    acc = currentOffset;
+                }
             }
         }
 
-        Mul m = new Mul(acc, new NamedValue("WORD_SIZE"));
-        cur.addInstruction(m);
-        Add a = new Add(getAddr(d), m);
-        cur.addInstruction(a);
-        Adda rval = new Adda(global ? getGBP() : getFP(), a);
+        // now depending on how much of the offset is already
+        // determined, generate the final code to index into the array
+        Value finalOffset = null;
+        if(acc == null && immediateAcc == 0) {
+            // offset entirely determined during compilation to be 0
+            // load base address
+            finalOffset = getAddr(d);
+        } else if(acc == null && immediateAcc != 0) {
+            // offset entirely determined during compilation, and is not 0
+            Instruction t = new Add(getAddr(d), new Immediate(immediateAcc));
+            cur.addInstruction(t);
+            finalOffset = t;
+        } else if(acc != null && immediateAcc != 0) {
+            // the final offset will be determined at runtime
+            // take into account what can be determined at compile time
+            Instruction a = new Add(acc, new Immediate(immediateAcc));
+            cur.addInstruction(a);
+            Instruction f = new Add(getAddr(d), a);
+            cur.addInstruction(f);
+            finalOffset = f;
+        } else if (acc != null && immediateAcc == 0) {
+            // final offset will be determined at runtime, there is no
+            // contribution determined at compile time that needs to
+            // be added
+            Instruction f = new Add(getAddr(d), acc);
+            cur.addInstruction(f);
+            finalOffset = f;
+        } else {                // shouldn't get here, all cases should be acounted for
+            throw new Exception("Unable to determine array offset");
+        }
+        Adda rval = new Adda(global ? getGBP() : getFP(), finalOffset);
         cur.addInstruction(rval);
         return rval;
     }
