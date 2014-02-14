@@ -13,6 +13,10 @@ public class UnaryInstruction extends Instruction {
         argument.addUse(this);
     }
 
+    public Value getArg() {
+        return argument;
+    }
+
     @Override
     public ArrayList<Value> getArguments() {
         ArrayList<Value> r = new ArrayList<Value>();

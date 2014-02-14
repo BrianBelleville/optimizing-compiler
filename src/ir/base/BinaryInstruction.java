@@ -16,6 +16,14 @@ public class BinaryInstruction extends Instruction {
         arg2.addUse(this);
     }
 
+    public Value getArg1() {
+        return arg1;
+    }
+
+    public Value getArg2() {
+        return arg2;
+    }
+
     @Override
     public ArrayList<Value> getArguments() {
         ArrayList<Value> r = new ArrayList<Value>();
