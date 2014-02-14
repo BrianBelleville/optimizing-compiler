@@ -25,6 +25,17 @@ public class BinaryInstruction extends Instruction {
     }
 
     @Override
+    public boolean isCommonSubexpression(Instruction i) {
+        if(i instanceof BinaryInstruction) {
+            BinaryInstruction b = (BinaryInstruction)i;
+            return this.getOpcode() == b.getOpcode()
+                && this.arg1.equals(b.arg1)
+                && this.arg2.equals(b.arg2);
+        }
+        return false;
+    }
+
+    @Override
     public ArrayList<Value> getArguments() {
         ArrayList<Value> r = new ArrayList<Value>();
         r.add(arg1);
