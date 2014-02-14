@@ -1,0 +1,21 @@
+digraph Computation {
+node [shape=box];
+arrayTest -> b_1;
+b_1 [label="b_1\l1: add array_t1_addr #16\l2: adda FP (1)\l3: load (2)\l7: add (3) #2\l8: mul arg_x #4\l9: add array_g1_addr (8)\l10: adda GBP (9)\l11: store (10) arg_y\l12: ret \l"]
+arithTest -> b_2;
+b_2 [label="b_2\l13: add arg_x arg_y\l"]
+ifTest -> b_3;
+b_3 [label="b_3\l15: add arg_x arg_y\l16: add array_t_addr #16\l17: adda FP (16)\l18: load (17)\l22: add (18) #2\l24: cmp (15) arg_z\l27: bge b_5\l"]
+b_3 -> b_4;
+b_4 [label="b_4\l25: add arg_y arg_z\l28: bra b_6\l"]
+b_4 -> b_6;
+b_6 [label="b_6\l26: phi (29) (25) \"v\"\l32: load (17)\l33: call arithTest (22) (26) (32)\l37: adda FP array_t_addr\l38: store (37) #4\l41: load (17)\l42: add arg_z (22)\l44: call OutoutNum (15)\l"]
+b_6 -> b_3[color="green"];
+b_4 -> b_3[color="green"];
+b_3 -> b_5;
+b_5 [label="b_5\l29: add arg_z (22)\l"]
+b_5 -> b_6;
+b_5 -> b_3[color="green"];
+__MAIN__ -> b_7;
+b_7 [label="b_7\l45: add array_g1_addr #12\l46: adda GBP (45)\l47: load (46)\l51: add (47) #3\l52: call arrayTest (47) (51) #4\l55: load (46)\l"]
+}
