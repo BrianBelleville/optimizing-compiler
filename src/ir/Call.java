@@ -3,6 +3,8 @@ package ir;
 import java.util.ArrayList;
 import java.io.Writer;
 import java.io.IOException;
+
+import ir.base.Instruction;
 import ir.base.NaryInstruction;
 import ir.base.Opcode;
 import ir.base.Value;
@@ -24,5 +26,13 @@ public class Call extends NaryInstruction {
 	    v.printAsArg(w);
 	}
     }
+    @Override
+    public boolean isCommonSubexpression(Instruction i) {
+	return false;		// can never be common subexpressions
+    }
 
+    @Override
+    public void performCSE() {
+	return;			// no op, can never be common subexpressions
+    }
 }

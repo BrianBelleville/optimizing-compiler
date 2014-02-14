@@ -3,6 +3,7 @@ package ir;
 import java.io.IOException;
 import java.io.Writer;
 import ir.base.BinaryInstruction;
+import ir.base.Instruction;
 import ir.base.Opcode;
 import ir.base.Value;
 import support.Identifier;
@@ -23,4 +24,14 @@ public class Phi extends BinaryInstruction {
 	super.printInstruction(w);
 	w.write(" \\\"" + variable.getString() + "\\\"");
     }
+    @Override
+    public boolean isCommonSubexpression(Instruction i) {
+	return false;		// can never be common subexpressions
+    }
+
+    @Override
+    public void performCSE() {
+	return;			// no op, can never be common subexpressions
+    }
+
 }
