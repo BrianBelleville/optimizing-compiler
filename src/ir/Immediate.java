@@ -17,6 +17,20 @@ public class Immediate extends Value {
     }
 
     @Override
+    public boolean equals(Object o) {
+	if(o instanceof Immediate) {
+	    Immediate v = (Immediate)o;
+	    return this.value == v.value;
+	}
+	return false;
+    }
+
+    @Override
+    public int hashCode() {
+	return new Integer(value).hashCode();
+    }
+
+    @Override
     public void printAsArg(Writer w) throws IOException {
 	w.write(" #" + Integer.toString(value));
     }
