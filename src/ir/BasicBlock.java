@@ -86,7 +86,7 @@ public class BasicBlock {
         }
         return null;
     }
-    public void addInstruction(Instruction i) {
+    public void addInstruction(Instruction i) throws Exception {
         i.setDominating(mostRecentDominating);
         i.performCSE();
         if(!i.isDeleted()) {

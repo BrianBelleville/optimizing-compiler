@@ -103,11 +103,11 @@ public abstract class Instruction extends Value {
         return this.opcode == i.opcode && this.getArguments().equals(i.getArguments());
     }
 
-    public void performCSE() {
+    public void performCSE() throws Exception {
         Instruction i = dominating;
         while(i != null) {
             if(this.isCommonSubexpression(i)) {
-                this.deleted = (Instruction)i.getSubstitute(); // should always be an instruction, not ideal
+                this.delete((Instruction)i.getSubstitute()); // should always be an instruction, not ideal
                 return;
             }
             i = i.dominating;
