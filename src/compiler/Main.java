@@ -19,6 +19,12 @@ public class Main {
                     i++;
                     cfgOut = args[i];
                     break;
+                case "-no-cse":
+                    Globals.performCSE = false;
+                    break;
+                case "-cse":
+                    Globals.performCSE = true;
+                    break;
                 default:
                     // interpret as an input filename
                     input = args[i];

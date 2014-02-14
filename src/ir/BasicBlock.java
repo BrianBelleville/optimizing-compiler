@@ -1,7 +1,7 @@
 package ir;
 
+import compiler.Globals;
 import java.util.ArrayList;
-
 import support.Environment;
 import support.Identifier;
 import ir.base.BranchInstruction;
@@ -92,7 +92,9 @@ public class BasicBlock {
         // set which basic block it would be added to since it is used
         // during performCSE()
         i.setContainingBB(this);
-        i.performCSE();
+        if(Globals.performCSE) {
+            i.performCSE();
+        }
         if(!i.isDeleted()) {
             instructions.add(i);
             mostRecentDominating = i;
