@@ -10,7 +10,7 @@ import java.util.ArrayList;
 public abstract class Instruction extends Value {
     private static int instructionNum = 0;
 
-    public BasicBlock bb;
+    private BasicBlock bb;
     private int number;
     private Instruction deleted;
     private Instruction dominating;
@@ -56,6 +56,10 @@ public abstract class Instruction extends Value {
 
     public final void setContainingBB(BasicBlock b) {
 	bb = b;
+    }
+
+    public final BasicBlock getContainingBB() {
+        return bb;
     }
 
     public final int getNumber() {
