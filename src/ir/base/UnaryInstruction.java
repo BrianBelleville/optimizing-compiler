@@ -18,6 +18,16 @@ public class UnaryInstruction extends Instruction {
     }
 
     @Override
+    public boolean isCommonSubexpression(Instruction i) {
+        if(i instanceof UnaryInstruction) {
+            UnaryInstruction u = (UnaryInstruction)i;
+            return this.getOpcode() == u.getOpcode()
+                && this.argument.equals(u.argument);
+        }
+        return false;
+    }
+    
+    @Override
     public ArrayList<Value> getArguments() {
         ArrayList<Value> r = new ArrayList<Value>();
         r.add(argument);
