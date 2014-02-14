@@ -11,11 +11,30 @@ public class Main {
 
     public static void main(String[] args) {
         try {
-            File f = new File(args[0]);
+            String input = null, cfgOut = null;
+            for(int i = 0; i < args.length; i++) {
+                switch(args[i]) {
+                case "-cfg":
+                    // next item will be the filename for CFG output
+                    i++;
+                    cfgOut = args[i];
+                    break;
+                default:
+                    // interpret as an input filename
+                    input = args[i];
+                    break;
+                }
+            }
+            if(input == null) {
+                throw new Exception("Error: No input file provided");
+            }
+            File f = new File(input);
 	    IdentifierTable t = new IdentifierTable();
             Parser parse = new Parser(f, t);
             ArrayList<Function> program = parse.parse();
-            outputCFG("out.gv", program);
+            if(cfgOut != null) {
+                outputCFG(cfgOut, program);
+            }
             System.exit(0);
         } catch (Exception e) {
             System.out.println(e.getMessage());
