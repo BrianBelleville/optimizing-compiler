@@ -16,8 +16,10 @@ public class Main {
             Parser parse = new Parser(f, t);
             ArrayList<Function> program = parse.parse();
             outputCFG("out.gv", program);
+            System.exit(0);
         } catch (Exception e) {
             System.out.println(e.getMessage());
+            System.exit(1);
         }
     }
 
