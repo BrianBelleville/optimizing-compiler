@@ -19,6 +19,7 @@ public class BasicBlock {
     private static int blockNum = 0;
     private int number;
     private boolean printed = false;
+    private Instruction mostRecentDominating;
 
     private int getNextBlockNum() {
         blockNum += 1;
@@ -29,6 +30,11 @@ public class BasicBlock {
         this.dominator = dominator;
         number = getNextBlockNum();
         instructions = new ArrayList<Instruction>();
+        if(this.dominator != null) {
+            mostRecentDominating = this.dominator.mostRecentDominating;
+        } else {
+            mostRecentDominating = null;
+        }
     }
 
     public String getNodeName() {
@@ -81,9 +87,13 @@ public class BasicBlock {
         return null;
     }
     public void addInstruction(Instruction i) {
-        instructions.add(i);
-        i.setContainingBB(this);
+        i.setDominating(mostRecentDominating);
         i.performCSE();
+        if(!i.isDeleted()) {
+            instructions.add(i);
+            i.setContainingBB(this);
+            mostRecentDominating = i;
+        }
     }
 
     public void addPhi(Identifier var, Value oldVal, Value newVal)
@@ -135,6 +145,17 @@ public class BasicBlock {
         }
         // if we are here, we need to add a new phi.
         Phi p = new Phi(var, oldVal, newVal);
+        if(instructions.isEmpty()) {
+            // if this is the first instruction, make it the most recent dominating
+            p.setDominating(mostRecentDominating);
+            mostRecentDominating = p;
+        } else {
+            // else add it into the linked list of dominating
+            // instructions
+            Instruction i = instructions.get(0);
+            p.setDominating(i.getDominating());
+            i.setDominating(p);
+        }
         instructions.add(0, p);
         p.setContainingBB(this);
         // return the new Phi

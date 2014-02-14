@@ -50,6 +50,10 @@ public abstract class Instruction extends Value {
         dominating = i;
     }
 
+    public final Instruction getDominating() {
+        return dominating;
+    }
+
     public final void setContainingBB(BasicBlock b) {
 	bb = b;
     }
