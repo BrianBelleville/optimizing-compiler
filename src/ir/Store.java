@@ -1,6 +1,7 @@
 package ir;
 
 import ir.base.BinaryInstruction;
+import ir.base.Instruction;
 import ir.base.Opcode;
 import ir.base.Value;
 import support.Identifier;
@@ -15,4 +16,15 @@ public class Store extends BinaryInstruction {
     public Identifier getVariable() {
 	return variable;
     }
+
+    @Override
+    public boolean isCommonSubexpression(Instruction i) {
+	return false;		// stores can never be common subexpressions
+    }
+
+    @Override
+    public void performCSE() {
+	return;			// no op, stores can never be common subexpressions
+    }
+
 }
