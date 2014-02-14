@@ -16,6 +16,7 @@ public class ArrayType extends Type {
     // this stores the multipliers used to index into the array
     private int[] multipliers;
     private boolean global;
+    private boolean used = false;
     private int word_size = 4;  // assume 32 bit machine, may have to change this, or make it configurable
 
     public ArrayType(ArrayList<Integer> dimension, boolean global) {
@@ -33,6 +34,9 @@ public class ArrayType extends Type {
     @Override
     public void assignValue(Designator d, BasicBlock cur, BasicBlock join, Environment env, Value newVal)
         throws Exception {
+        if(global) {
+            used = true;
+        }
         if(!(d instanceof ArrayDesignator)) {
             throw new Exception("Array accessed as a variable");
         }
@@ -44,6 +48,9 @@ public class ArrayType extends Type {
     @Override
     public Value getValue(Designator d, BasicBlock cur, Environment env)
         throws Exception {
+        if(global) {
+            used = true;
+        }
         if(!(d instanceof ArrayDesignator)) {
             throw new Exception("Array accessed as a variable");
         }
@@ -53,8 +60,18 @@ public class ArrayType extends Type {
         return l;
     }
 
-    // todo: this generates bad code, may be able to statically
-    //       determine the offset in some cases
+    // If globally delcared array isn't used anywhere excepct the main
+    // routine, we can optimize it like a stack allocated array, right
+    // now this will also cause it to be allocated on the stack space
+    // of main, which requires main to have an activation record, so
+    // this may need to be tweaked when code is emited.
+    @Override
+    public void freeze() {
+        if(!used && global) {
+            global = false;
+        }
+    }
+
     private Adda emitIndexingCode(ArrayDesignator d, BasicBlock cur)
         throws Exception {
         ArrayList<Value> index = d.getIndex();
