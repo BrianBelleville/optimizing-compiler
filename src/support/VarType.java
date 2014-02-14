@@ -41,7 +41,7 @@ public class VarType extends Type {
             used = true;
             Adda ad = new Adda(getGBP(), getAddr(d));
             cur.addInstruction(ad);
-            Load ld = new Load(d.getVarName(), ad);
+            Load ld = new Load(d.getVarName(), global, ad); // global = true
             cur.addInstruction(ld);
             return ld;
         } else {

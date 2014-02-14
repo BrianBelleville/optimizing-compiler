@@ -55,7 +55,7 @@ public class ArrayType extends Type {
             throw new Exception("Array accessed as a variable");
         }
         Adda a = emitIndexingCode((ArrayDesignator)d, cur);
-        Load l = new Load(d.getVarName(), a);
+        Load l = new Load(d.getVarName(), global, a);
         cur.addInstruction(l);
         return l;
     }
