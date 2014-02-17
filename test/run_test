@@ -86,8 +86,6 @@ def generate_ref_out(name):
 
 if __name__ == "__main__":
     # if there are no command line arguments, run all tests
-    if(not os.path.isdir(result_dir)):
-        os.mkdir(result_dir)
     if(len(argv) == 1):
         tests = sorted(map(strip_file_extension,
                            filter(is_test, os.listdir(input_dir))))
@@ -104,6 +102,8 @@ if __name__ == "__main__":
             i += 1
 
     if(tests):
+        if(not os.path.isdir(result_dir)):
+            os.mkdir(result_dir)
         failures = []
         print("Starting tests\n")
         for t in tests:
