@@ -91,6 +91,19 @@ if __name__ == "__main__":
     if(len(argv) == 1):
         tests = sorted(map(strip_file_extension,
                            filter(is_test, os.listdir(input_dir))))
+    else:
+        tests = []
+        i = 1
+        while i < len(argv):
+            a = argv[i]
+            if a == "-ref":
+                i += 1
+                generate_ref_out(argv[i])
+            else:
+                tests.append(a)
+            i += 1
+
+    if(tests):
         failures = []
         print("Starting tests\n")
         for t in tests:
