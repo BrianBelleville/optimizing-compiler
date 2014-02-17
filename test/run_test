@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+# -*- mode: python; python-shell-interpreter: "python3"; -*-
 
 import os
 import subprocess
