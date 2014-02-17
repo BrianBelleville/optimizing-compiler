@@ -1,0 +1,17 @@
+#% -cse
+# Brian Belleville 2014
+
+main
+
+procedure arithTest(x, y, z);
+var w;
+var v;
+{
+# should only result in a single add
+  let w <- x + y;
+  let v <- y + x 
+};
+
+{
+  call arithTest(x, y, z);
+}.
