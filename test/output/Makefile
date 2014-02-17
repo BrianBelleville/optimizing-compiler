@@ -1,11 +1,11 @@
 DOT := dot
-DOTFLAGS := -Tpng
+DOTFLAGS := -Tsvg
 SOURCES := $(wildcard *.gv)
-OUTPUT := $(patsubst %.gv, %.png, $(SOURCES))
+OUTPUT := $(patsubst %.gv, %.svg, $(SOURCES))
 
 all: $(OUTPUT)
 
-%.png : %.gv
+%.svg : %.gv
 	$(DOT) $(DOTFLAGS) $< -o $@
 
 clean:
