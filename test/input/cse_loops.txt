@@ -1,0 +1,27 @@
+#% -cse
+# Brian Belleville 2014
+
+main
+
+procedure test1;
+var w, x, y, z;
+{
+  let x <- 0;
+  let y <- call InputNum();
+  let z <- call InputNum();
+  let w <- y + z;
+  while x < z do
+    # this should not be eliminated since y and z are assigned to in
+    # the loop, this ends up not being a common subexpression of
+    # previous y + z
+    let w <- y + z;
+    let z <- z + z;
+    let y <- z + y
+  od;
+  call OutputNum(y)    
+};
+
+
+{
+  call test1;
+}.
