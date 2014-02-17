@@ -35,6 +35,9 @@ def run_dot(in_file):
 # the first line will be sent to the compiler as extra options
 def compile_pl241(in_file, out_file):
     extra_args = []
+    if(not os.path.exists(in_file)):
+        print("File", in_file, "not found, aborting test case ", end="")
+        return False
     fin = open(in_file)
     first = fin.readline()
     fin.close()
