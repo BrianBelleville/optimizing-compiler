@@ -18,6 +18,7 @@ public class BasicBlock {
     private BasicBlock fallThrough;
     private static int blockNum = 0;
     private int number;
+    protected int replacePass = -1;
     private boolean printed = false;
     private Instruction mostRecentDominating;
 
