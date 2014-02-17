@@ -1,0 +1,23 @@
+#% -cse
+# Brian Belleville 2014
+
+main
+var x;
+var y;
+var z;
+array[100] g1;
+
+procedure arrayTest(x,y,z);
+array[100] t1;
+var w;
+var v;
+{
+  let w <- t1[4];
+  let v <- t1[4] + 2;
+  let g1[x] <- y;
+  return
+};
+
+{
+  call arrayTest(x, y, 4);
+}.
