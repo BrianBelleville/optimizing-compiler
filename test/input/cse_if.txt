@@ -1,0 +1,37 @@
+#% -cse
+# Brian Belleville 2014
+
+main
+
+procedure ifTest(x, y, z);
+var w;
+var v;
+var a;
+array[100] t;
+{
+  let w <- x + y;
+  let w <- t[4];
+  
+  # the y + x in the relation should be eliminated as redundant to the
+  # previous x + y
+  if y + x < z  then
+    let v <- y + z
+  else
+    let v <- z + w
+  fi;
+  
+  # this load should not be eliminated since we should only be
+  # searching within the same BB
+  let a <- t[4];
+  
+  # this should not be eliminated, z + w is not in a dominated BB
+  let a <- z + w;
+
+  # this should be eliminated, x + y is in a dominating BB
+  let v <- x + y;
+  call OutoutNum(v)
+};
+
+{
+  call ifTest(1, 2, 3)
+}.
