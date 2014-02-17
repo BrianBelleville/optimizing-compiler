@@ -27,8 +27,8 @@ def run_diff(file1, file2):
     return run_no_output([diff, file1, file2]);
 
 def run_dot(in_file):
-    png_out = strip_file_extension(in_file) + ".png"
-    return run_no_output([dot, "-Tpng", in_file, "-o", png_out])
+    png_out = strip_file_extension(in_file) + ".svg"
+    return run_no_output([dot, "-Tsvg", in_file, "-o", png_out])
 
 # you can specify extra compilation options if the first line of the
 # file starts with '#%'. After that marker, the remaining contents of
