@@ -1,0 +1,20 @@
+# Brian Belleville 2014
+
+procedure test1;
+var w, x, y, z;
+{
+  let x <- 0;
+  let y <- call InputNum();
+  let z <- y;
+  while x < y do
+    # y is assigned to later in the loop, but initially y and z have
+    # the same value. Make sure that only the y value is substituted
+    # with the phi
+    let w <- y + z;
+    let y <- call InputNum()
+  od
+};
+
+{
+  call test1;
+}.
