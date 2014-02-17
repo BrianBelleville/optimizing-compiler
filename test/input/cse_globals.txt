@@ -1,0 +1,53 @@
+#% -cse
+# Brian Belleville 2014
+
+main
+var g; 				# will be used globally
+array[8] ag;			# global array
+array[8] al;			# local array
+var w, x, y, z, a, b, c, d;	# locals
+
+procedure useGlobals;
+{
+  let g <- call InputNum;
+  let ag[g] <- call InputNum
+};
+
+{
+  # the next 2 lines should result in 1 load
+  let x <- ag[3];
+  let y <- ag[3] + 3;
+
+  # the next 2 lines should result in 1 load from g
+  let z <- g;
+  let w <- g + 3;
+
+  # the next 2 lines should result in 1 load
+  let a <- al[4];
+  let b <- al[4] + 3;
+
+  # call to kill global load cse search
+  call useGlobals;
+
+  # should generate another load since g is global
+  let w <- g + 3;
+
+  # should generate another load
+  let c <- ag[3];
+
+  # should generate another load
+  let a <- g;
+
+  # should generate no code
+  let d <- al[4] + 3;
+
+  # assignments to kill cse search
+  let g <- 2;
+  let ag[4] <- 8;
+  let al[6] <- 16;
+
+  # will need new loads for local and global arrays
+  let a <- g;
+  let b <- al[4];
+  let c <- ag[4]
+}.
