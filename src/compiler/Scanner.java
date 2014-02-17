@@ -160,6 +160,15 @@ public class Scanner {
 	    }
 	    throw new Exception("Scan error: unrecognized operator '='");
 	}
+	if((char)next == '!') {
+	    consume();
+	    if((char)next == '=') {
+		consume();
+		sym = Token.neq;
+		return;
+	    }
+	    throw new Exception("Scan error: unrecognized operator '!'");
+	}		
 	if((char)next == '+') {
 	    consume();
 	    sym = Token.add;
