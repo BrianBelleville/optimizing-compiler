@@ -44,6 +44,12 @@ def compile_pl241(in_file, out_file):
 def strip_file_extension(name):
     return os.path.splitext(name)[0]
 
+def file_extension(name):
+    return os.path.splitext(name)[1]
+
+def is_test(name):
+    return file_extension(name) == '.txt'
+
 # this will return an error string if the test failed, otherwise it
 # will return false. This is different than the convention I am using
 # for all of my other command running functions, but it makes things easy.
@@ -78,10 +84,25 @@ def generate_ref_out(name):
     print("DONE")
 
 if __name__ == "__main__":
-    test_name = argv[1]
+    # if there are no command line arguments, run all tests
     if(not os.path.isdir(result_dir)):
         os.mkdir(result_dir)
-    run_test(test_name)
+    if(len(argv) == 1):
+        tests = sorted(map(strip_file_extension,
+                           filter(is_test, os.listdir(input_dir))))
+        failures = []
+        print("Starting tests\n")
+        for t in tests:
+            s = run_test(t)
+            if(s):
+                failures.append(t + ": " + s)
+        if(failures):
+            print("\nError the following tests have failed:\n")
+            for s in failures:
+                print(s)
+        else:
+            print("\nAll tests passed!")
+
 
 
 
