@@ -115,27 +115,15 @@ public class Parser {
             scan.next();
             previous = rval;
             Value next = factor();
-            if(previous instanceof Immediate && next instanceof Immediate) {
-                int val, left, right;
-                left = ((Immediate)previous).getValue();
-                right = ((Immediate)next).getValue();
-                if(op == Token.mul) {
-                    val  = left * right;
-                } else {            // op == Token.div
-                    val = left / right;
-                }
-                rval = new Immediate(val);
-            } else {
-                Instruction ins;
-                if(op == Token.mul) {
-                    ins = new Mul(previous, next);
-                } else {            // op == Token.div
-                    ins = new Div(previous, next);
-                }
-                currentBB.addInstruction(ins);
-                rval = ins;
-            }
-        }
+	    Instruction ins;
+	    if(op == Token.mul) {
+		ins = new Mul(previous, next);
+	    } else {            // op == Token.div
+		ins = new Div(previous, next);
+	    }
+	    currentBB.addInstruction(ins);
+	    rval = ins;
+	}
         return rval;
     }
 
@@ -148,27 +136,15 @@ public class Parser {
             scan.next();
             previous = rval;
             Value next = term();
-            if(previous instanceof Immediate && next instanceof Immediate) {
-                int val, left, right;
-                left = ((Immediate)previous).getValue();
-                right = ((Immediate)next).getValue();
-                if(op == Token.add) {
-                    val = left + right;
-                } else {            // op == Token.sub
-                    val = left - right;
-                }
-                rval = new Immediate(val);
-            } else {
-                Instruction ins;
-                if(op == Token.add) {
-                    ins = new Add(previous, next);
-                } else {            // op == Token.sub
-                    ins = new Sub(previous, next);
-                }
-                currentBB.addInstruction(ins);
-                rval = ins;
-            }
-        }
+	    Instruction ins;
+	    if(op == Token.add) {
+		ins = new Add(previous, next);
+	    } else {            // op == Token.sub
+		ins = new Sub(previous, next);
+	    }
+	    currentBB.addInstruction(ins);
+	    rval = ins;
+	}
         return rval;
     }
 
@@ -421,7 +397,7 @@ public class Parser {
         }
         currentBB.addInstruction(new Ret(arg));
     }
-    
+
     private void statement() throws Exception
     {
         if(scan.sym == Token.let) {
