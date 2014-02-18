@@ -1,0 +1,36 @@
+# Brian Belleville 2014
+
+main
+
+procedure test1;
+var w, x, y, z;
+{
+
+  let y <- call InputNum();
+  let z <- call InputNum();
+  let w <- y + z;
+  let x <- z;
+  while w < z do
+    while z < y do
+      # during initial parse, x and z are equal to the same value, but
+      # should not both be replaced with a phi, and only the 'x'
+      # should be replaced with the phi for x
+      call foo(w, z, x);
+      # all instances of x should be replaced with a phi
+      call foo(x, x, x)	
+    od;
+    let x <- call InputNum()	# generate a phi for x
+  od;
+  call OutputNum(y)    
+};
+
+procedure foo(x, y, z);
+{
+  call OutputNum(x);
+  call OutputNum(y);
+  call OutputNum(z)
+};
+
+{
+  call test1
+}.
