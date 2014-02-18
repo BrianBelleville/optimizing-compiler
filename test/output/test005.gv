@@ -1,0 +1,5 @@
+digraph Computation {
+node [shape=box];
+__MAIN__ -> b_1;
+b_1 [label="b_1\l1: add #1 #1\l2: mul (1) #2\l3: div (2) #2\l4: sub (3) #1\l5: call OutputNum (4)\l"]
+}
