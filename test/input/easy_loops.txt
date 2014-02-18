@@ -1,0 +1,43 @@
+# Brian Belleville 2014
+
+main
+var x;
+var y;
+var z;
+
+{
+    while x < y do
+      call OutputNum(x);  	
+      let x <- z + 4;
+      call OutputNum(x);
+      while x < 3 do
+        call OutputNum(x);
+        let x <- x + 1;
+        call OutputNum(x);
+        let x <- 99
+      od
+    od;
+    call OutputNum(x);
+
+    while x < 3 do
+        call OutputNum(x);
+        let x <- x + 1;
+        call OutputNum(x)
+    od;
+    call OutputNum(x);
+
+    while x < 3 do
+      call OutputNum(x);
+      if x < 3 then
+        call OutputNum(x);
+	let x <- 16;
+	call OutputNum(x)
+      else
+        call OutputNum(x);
+	let x <- 32;
+	call OuptputNum(x)
+      fi;
+      call OutputNum(x)
+    od;
+    call OutputNum(x)
+}.
