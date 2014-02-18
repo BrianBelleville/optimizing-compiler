@@ -23,12 +23,17 @@ public class NaryInstruction extends Instruction {
     }
 
     @Override
-    public void replaceArgument(Value replace, Value i, boolean throwOnError)
+    public void replaceArgument(Value replace, Value nval, boolean throwOnError)
         throws Exception {
-        int index = arguments.indexOf(replace);
-	if(index != -1) {
-	    arguments.set(index, i);
-	} else if(throwOnError) {
+	boolean found = false;
+	int s = arguments.size();
+	for(int i = 0; i < s; i++) {
+	    if(arguments.get(i).equals(replace)) {
+		arguments.set(i, nval);
+		found = true;
+	    }
+	}
+	if(throwOnError && !found) {
             throw new Exception("error replacing argument, argument not present in instruction");
         }
     }
