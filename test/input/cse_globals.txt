@@ -49,5 +49,5 @@ procedure useGlobals;
   # will need new loads for local and global arrays
   let a <- g;
   let b <- al[4];
-  let c <- ag[4]
+  let c <- ag[3]
 }.
