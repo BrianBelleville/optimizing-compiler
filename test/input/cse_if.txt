@@ -15,7 +15,10 @@ array[100] t;
   # the y + x in the relation should be eliminated as redundant to the
   # previous x + y
   if y + x < z  then
-    let v <- y + z
+    let v <- y + z;
+    
+    # the (x + y) expression should be eliminated
+    let a <- x + (x + y)
   else
     let v <- z + w
   fi;
