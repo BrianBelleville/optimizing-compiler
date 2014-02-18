@@ -24,6 +24,24 @@ var w, x, y, z;
   call OutputNum(y)    
 };
 
+procedure constantsTest;
+var w, x, y, z;
+array[4][4][4][4] a;
+{
+  let w <- 1;
+  let x <- 2;
+  let y <- 3;
+  let z <- 4;
+  while w > 0 do
+    # initally, all constant values, so compiler may think it can
+    # compute at compile time
+    call OutputNum(w + x + y + z);
+    let a[w][x][y][z] <- 64;
+    call OutputNum(a[w][x][y][z]);
+    let w <- call InputNum
+  od
+};
+
 procedure foo(x, y, z);
 {
   call OutputNum(x);
