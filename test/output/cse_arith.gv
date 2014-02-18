@@ -1,0 +1,7 @@
+digraph Computation {
+node [shape=box];
+arithTest -> b_1;
+b_1 [label="b_1\l1: add arg_x arg_y\l"]
+__MAIN__ -> b_2;
+b_2 [label="b_2\l3: call arithTest #1 #2 #3\l"]
+}
