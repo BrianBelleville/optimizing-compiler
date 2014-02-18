@@ -23,5 +23,5 @@ var w, x, y, z;
 
 
 {
-  call test1;
+  call test1
 }.

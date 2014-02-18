@@ -19,5 +19,5 @@ var v;
 };
 
 {
-  call arrayTest(x, y, 4);
+  call arrayTest(x, y, 4)
 }.
