@@ -1,0 +1,17 @@
+digraph Computation {
+node [shape=box];
+ifTest -> b_1;
+b_1 [label="b_1\l1: add arg_x arg_y\l2: add array_t_addr #16\l3: adda FP (2)\l4: load (3)\l6: cmp (1) arg_z\l12: bge b_3\l"]
+b_1 -> b_2;
+b_2 [label="b_2\l7: add arg_y arg_z\l10: add arg_x (1)\l13: bra b_4\l"]
+b_2 -> b_4;
+b_4 [label="b_4\l11: phi var_a (10) \"a\"\l8: phi (14) (7) \"v\"\l17: load (3)\l18: add arg_z (4)\l20: call OutoutNum (1)\l"]
+b_4 -> b_1[color="green"];
+b_2 -> b_1[color="green"];
+b_1 -> b_3;
+b_3 [label="b_3\l14: add arg_z (4)\l"]
+b_3 -> b_4;
+b_3 -> b_1[color="green"];
+__MAIN__ -> b_5;
+b_5 [label="b_5\l21: call ifTest #1 #2 #3\l"]
+}
