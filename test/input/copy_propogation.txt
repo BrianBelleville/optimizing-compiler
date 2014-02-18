@@ -1,5 +1,7 @@
 # Brian Belleville 2014
 
+main
+
 procedure test1;
 var w, x, y, z;
 {
@@ -16,5 +18,5 @@ var w, x, y, z;
 };
 
 {
-  call test1;
+  call test1
 }.
