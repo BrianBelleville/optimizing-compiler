@@ -14,7 +14,7 @@ public class Identifier {
     }
 
     public boolean equals(Identifier i) {
-        return table == i.table && table_index == i.table_index;
+        return i != null && this.table == i.table && this.table_index == i.table_index;
     }
 
     @Override
