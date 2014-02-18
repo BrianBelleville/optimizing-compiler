@@ -1,0 +1,7 @@
+digraph Computation {
+node [shape=box];
+foo -> b_1;
+b_1 [label="b_1\l1: ret #0\l"]
+__MAIN__ -> b_2;
+b_2 [label="b_2\l2: call foo\l"]
+}
