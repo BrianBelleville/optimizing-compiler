@@ -94,14 +94,6 @@ public abstract class Instruction extends Value {
     // words perform common subexpression elimination.
     public void delete(Instruction i) throws Exception {
         deleted = i;
-
-        // this may not be necessary, depending on how I generate my
-        // SSA, and when I perform CSE, also may not be necessary if I
-        // just make sure to not emit deleted instructions, and if an
-        // argument is marked as deleted, use that instead.
-        for(Instruction use : uses) {
-            use.replaceArgument(this, i);
-        }
     }
 
     public boolean isCommonSubexpression(Instruction i) {
