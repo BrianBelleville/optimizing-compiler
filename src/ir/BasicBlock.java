@@ -138,7 +138,7 @@ public class BasicBlock {
                     // update the phi since there is already one for
                     // this variable, throw if the old value isn't
                     // part of the phi
-                    p.replaceArgument(oldVal, newVal, true);
+                    p.replaceArgument(oldVal, new VariableReference(var, newVal), true);
                     // we are now done, didn't add a new Phi
                     return null;
                 }
@@ -149,8 +149,11 @@ public class BasicBlock {
                 break;
             }
         }
-        // if we are here, we need to add a new phi.
-        Phi p = new Phi(var, oldVal, newVal);
+        // if we are here, we need to add a new phi. Wrap the new
+        // value in VariableReference to the correct variable, the old
+        // value will be a variable reference
+        assert oldVal instanceof VariableReference;
+        Phi p = new Phi(var, oldVal, new VariableReference(var, newVal));
         if(instructions.isEmpty()) {
             // if this is the first instruction, make it the most recent dominating
             p.setDominating(mostRecentDominating);

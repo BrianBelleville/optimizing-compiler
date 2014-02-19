@@ -2,14 +2,14 @@ package support;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-
+import ir.VariableReference;
 import ir.base.Value;
 
 public class Environment {
-    private ArrayList< HashMap<Identifier, Value>> env;
+    private ArrayList< HashMap<Identifier, VariableReference>> env;
     private ArrayList< HashMap<Identifier, Type>> types;
     public Environment() {
-	env = new ArrayList< HashMap<Identifier, Value>>();
+	env = new ArrayList< HashMap<Identifier, VariableReference>>();
         types = new ArrayList< HashMap<Identifier, Type>>();
     }
 
@@ -19,7 +19,7 @@ public class Environment {
     //       basic blocks. However the basic block level enter and exit
     //       seems to work.
     public void enter() {
-	env.add(new HashMap<Identifier, Value>());
+	env.add(new HashMap<Identifier, VariableReference>());
         types.add(new HashMap<Identifier, Type>());
     }
     public void exit() {
@@ -40,7 +40,11 @@ public class Environment {
     }
     public void put(Identifier id, Value val) {
 	// assignments always will occur in the outermost environment
-	env.get(env.size() - 1).put(id, val);
+        
+        // add value as a variable reference, this way uses of the
+        // variable will have information about what variable is being
+        // referenced
+	env.get(env.size() - 1).put(id, new VariableReference(id, val));
     }
     public Type getType(Identifier id) {
 	// traverse the list of types backwards

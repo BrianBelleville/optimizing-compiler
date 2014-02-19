@@ -28,8 +28,10 @@ public class VarType extends Type {
             Identifier var = d.getVarName();
             Value old = env.get(var);
             env.put(var, newVal);
+            // get the variable reference to replace old references with
+            Value replaceWith = env.get(var);
             if(join != null) {
-                join.addPhi(var, old, newVal);
+                join.addPhi(var, old, replaceWith);
             }
         }
     }

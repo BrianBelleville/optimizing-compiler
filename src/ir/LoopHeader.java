@@ -25,13 +25,14 @@ public class LoopHeader extends BasicBlock {
             // now perform depth first search through all instructions
             // that are dominated by this block,
             // only need to do this search if the phi was newly added
-            depthFirstReplace(this, p, oldVal, currentReplacePass);
+	    // replace the old values with the phi instruction
+            depthFirstReplace(this, p, new VariableReference(var, p), oldVal, currentReplacePass);
 	    currentReplacePass++;
         }
     }
 
-    private static void depthFirstReplace(BasicBlock b, Phi phiInst, Value oldVal,
-					  int pass)
+    private static void depthFirstReplace(BasicBlock b, Phi phiInst, VariableReference newVal,
+					  Value oldVal, int pass)
         throws Exception
     {
 	if(b.replacePass == pass) {
@@ -39,19 +40,19 @@ public class LoopHeader extends BasicBlock {
 	}
 	b.replacePass = pass;
         for(Instruction i : b.instructions) {
-	    // don't want to replace the actual instruction that was
-	    // just created
+	    // don't want to replace the actual phi instruction that
+	    // was just created
 	    if(i != phiInst) {
-		i.replaceArgument(oldVal, phiInst);
+		i.replaceArgument(oldVal, newVal);
 	    }
         }
         BasicBlock ch1 = b.getFallThrough();
         BasicBlock ch2 = b.getBranchTarget();
         if(ch1 != null) {
-            depthFirstReplace(ch1, phiInst, oldVal, pass);
+            depthFirstReplace(ch1, phiInst, newVal, oldVal, pass);
         }
         if(ch2 != null) {
-            depthFirstReplace(ch2, phiInst, oldVal, pass);
+            depthFirstReplace(ch2, phiInst, newVal, oldVal, pass);
         }
     }
 }
