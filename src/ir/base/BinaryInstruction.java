@@ -10,8 +10,8 @@ public class BinaryInstruction extends Instruction {
 
     public BinaryInstruction(Opcode o, Value a1, Value a2) {
         super(o);
-        arg1 = a1.getSubstitute();
-        arg2 = a2.getSubstitute();
+        arg1 = a1;
+        arg2 = a2;
         arg1.addUse(this);
         arg2.addUse(this);
     }

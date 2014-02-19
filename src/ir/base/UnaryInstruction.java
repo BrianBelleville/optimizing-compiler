@@ -9,7 +9,7 @@ public class UnaryInstruction extends Instruction {
 
     public UnaryInstruction(Opcode o, Value arg) {
         super( o);
-        argument = arg.getSubstitute();
+        argument = arg;
         argument.addUse(this);
     }
 

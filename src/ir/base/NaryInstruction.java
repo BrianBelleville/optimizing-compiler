@@ -11,9 +11,8 @@ public class NaryInstruction extends Instruction {
         super( o);
         arguments = new ArrayList<Value>();
         for(Value v: args) {
-            Value a = v.getSubstitute();
-            arguments.add(a);
-            a.addUse(this);
+            arguments.add(v);
+            v.addUse(this);
         }
     }
 
