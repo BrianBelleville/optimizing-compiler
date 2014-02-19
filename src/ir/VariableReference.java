@@ -13,11 +13,8 @@ public class VariableReference extends Value {
     private Identifier variable;
 
     public VariableReference(Identifier variable, Value value) {
-        if(value instanceof VariableReference) {
-            value = ((VariableReference)value).getInnerValue();
-        }
         this.variable = variable;
-        this.inner = value;
+        this.inner = value.stripVariableReference();
     }
 
     @Override
