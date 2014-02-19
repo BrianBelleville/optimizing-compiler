@@ -17,7 +17,11 @@ public class NaryInstruction extends Instruction {
 
     @Override
     public ArrayList<Value> getArguments() {
-        return arguments;
+        ArrayList<Value> rval = new ArrayList<Value>(arguments.size());
+        for(Value v : arguments) {
+            rval.add(v);
+        }
+        return rval;
     }
 
     @Override
