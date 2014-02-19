@@ -69,6 +69,7 @@ public abstract class Instruction extends Value {
     // get the instruction that should be used in place of this
     // instruction. If this instruction has been deleted, return the
     // instruction it has been deleted for
+    @Override
     public final Value getSubstitute() {
 	Instruction r = this;
         while(r.deleted != null) {
