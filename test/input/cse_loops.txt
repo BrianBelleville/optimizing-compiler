@@ -18,7 +18,8 @@ var w, x, y, z;
     let z <- z + z;
     let y <- z + y
   od;
-  call OutputNum(y)    
+  call OutputNum(y);
+  call OutputNum(w)
 };
 
 
