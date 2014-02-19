@@ -21,6 +21,11 @@ public class VariableReference extends Value {
     }
 
     @Override
+    public Value stripVariableReference() {
+        return inner;
+    }
+
+    @Override
     public void addUse(Instruction i) {
         inner.addUse(i);    // pass to inner
     }

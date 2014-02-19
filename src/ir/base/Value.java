@@ -12,6 +12,8 @@ public abstract class Value {
     public Value getSubstitute() throws Exception {
 	return this;		// default, no substitution
     }
-
+    public Value stripVariableReference() {
+        return this;            // default, return this, no variable reference
+    }
     abstract public void printAsArg(Writer w) throws IOException;
 }
