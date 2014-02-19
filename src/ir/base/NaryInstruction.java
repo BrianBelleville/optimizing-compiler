@@ -12,7 +12,6 @@ public class NaryInstruction extends Instruction {
         arguments = new ArrayList<Value>();
         for(Value v: args) {
             arguments.add(v);
-            v.addUse(this);
         }
     }
 

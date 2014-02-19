@@ -12,8 +12,6 @@ public class BinaryInstruction extends Instruction {
         super(o);
         arg1 = a1;
         arg2 = a2;
-        arg1.addUse(this);
-        arg2.addUse(this);
     }
 
     public Value getArg1() {
