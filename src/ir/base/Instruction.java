@@ -70,7 +70,7 @@ public abstract class Instruction extends Value {
     // instruction. If this instruction has been deleted, return the
     // instruction it has been deleted for
     @Override
-    public final Value getSubstitute() {
+    public final Value getSubstitute() throws Exception {
 	Instruction r = this;
         while(r.deleted != null) {
              r = r.deleted;

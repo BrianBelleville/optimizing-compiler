@@ -9,7 +9,7 @@ import java.io.Writer;
 public abstract class Value {
     public void addUse(Instruction i) {} // default is do nothing
     
-    public Value getSubstitute() {
+    public Value getSubstitute() throws Exception {
 	return this;		// default, no substitution
     }
 

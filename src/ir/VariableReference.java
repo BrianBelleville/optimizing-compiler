@@ -26,9 +26,9 @@ public class VariableReference extends Value {
     }
 
     @Override
-    public Value getSubstitute() {
-        // pass to inner, but still wrap in the variable reference
-        return new VariableReference(variable, inner.getSubstitute()); 
+    public Value getSubstitute() throws Exception {
+        // this would be a programming, not runtime error
+        throw new Exception("getSubstitute called on variable reference");
     }
 
     @Override
