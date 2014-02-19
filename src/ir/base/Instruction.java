@@ -117,5 +117,16 @@ public abstract class Instruction extends Value {
     public void replaceArgument(Value replace, Value i) throws Exception {
 	replaceArgument(replace, i, false);
     }
+
+    public void removeVariableReferenceArguments() throws Exception {
+        ArrayList<Value> args = getArguments();
+        for(Value v : args) {
+            // the argument should always be there, but we can't throw
+            // on error since it may be present multiple times, and
+            // the first replace would remove it, the second replace
+            // would then result in an error
+            replaceArgument(v, v.stripVariableReference());
+        }
+    }
 }
 
