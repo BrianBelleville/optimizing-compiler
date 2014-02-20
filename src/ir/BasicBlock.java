@@ -178,6 +178,31 @@ public class BasicBlock {
         BasicBlock.currentPass++;
     }
 
+    public void runPass(Pass p) {
+        runPassInternal(p);
+        currentPass++;
+    }
+
+    public void runPassInternal(Pass p) {
+        if(localPass == currentPass) {
+            return;
+        }
+        localPass = currentPass;
+        Instruction i = instructions.isEmpty() ? null : instructions.get(0);
+        while(i != null) {
+            i = p.run(i);
+        }
+        BasicBlock ch1 = getFallThrough();
+        BasicBlock ch2 = getBranchTarget();
+        if(ch1 != null) {
+            ch1.runPassInternal(p);
+        }
+        if(ch2 != null) {
+            ch2.runPassInternal(p);
+        }
+
+    }
+    
     private void stripVarRefsInternal() throws Exception {
         if(localPass == currentPass) {
             return;
