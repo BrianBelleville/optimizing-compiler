@@ -34,9 +34,9 @@ public class UnaryInstruction extends Instruction {
     }
 
     @Override
-    public void replaceArgument(Value replace, Value i, boolean throwOnError) throws Exception {
+    public void replaceArgument(Value replace, Value newVal, boolean throwOnError) throws Exception {
         if(argument.equals(replace)) {
-            argument = replace;
+            argument = newVal;
         } else if (throwOnError) {
             throw new Exception("error replacing argument, argument not present in instruction");
         }
