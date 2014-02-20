@@ -53,6 +53,7 @@ public class Main {
         FileWriter out = new FileWriter(filename);
         out.write("digraph Computation {\nnode [shape=box];\n");
         for(Function func : program) {
+            func.entryPoint.stripVarRefs();
             func.printFunc(out);
         }
         out.write("}");
