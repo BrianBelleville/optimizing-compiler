@@ -8,8 +8,6 @@ import ir.base.Value;
 // one will search through all of the instructions that it dominates
 // when a phi is added to replace the variable used in the phi.
 public class LoopHeader extends BasicBlock {
-    private static int currentReplacePass = 0;
-	
     public LoopHeader(BasicBlock dominator) {
         super(dominator);
     }
@@ -26,8 +24,8 @@ public class LoopHeader extends BasicBlock {
             // that are dominated by this block,
             // only need to do this search if the phi was newly added
 	    // replace the old values with the phi instruction
-            depthFirstReplace(this, p, new VariableReference(var, p), oldVal, currentReplacePass);
-	    currentReplacePass++;
+            depthFirstReplace(this, p, new VariableReference(var, p), oldVal, currentPass);
+	    currentPass++;
         }
     }
 
@@ -35,10 +33,10 @@ public class LoopHeader extends BasicBlock {
 					  Value oldVal, int pass)
         throws Exception
     {
-	if(b.replacePass == pass) {
+	if(b.localPass == pass) {
 	    return;
 	}
-	b.replacePass = pass;
+	b.localPass = pass;
         for(Instruction i : b.instructions) {
 	    // don't want to replace the actual phi instruction that
 	    // was just created

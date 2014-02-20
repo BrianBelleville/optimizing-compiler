@@ -1,6 +1,7 @@
 package ir;
 
 import compiler.Globals;
+import transform.Pass;
 import java.util.ArrayList;
 import support.Environment;
 import support.Identifier;
@@ -18,7 +19,8 @@ public class BasicBlock {
     private BasicBlock fallThrough;
     private static int blockNum = 0;
     private int number;
-    protected int replacePass = -1;
+    protected int localPass = -1;
+    protected static int currentPass = 0;
     private boolean printed = false;
     private Instruction mostRecentDominating;
 
@@ -169,5 +171,28 @@ public class BasicBlock {
         p.setContainingBB(this);
         // return the new Phi
         return p;
+    }
+
+    public void stripVarRefs() throws Exception {
+        stripVarRefsInternal();
+        BasicBlock.currentPass++;
+    }
+
+    private void stripVarRefsInternal() throws Exception {
+        if(localPass == currentPass) {
+            return;
+        }
+        localPass = BasicBlock.currentPass;
+        for(Instruction i : instructions) {
+            i.removeVariableReferenceArguments();
+        }
+        BasicBlock ch1 = getFallThrough();
+        BasicBlock ch2 = getBranchTarget();
+        if(ch1 != null) {
+            ch1.stripVarRefsInternal();
+        }
+        if(ch2 != null) {
+            ch2.stripVarRefsInternal();
+        }
     }
 }
