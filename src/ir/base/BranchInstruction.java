@@ -42,7 +42,7 @@ public class BranchInstruction extends Instruction {
     }
 
     @Override
-    public void delete(Instruction i) throws Exception {
+    public void delete(Value i) throws Exception {
 	throw new Exception("Error, attempt to delete a branch instruction");
     }
 

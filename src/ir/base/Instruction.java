@@ -12,7 +12,7 @@ public abstract class Instruction extends Value {
 
     private BasicBlock bb;
     private int number;
-    private Instruction deleted;
+    private Value deleted;
     private Instruction dominating;
 
     private Opcode opcode;
@@ -71,11 +71,7 @@ public abstract class Instruction extends Value {
     // instruction it has been deleted for
     @Override
     public final Value getSubstitute() throws Exception {
-	Instruction r = this;
-        while(r.deleted != null) {
-             r = r.deleted;
-        }
-        return r;
+        return isDeleted() ? deleted : this;
     }
 
     public final boolean isDeleted() {
@@ -92,8 +88,10 @@ public abstract class Instruction extends Value {
 
     // delete this instruction in favor of instruction i, in other
     // words perform common subexpression elimination.
-    public void delete(Instruction i) throws Exception {
-        deleted = i;
+    public void delete(Value i) throws Exception {
+        // make sure if i has already been deleted we delete ourselves
+        // with whatever i was deleted for
+        deleted = i.getSubstitute(); 
     }
 
     public boolean isCommonSubexpression(Instruction i) {
@@ -113,7 +111,7 @@ public abstract class Instruction extends Value {
         Instruction i = dominating;
         while(i != null) {
             if(this.isCommonSubexpression(i)) {
-                this.delete((Instruction)i.getSubstitute()); // should always be an instruction, not ideal
+                this.delete(i.getSubstitute());
                 return;
             }
             i = i.dominating;
