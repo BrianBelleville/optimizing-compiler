@@ -1,0 +1,16 @@
+#% -dead-code-elim
+# Brian Belleville 2014
+
+main 
+var x, y, z, w;
+{
+    let x <- call InputNum();
+    let y <- 2 * x;
+    # after this point it will all be dead code
+    let z <- x + y;
+    let w <- z + x * y / 2;
+    let x <- w + 3;
+    let z <- x + 4;
+    let w <- w * 2 + x + z + y;
+    call OutputNum(y)
+}.
