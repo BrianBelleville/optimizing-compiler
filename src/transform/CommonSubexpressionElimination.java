@@ -7,7 +7,8 @@ public class CommonSubexpressionElimination implements Pass {
     public void run(ListIterator<Instruction> iter)
     throws Exception {
         Instruction i = iter.next();
-        i.performCommonSubexpressionElimination();
+        i.getArgumentSubstitutes();
+        i.performCSE();
         if(i.isDeleted()) {
             iter.remove();
         }

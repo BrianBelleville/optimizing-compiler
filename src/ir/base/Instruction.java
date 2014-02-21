@@ -100,15 +100,6 @@ public abstract class Instruction extends Value {
         return this.opcode == i.opcode && this.getArguments().equals(i.getArguments());
     }
 
-    public final void performCommonSubexpressionElimination() throws Exception {
-        // first substitute any arguments that may have been already eliminated        
-        getArgumentSubstitutes();
-        
-        // then call the CSE implementation for whatever the dynamic
-        // type of this is
-        performCSE();
-    }
-    
     public void performCSE() throws Exception {
         Instruction i = dominating;
         while(i != null) {
