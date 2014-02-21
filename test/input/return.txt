@@ -1,0 +1,15 @@
+# Brian Belleville 2014
+# A very simple test to make sure that return statements are properly inserted.
+
+main
+
+procedure foo( );
+{
+	call OutputNum(55);
+	return
+};
+
+{
+	call foo;
+	return
+}.
