@@ -88,10 +88,12 @@ def generate_ref_out(name):
     print("DONE")
 
 if __name__ == "__main__":
-    # if there are no command line arguments, run all tests
+    # if there are no command line arguments, run all tests that have
+    # reference output available
     if(len(argv) == 1):
         tests = sorted(map(strip_file_extension,
-                           filter(is_test, os.listdir(input_dir))))
+                           filter(lambda name: file_extension(name) == '.gv'
+                                  , os.listdir(output_dir))))
     else:
         tests = []
         i = 1
@@ -100,6 +102,9 @@ if __name__ == "__main__":
             if a == "-ref":
                 i += 1
                 generate_ref_out(argv[i])
+            if a == "-all":
+                tests = sorted(map(strip_file_extension,
+                                   filter(is_test, os.listdir(input_dir))))
             else:
                 tests.append(a)
             i += 1
