@@ -1,15 +1,11 @@
 package support;
 
 import ir.BasicBlock;
-import ir.Adda;
 import ir.Load;
 import ir.Store;
-import ir.Add;
-import ir.Mul;
+import ir.ArrayIndex;
 import ir.NamedValue;
-import ir.Immediate;
 import ir.base.Value;
-import ir.base.Instruction;
 import java.util.ArrayList;
 
 public class ArrayType extends Type {
@@ -40,7 +36,7 @@ public class ArrayType extends Type {
         if(!(d instanceof ArrayDesignator)) {
             throw new Exception("Array accessed as a variable");
         }
-        Adda a = emitIndexingCode((ArrayDesignator)d, cur);
+        Value a = emitIndexingCode((ArrayDesignator)d, cur);
         Store s = new Store(d.getVarName(), a, newVal);
         cur.addInstruction(s);
     }
@@ -54,7 +50,7 @@ public class ArrayType extends Type {
         if(!(d instanceof ArrayDesignator)) {
             throw new Exception("Array accessed as a variable");
         }
-        Adda a = emitIndexingCode((ArrayDesignator)d, cur);
+        Value a = emitIndexingCode((ArrayDesignator)d, cur);
         Load l = new Load(d.getVarName(), global, a);
         cur.addInstruction(l);
         return l;
@@ -72,71 +68,13 @@ public class ArrayType extends Type {
         }
     }
 
-    private Adda emitIndexingCode(ArrayDesignator d, BasicBlock cur)
+    private Value emitIndexingCode(ArrayDesignator d, BasicBlock cur)
         throws Exception {
         ArrayList<Value> index = d.getIndex();
         if(index.size() != multipliers.length) {
             throw new Exception("Error, incorrect number of array indexes");
         }
-        Value acc = null;
-        int s = multipliers.length;
-        int immediateAcc = 0;   // accumulate immediate offsets
-        for(int i = 0; i < s; i++) {
-            Value v = index.get(i);
-            if(v instanceof Immediate) {
-                int val = ((Immediate)v).getValue();
-                immediateAcc = immediateAcc + (val * multipliers[i]);
-            } else {
-                Value currentOffset;
-                // if multiplier is 1, don't need a mul inst
-                if(multipliers[i] == 1) {
-                    currentOffset = v;
-                } else {
-                    Mul mul = new Mul(v, new Immediate(multipliers[i]));
-                    cur.addInstruction(mul);
-                    currentOffset = mul;
-                }
-                if(acc != null) {
-                    Add add = new Add(acc, currentOffset);
-                    cur.addInstruction(add);
-                    acc = add;
-                } else {
-                    acc = currentOffset;
-                }
-            }
-        }
-
-        // now depending on how much of the offset is already
-        // determined, generate the final code to index into the array
-        Value finalOffset = null;
-        if(acc == null && immediateAcc == 0) {
-            // offset entirely determined during compilation to be 0
-            // load base address
-            finalOffset = getAddr(d);
-        } else if(acc == null && immediateAcc != 0) {
-            // offset entirely determined during compilation, and is not 0
-            Instruction t = new Add(getAddr(d), new Immediate(immediateAcc));
-            cur.addInstruction(t);
-            finalOffset = t;
-        } else if(acc != null && immediateAcc != 0) {
-            // the final offset will be determined at runtime
-            // take into account what can be determined at compile time
-            Instruction a = new Add(acc, new Immediate(immediateAcc));
-            cur.addInstruction(a);
-            Instruction f = new Add(getAddr(d), a);
-            cur.addInstruction(f);
-            finalOffset = f;
-        } else if (acc != null && immediateAcc == 0) {
-            // final offset will be determined at runtime, there is no
-            // contribution determined at compile time that needs to
-            // be added
-            Instruction f = new Add(getAddr(d), acc);
-            cur.addInstruction(f);
-            finalOffset = f;
-        } else {                // shouldn't get here, all cases should be acounted for
-            throw new Exception("Unable to determine array offset");
-        }
-        Adda rval = new Adda(global ? getGBP() : getFP(), finalOffset);
+        ArrayIndex rval =  new ArrayIndex(global ? getGBP() : getFP(), getAddr(d), multipliers, index);
         cur.addInstruction(rval);
         return rval;
     }
