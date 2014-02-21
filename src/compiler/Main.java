@@ -34,7 +34,7 @@ public class Main {
             if(input == null) {
                 throw new Exception("No input file provided");
             }
-            
+
             // create list of passes based on program arguments
             ArrayList<Pass> passes = new ArrayList<Pass>();
             passes.add(new StripVariableReference());
@@ -43,7 +43,7 @@ public class Main {
             }
 
             File f = new File(input);
-	    IdentifierTable t = new IdentifierTable();
+            IdentifierTable t = new IdentifierTable();
             Parser parse = new Parser(f, t);
             ArrayList<Function> program = parse.parse();
             for(Pass p : passes) {
@@ -51,7 +51,7 @@ public class Main {
                     func.entryPoint.runPass(p);
                 }
             }
-            
+
             if(cfgOut != null) {
                 outputCFG(cfgOut, program);
             }
