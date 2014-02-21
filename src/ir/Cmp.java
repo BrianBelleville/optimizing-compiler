@@ -1,6 +1,7 @@
 package ir;
 
 import ir.base.BinaryInstruction;
+import ir.base.Instruction;
 import ir.base.Opcode;
 import ir.base.Value;
 
@@ -21,5 +22,20 @@ public class Cmp extends BinaryInstruction {
 
     public CmpType getType() {
 	return cmpType;
+    }
+    
+    @Override
+    public boolean isCommonSubexpression(Instruction i) {
+	return false;		// can never be common subexpressions
+    }
+
+    @Override
+    public void performCSE() {
+	return;			// no op, can never be common subexpressions
+    }
+    
+    @Override
+    public boolean isDeadCode() {
+        return false;           // can not be dead code
     }
 }
