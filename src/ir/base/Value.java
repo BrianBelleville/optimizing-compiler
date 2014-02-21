@@ -1,6 +1,5 @@
 package ir.base;
 
-import java.io.IOException;
 import java.io.Writer;
 
 // possibly use this as a more lightweight interface for things that
@@ -15,5 +14,5 @@ public abstract class Value {
     public Value stripVariableReference() {
         return this;            // default, return this, no variable reference
     }
-    abstract public void printAsArg(Writer w) throws IOException;
+    abstract public void printAsArg(Writer w) throws Exception;
 }

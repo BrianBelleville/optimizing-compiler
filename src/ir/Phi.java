@@ -1,6 +1,5 @@
 package ir;
 
-import java.io.IOException;
 import java.io.Writer;
 import ir.base.BinaryInstruction;
 import ir.base.Instruction;
@@ -20,7 +19,7 @@ public class Phi extends BinaryInstruction {
     }
 
     @Override
-    public void printInstruction(Writer w) throws IOException {
+    public void printInstruction(Writer w) throws Exception {
 	super.printInstruction(w);
 	w.write(" \\\"" + variable.getString() + "\\\"");
     }

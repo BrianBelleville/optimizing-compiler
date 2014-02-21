@@ -1,8 +1,6 @@
 package ir;
 
 import ir.base.Value;
-
-import java.io.IOException;
 import java.io.Writer;
 
 public class Immediate extends Value {
@@ -31,7 +29,7 @@ public class Immediate extends Value {
     }
 
     @Override
-    public void printAsArg(Writer w) throws IOException {
+    public void printAsArg(Writer w) throws Exception {
 	w.write(" #" + Integer.toString(value));
     }
 }

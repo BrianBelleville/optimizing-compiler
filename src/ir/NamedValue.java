@@ -1,8 +1,6 @@
 package ir;
 
 import ir.base.Value;
-
-import java.io.IOException;
 import java.io.Writer;
 
 public class NamedValue extends Value {
@@ -26,7 +24,7 @@ public class NamedValue extends Value {
     }
 
     @Override
-    public void printAsArg(Writer w) throws IOException {
+    public void printAsArg(Writer w) throws Exception {
 	w.write(" " + name);
     }	
 }

@@ -8,7 +8,6 @@ import support.Identifier;
 import ir.base.BranchInstruction;
 import ir.base.Instruction;
 import ir.base.Value;
-import java.io.IOException;
 import java.io.Writer;
 
 // todo: have a table containing the most recent instance of a
@@ -48,7 +47,7 @@ public class BasicBlock {
 	return instructions.isEmpty();
     }
 
-    public void printBlock(Writer w) throws IOException {
+    public void printBlock(Writer w) throws Exception {
         if(!printed) {
             printed = true;
             w.write(getNodeName() + " [label=\"" + getNodeName() + "\\l");

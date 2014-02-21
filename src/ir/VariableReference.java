@@ -1,6 +1,5 @@
 package ir;
 
-import java.io.IOException;
 import java.io.Writer;
 
 import ir.base.Instruction;
@@ -34,7 +33,7 @@ public class VariableReference extends Value {
     }
 
     @Override
-    public void printAsArg(Writer w) throws IOException {
+    public void printAsArg(Writer w) throws Exception {
         inner.printAsArg(w);
     }
 

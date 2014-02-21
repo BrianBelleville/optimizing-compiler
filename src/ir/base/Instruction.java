@@ -2,8 +2,6 @@ package ir.base;
 
 
 import ir.BasicBlock;
-
-import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
 
@@ -26,11 +24,14 @@ public abstract class Instruction extends Value {
     }
 
     @Override
-    public void printAsArg(Writer w) throws IOException {
+    public void printAsArg(Writer w) throws Exception {
+        if(isDeleted()) {
+            throw new Exception("Deleted instruction used as an argument");
+        }
 	w.write(" (" + Integer.toString(number) + ")");
     }
 
-    public void printInstruction(Writer w) throws IOException {
+    public void printInstruction(Writer w) throws Exception {
 	w.write(Integer.toString(number) + ": " + opcode.toString());
 	ArrayList<Value> args = getArguments();
 	for(Value v : args) {
