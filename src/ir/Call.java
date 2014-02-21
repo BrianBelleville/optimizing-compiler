@@ -32,7 +32,7 @@ public class Call extends NaryInstruction {
     }
 
     @Override
-    protected void performCSE() {
+    public void performCSE() {
 	return;			// no op, can never be common subexpressions
     }
 }

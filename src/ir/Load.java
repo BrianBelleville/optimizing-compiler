@@ -35,7 +35,7 @@ public class Load extends UnaryInstruction {
     }
 
     @Override
-    protected void performCSE() throws Exception {
+    public void performCSE() throws Exception {
         Instruction i = getDominating();
         while(i != null) {
             if(!this.getContainingBB().equals(i.getContainingBB())) {

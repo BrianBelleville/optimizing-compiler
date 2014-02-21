@@ -14,7 +14,6 @@ public abstract class Instruction extends Value {
     private int number;
     private Value deleted;
     private Instruction dominating;
-
     private Opcode opcode;
     public ArrayList<Instruction> uses;
 
@@ -110,7 +109,7 @@ public abstract class Instruction extends Value {
         performCSE();
     }
     
-    protected void performCSE() throws Exception {
+    public void performCSE() throws Exception {
         Instruction i = dominating;
         while(i != null) {
             if(this.isCommonSubexpression(i)) {

@@ -23,7 +23,7 @@ public class Store extends BinaryInstruction {
     }
 
     @Override
-    protected void performCSE() {
+    public void performCSE() {
 	return;			// no op, stores can never be common subexpressions
     }
 

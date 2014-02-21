@@ -30,7 +30,7 @@ public class Phi extends BinaryInstruction {
     }
 
     @Override
-    protected void performCSE() {
+    public void performCSE() {
 	return;			// no op, can never be common subexpressions
     }
 
