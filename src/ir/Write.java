@@ -9,7 +9,7 @@ public class Write extends ir.base.UnaryInstruction {
     public Write(Value arg) {
         super(Opcode.write, arg);
     }
-    
+
     @Override
     public boolean isCommonSubexpression(Instruction i) {
 	return false;		// can never be common subexpressions
@@ -20,4 +20,8 @@ public class Write extends ir.base.UnaryInstruction {
 	return;			// no op, can never be common subexpressions
     }
 
+    @Override
+    public boolean isDeadCode() {
+        return false;           // can not be dead code
+    }
 }

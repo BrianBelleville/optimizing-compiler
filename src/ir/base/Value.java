@@ -7,7 +7,9 @@ import java.io.Writer;
 // everthing as an instruction.
 public abstract class Value {
     public void addUse(Instruction i) {} // default is do nothing
-    
+    public void removeUse(Instruction i)
+        throws Exception {} // default is do nothing
+
     public Value getSubstitute() throws Exception {
 	return this;		// default, no substitution
     }

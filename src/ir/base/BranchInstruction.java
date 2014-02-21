@@ -50,4 +50,8 @@ public class BranchInstruction extends Instruction {
 	return new ArrayList<Value>();		// branch instructions real argument is the target
     }
 
+    @Override
+    public boolean isDeadCode() {
+        return false;           // can not be dead code
+    }        
 }

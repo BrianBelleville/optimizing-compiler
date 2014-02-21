@@ -86,6 +86,17 @@ public abstract class Instruction extends Value {
         uses.add(i);
     }
 
+    public final void removeUse(Instruction i)
+    throws Exception {
+        if(!uses.remove(i)) {
+            throw new Exception("Use not present");
+        }
+    }
+
+    public boolean isDeadCode() {
+        return uses.isEmpty();
+    }
+
     // delete this instruction in favor of instruction i, in other
     // words perform common subexpression elimination.
     public void delete(Value i) throws Exception {

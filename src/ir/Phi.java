@@ -33,4 +33,12 @@ public class Phi extends BinaryInstruction {
 	return;			// no op, can never be common subexpressions
     }
 
+    @Override
+    public boolean isDeadCode() {
+        // if the phi is unused, or if it chooses between the same
+        // values, it isn't necessary.
+        return super.isDeadCode() || getArg1().equals(getArg2());
+    }        
+    
+
 }

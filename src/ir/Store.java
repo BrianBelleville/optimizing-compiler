@@ -27,4 +27,9 @@ public class Store extends BinaryInstruction {
 	return;			// no op, stores can never be common subexpressions
     }
 
+    @Override
+    public boolean isDeadCode() {
+        return false;           // can not be dead code
+    }        
+
 }

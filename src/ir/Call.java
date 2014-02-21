@@ -33,4 +33,9 @@ public class Call extends NaryInstruction {
     public void performCSE() {
 	return;			// no op, can never be common subexpressions
     }
+
+    @Override
+    public boolean isDeadCode() {
+        return false;           // can not be dead code
+    }
 }
