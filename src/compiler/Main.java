@@ -41,6 +41,15 @@ public class Main {
             if(Globals.performCSE) {
                 passes.add(new CommonSubexpressionElimination());
             }
+            // the CSE pass will make the dominator information change
+            // as instructions are deleted, so this pass will clear
+            // that information. Even if CSE is not performed it is
+            // good to do this to make the compilation options as
+            // consistent as possible. This just allows bugs to be
+            // caught more easily if subsequent passes make use of the
+            // dominator information.
+            passes.add(new InvalidateDominatorInformation());
+            passes.add(new ConstructUseChain());
 
             File f = new File(input);
             IdentifierTable t = new IdentifierTable();
