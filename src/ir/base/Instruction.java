@@ -101,6 +101,9 @@ public abstract class Instruction extends Value {
     }
 
     public void performCSE() throws Exception {
+        // first substitute any arguments that may have been already eliminated        
+        getArgumentSubstitutes();
+        
         Instruction i = dominating;
         while(i != null) {
             if(this.isCommonSubexpression(i)) {
@@ -108,6 +111,13 @@ public abstract class Instruction extends Value {
                 return;
             }
             i = i.dominating;
+        }
+    }
+
+    public void getArgumentSubstitutes() throws Exception {
+        ArrayList<Value> args = getArguments();
+        for(Value v : args) {
+            replaceArgument(v, v.getSubstitute());            
         }
     }
 
