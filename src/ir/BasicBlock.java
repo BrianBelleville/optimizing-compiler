@@ -91,14 +91,9 @@ public class BasicBlock {
     }
     public void addInstruction(Instruction i) throws Exception {
         i.setDominating(mostRecentDominating);
-        // even though i may not be added to the basic block, still
-        // set which basic block it would be added to since it is used
-        // during performCSE()
         i.setContainingBB(this);
-        if(!i.isDeleted()) {
-            instructions.add(i);
-            mostRecentDominating = i;
-        }
+        instructions.add(i);
+        mostRecentDominating = i;
     }
 
     public void addPhi(Identifier var, Value oldVal, Value newVal)
