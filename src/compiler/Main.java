@@ -25,6 +25,11 @@ public class Main {
                 case "-cse":
                     Globals.performCSE = true;
                     break;
+                case "-dead-code-elim":
+                    Globals.performDeadCodeElimination = true;
+                    break;
+                case "-no-dead-code-elim":
+                    Globals.performDeadCodeElimination = false;
                 default:
                     // interpret as an input filename
                     input = args[i];
@@ -49,7 +54,13 @@ public class Main {
             // caught more easily if subsequent passes make use of the
             // dominator information.
             passes.add(new InvalidateDominatorInformation());
+
             passes.add(new ConstructUseChain());
+
+            if(Globals.performDeadCodeElimination) {
+                passes.add(new DeadCodeElimination());
+                passes.add(new RemoveDeletedInstructions());
+            }
 
             File f = new File(input);
             IdentifierTable t = new IdentifierTable();
