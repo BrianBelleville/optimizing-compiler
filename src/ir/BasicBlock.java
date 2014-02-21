@@ -1,6 +1,5 @@
 package ir;
 
-import compiler.Globals;
 import transform.Pass;
 import java.util.LinkedList;
 import java.util.ListIterator;
@@ -96,9 +95,6 @@ public class BasicBlock {
         // set which basic block it would be added to since it is used
         // during performCSE()
         i.setContainingBB(this);
-        if(Globals.performCSE) {
-            i.performCSE();
-        }
         if(!i.isDeleted()) {
             instructions.add(i);
             mostRecentDominating = i;
