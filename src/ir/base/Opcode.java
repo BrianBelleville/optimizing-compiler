@@ -26,5 +26,6 @@ public enum Opcode {
     ret,
     call,
     alloc,
-    immediate
+    immediate,
+    index
 }
