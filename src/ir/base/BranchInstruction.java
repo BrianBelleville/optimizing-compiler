@@ -37,7 +37,7 @@ public class BranchInstruction extends Instruction {
     }
 
     @Override
-    public void performCSE() {
+    protected void performCSE() {
 	return;			// no op, branches can never be common subexpressions
     }
 

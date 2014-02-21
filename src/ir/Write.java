@@ -16,7 +16,7 @@ public class Write extends ir.base.UnaryInstruction {
     }
 
     @Override
-    public void performCSE() {
+    protected void performCSE() {
 	return;			// no op, can never be common subexpressions
     }
 

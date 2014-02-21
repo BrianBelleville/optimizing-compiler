@@ -16,7 +16,7 @@ public class Ret extends UnaryInstruction {
     }
 
     @Override
-    public void performCSE() {
+    protected void performCSE() {
 	return;			// no op, can never be common subexpressions
     }
 }
