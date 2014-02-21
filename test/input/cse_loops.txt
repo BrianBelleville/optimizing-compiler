@@ -4,12 +4,13 @@
 main
 
 procedure test1;
-var w, x, y, z;
+var a, w, x, y, z;
 {
-  let x <- 0;
+  let x <- call InputNum();
   let y <- call InputNum();
   let z <- call InputNum();
   let w <- y + z;
+  let a <- x + 1;
   while x < z do
     # this should not be eliminated since y and z are assigned to in
     # the loop, this ends up not being a common subexpression of
@@ -17,7 +18,12 @@ var w, x, y, z;
     let w <- y + z;
     let z <- z + z;
     let y <- z + y
+        
   od;
+  # the add should be eliminated
+  call OutputNum(x + 1);
+  # but this one should not
+  call OutputNum(y + x);
   call OutputNum(y);
   call OutputNum(w)
 };
