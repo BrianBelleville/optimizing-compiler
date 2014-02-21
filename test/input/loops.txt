@@ -21,7 +21,7 @@ var w, x, y, z;
     od;
     let x <- call InputNum()	# generate a phi for x
   od;
-  call OutputNum(y)    
+  call OutputNum(x)    
 };
 
 procedure constantsTest;
@@ -50,5 +50,6 @@ procedure foo(x, y, z);
 };
 
 {
-  call test1
+  call test1;
+  call constantsTest
 }.
