@@ -89,6 +89,9 @@ public abstract class Instruction extends Value {
     // delete this instruction in favor of instruction i, in other
     // words perform common subexpression elimination.
     public void delete(Value i) throws Exception {
+        if(isDeleted()) {
+            throw new Exception("Attempt to delete an instruction twice");
+        }            
         // make sure if i has already been deleted we delete ourselves
         // with whatever i was deleted for
         deleted = i.getSubstitute(); 
