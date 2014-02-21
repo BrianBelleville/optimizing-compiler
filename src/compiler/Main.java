@@ -2,7 +2,7 @@ package compiler;
 
 import java.io.File;
 import java.io.FileWriter;
-import transform.StripVariableReference;
+import transform.*;
 import support.IdentifierTable;
 import java.util.ArrayList;
 import ir.Function;
@@ -34,10 +34,21 @@ public class Main {
             if(input == null) {
                 throw new Exception("No input file provided");
             }
+            
+            // create list of passes based on program arguments
+            ArrayList<Pass> passes = new ArrayList<Pass>();
+            passes.add(new StripVariableReference());
+
             File f = new File(input);
 	    IdentifierTable t = new IdentifierTable();
             Parser parse = new Parser(f, t);
             ArrayList<Function> program = parse.parse();
+            for(Pass p : passes) {
+                for(Function func : program) {
+                    func.entryPoint.runPass(p);
+                }
+            }
+            
             if(cfgOut != null) {
                 outputCFG(cfgOut, program);
             }
@@ -53,7 +64,6 @@ public class Main {
         FileWriter out = new FileWriter(filename);
         out.write("digraph Computation {\nnode [shape=box];\n");
         for(Function func : program) {
-            func.entryPoint.runPass(new StripVariableReference());
             func.printFunc(out);
         }
         out.write("}");
