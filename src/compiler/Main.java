@@ -2,7 +2,7 @@ package compiler;
 
 import java.io.File;
 import java.io.FileWriter;
-
+import transform.StripVariableReference;
 import support.IdentifierTable;
 import java.util.ArrayList;
 import ir.Function;
@@ -53,7 +53,7 @@ public class Main {
         FileWriter out = new FileWriter(filename);
         out.write("digraph Computation {\nnode [shape=box];\n");
         for(Function func : program) {
-            func.entryPoint.stripVarRefs();
+            func.entryPoint.runPass(new StripVariableReference());
             func.printFunc(out);
         }
         out.write("}");
