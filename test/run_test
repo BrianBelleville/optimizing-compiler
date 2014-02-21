@@ -20,11 +20,16 @@ def run_no_output(args):
     null = open("/dev/null")
     proc = subprocess.Popen(args, stdout = null, stderr = null)
     ret = proc.wait()
-    return ret == 0;
+    return ret == 0
+
+def run(args):
+    proc = subprocess.Popen(args)
+    ret = proc.wait()
+    return ret == 0
 
 # returns true on success (files match) false on error
 def run_diff(file1, file2):
-    return run_no_output([diff, file1, file2]);
+    return run_no_output([diff, file1, file2])
 
 def run_dot(in_file):
     png_out = strip_file_extension(in_file) + ".svg"
@@ -33,7 +38,7 @@ def run_dot(in_file):
 # you can specify extra compilation options if the first line of the
 # file starts with '#%'. After that marker, the remaining contents of
 # the first line will be sent to the compiler as extra options
-def compile_pl241(in_file, out_file):
+def compile_pl241(in_file, out_file, no_output = True):
     extra_args = []
     if(not os.path.exists(in_file)):
         print("File", in_file, "not found, aborting test case ", end="")
@@ -43,7 +48,11 @@ def compile_pl241(in_file, out_file):
     fin.close()
     if(first[:2] == '#%'):
         extra_args = first[2:].split(sep=" ")
-    return run_no_output([pl241c, in_file, "-cfg", out_file] + extra_args)
+    args = [pl241c, in_file, "-cfg", out_file] + extra_args
+    if(no_output):
+        return run_no_output(args)
+    else:
+        return run(args)
 
 def strip_file_extension(name):
     return os.path.splitext(name)[0]
@@ -102,7 +111,14 @@ if __name__ == "__main__":
             if a == "-ref":
                 i += 1
                 generate_ref_out(argv[i])
-            if a == "-all":
+            elif a == "-compile":
+                i += 1
+                name = argv[i]
+                infile = input_dir + name + ".txt"
+                result_file = result_dir + name + ".gv"
+                print("Compiling", name)
+                compile_pl241(infile, result_file, False)
+            elif a == "-all":
                 tests = sorted(map(strip_file_extension,
                                    filter(is_test, os.listdir(input_dir))))
             else:
