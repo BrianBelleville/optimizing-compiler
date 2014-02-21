@@ -1,0 +1,39 @@
+digraph Computation {
+node [shape=box];
+foo -> b_1;
+b_1 [label="b_1\l"]
+b_1 -> b_2;
+b_2 [label="b_2\l20: phi #0 (19) \"i\"\l18: phi var_d (17) \"d\"\l1: cmp (20) #10\l2: bge b_4\l"]
+b_2 -> b_3;
+b_3 [label="b_3\l3: adda GBP var_y_addr\l4: load (3)\l5: add (4) #2\l6: adda GBP var_y_addr\l7: store (6) (5)\l8: adda GBP var_x_addr\l9: load (8)\l10: add (9) #2\l11: adda GBP var_z_addr\l12: store (11) (10)\l13: adda GBP var_y_addr\l14: load (13)\l15: adda GBP var_z_addr\l16: load (15)\l17: add (14) (16)\l19: add (20) #1\l21: bra b_2\l"]
+b_3 -> b_2;
+b_3 -> b_2[color="green"];
+b_2 -> b_4;
+b_4 [label="b_4\l22: ret (18)\l"]
+b_4 -> b_2[color="green"];
+b_2 -> b_1[color="green"];
+bar -> b_5;
+b_5 [label="b_5\l"]
+b_5 -> b_6;
+b_6 [label="b_6\l42: phi #0 (41) \"i\"\l36: phi #0 (34) \"j\"\l23: cmp (42) #4\l24: bge b_8\l"]
+b_6 -> b_7;
+b_7 [label="b_7\l"]
+b_7 -> b_9;
+b_9 [label="b_9\l34: phi (36) (33) \"j\"\l25: cmp (34) #4\l26: bge b_11\l"]
+b_9 -> b_10;
+b_10 [label="b_10\l27: mul (42) #16\l28: mul (34) #4\l29: add (27) (28)\l30: add array_b_addr (29)\l31: adda GBP (30)\l32: store (31) (34)\l33: add (34) #1\l35: bra b_9\l"]
+b_10 -> b_9;
+b_10 -> b_9[color="green"];
+b_9 -> b_11;
+b_11 [label="b_11\l37: mul (42) #4\l38: add array_a_addr (37)\l39: adda GBP (38)\l40: store (39) (42)\l41: add (42) #1\l43: bra b_6\l"]
+b_11 -> b_6;
+b_11 -> b_9[color="green"];
+b_9 -> b_7[color="green"];
+b_7 -> b_6[color="green"];
+b_6 -> b_8;
+b_8 [label="b_8\l"]
+b_8 -> b_6[color="green"];
+b_6 -> b_5[color="green"];
+__MAIN__ -> b_12;
+b_12 [label="b_12\l44: adda GBP var_x_addr\l45: store (44) #0\l46: adda GBP var_y_addr\l47: store (46) #0\l48: adda GBP var_z_addr\l49: store (48) #0\l50: adda GBP var_x_addr\l51: load (50)\l52: adda GBP var_z_addr\l53: load (52)\l54: call bar (51) (53)\l55: call foo\l56: call OutputNum (55)\l"]
+}
