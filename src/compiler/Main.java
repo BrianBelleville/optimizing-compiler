@@ -38,6 +38,9 @@ public class Main {
             // create list of passes based on program arguments
             ArrayList<Pass> passes = new ArrayList<Pass>();
             passes.add(new StripVariableReference());
+            if(Globals.performCSE) {
+                passes.add(new CommonSubexpressionElimination());
+            }
 
             File f = new File(input);
 	    IdentifierTable t = new IdentifierTable();
