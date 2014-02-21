@@ -2,7 +2,8 @@ package ir;
 
 import compiler.Globals;
 import transform.Pass;
-import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.ListIterator;
 import support.Environment;
 import support.Identifier;
 import ir.base.BranchInstruction;
@@ -15,7 +16,7 @@ import java.io.Writer;
 //       opcode, this can be used to perform CSE faster
 public class BasicBlock {
     private BasicBlock dominator;
-    public ArrayList<Instruction> instructions;
+    public LinkedList<Instruction> instructions;
     private BasicBlock fallThrough;
     private static int blockNum = 0;
     private int number;
@@ -32,7 +33,7 @@ public class BasicBlock {
     public BasicBlock(BasicBlock dominator) {
         this.dominator = dominator;
         number = getNextBlockNum();
-        instructions = new ArrayList<Instruction>();
+        instructions = new LinkedList<Instruction>();
         if(this.dominator != null) {
             mostRecentDominating = this.dominator.mostRecentDominating;
         } else {
@@ -178,19 +179,19 @@ public class BasicBlock {
         BasicBlock.currentPass++;
     }
 
-    public void runPass(Pass p) {
+    public void runPass(Pass p) throws Exception {
         runPassInternal(p);
         currentPass++;
     }
 
-    public void runPassInternal(Pass p) {
+    public void runPassInternal(Pass p) throws Exception {
         if(localPass == currentPass) {
             return;
         }
         localPass = currentPass;
-        Instruction i = instructions.isEmpty() ? null : instructions.get(0);
-        while(i != null) {
-            i = p.run(i);
+        ListIterator<Instruction> i = instructions.listIterator(0);
+        while(i.hasNext()) {
+            p.run(i);
         }
         BasicBlock ch1 = getFallThrough();
         BasicBlock ch2 = getBranchTarget();
