@@ -1,12 +1,15 @@
 package transform;
 
+import java.util.ListIterator;
 import ir.base.Instruction;
+
 
 public interface Pass {
     // this interface provides a pass that will be run on every
     // instruction in a basic block. Since the pass may alter the
-    // structure of the instruction sequence, each call should return
-    // the next instruction to run on. This allows all of the common
-    // looping code to be eliminated from a pass.
-    public abstract Instruction run(Instruction i);
+    // structure of the instruction sequence, we give the pass an
+    // iterator. This can be used to modify the instruction sequence
+    // as necessary. The method run will always be called with an iterator such
+    // that i.hasNext() == true;
+    public abstract void run(ListIterator<Instruction> i) throws Exception;
 }
