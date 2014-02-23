@@ -7,7 +7,7 @@ import ir.VariableReference;
 import ir.base.Value;
 import support.Identifier;
 
-public class ReplaceVariableInLoop implements Pass {
+public class ReplaceVariableInLoop extends Pass {
     Phi phiInst;
     VariableReference newVal;
     Value oldVal;
@@ -17,6 +17,7 @@ public class ReplaceVariableInLoop implements Pass {
         this.oldVal = oldVal;
     }
 
+    @Override
     public void run(ListIterator<Instruction> iter)
         throws Exception {
         Instruction i = iter.next();

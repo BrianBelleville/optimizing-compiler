@@ -5,7 +5,8 @@ import java.util.ArrayList;
 import ir.base.Value;
 import ir.base.Instruction;
 
-public class ConstructUseChain implements Pass {
+public class ConstructUseChain extends Pass {
+    @Override
     public void run(ListIterator<Instruction> iter)
         throws Exception {
         Instruction i = iter.next();

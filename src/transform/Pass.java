@@ -4,7 +4,7 @@ import java.util.ListIterator;
 import ir.base.Instruction;
 
 
-public interface Pass {
+public abstract class Pass {
     // this interface provides a pass that will be run on every
     // instruction in a basic block. Since the pass may alter the
     // structure of the instruction sequence, we give the pass an

@@ -7,7 +7,8 @@ import ir.BasicBlock;
 import ir.base.Instruction;
 import java.util.ArrayList;
 
-public class GenerateArrayIndexingComputations implements Pass {
+public class GenerateArrayIndexingComputations extends Pass {
+    @Override
     public void run(ListIterator<Instruction> iter)
     throws Exception {
         Instruction i = iter.next();

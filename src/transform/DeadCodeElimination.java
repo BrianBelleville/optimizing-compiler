@@ -5,8 +5,9 @@ import ir.base.Instruction;
 import ir.base.Value;
 import ir.NamedValue;
 
-public class DeadCodeElimination implements Pass {
+public class DeadCodeElimination extends Pass {
     private static Value deleteFor = new NamedValue("DELETED");
+    @Override
     public void run(ListIterator<Instruction> iter)
         throws Exception {
         Instruction i = iter.next();
