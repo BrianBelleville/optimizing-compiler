@@ -3,17 +3,17 @@ node [shape=box];
 __MAIN__ -> b_1;
 b_1 [label="b_1\l1: cmp #1 #2\l13: ble b_3\l"]
 b_1 -> b_2;
-b_2 [label="b_2\l2: add #1 #1\l4: cmp (2) #2\l11: bge b_7\l"]
+b_2 [label="b_2\l4: cmp #2 #2\l11: bge b_7\l"]
 b_2 -> b_5;
-b_5 [label="b_5\l5: mul (2) #4\l7: cmp #3 (5)\l9: beq b_10\l"]
+b_5 [label="b_5\l7: cmp #3 #8\l9: beq b_10\l"]
 b_5 -> b_8;
 b_8 [label="b_8\l"]
 b_8 -> b_10;
-b_10 [label="b_10\l8: phi #3 (5) \"c\"\l"]
+b_10 [label="b_10\l8: phi #3 #8 \"c\"\l"]
 b_10 -> b_7;
-b_7 [label="b_7\l10: phi #3 (8) \"c\"\l6: phi (2) (5) \"a\"\l14: bra b_4\l"]
+b_7 [label="b_7\l10: phi #3 (8) \"c\"\l6: phi #2 #8 \"a\"\l14: bra b_4\l"]
 b_7 -> b_4;
-b_4 [label="b_4\l16: phi #2 (15) \"b\"\l12: phi #3 (10) \"c\"\l3: phi (19) (6) \"a\"\l23: add (3) #1\l24: call OutputNum (23)\l"]
+b_4 [label="b_4\l16: phi #2 #7 \"b\"\l12: phi #3 (10) \"c\"\l3: phi (19) (6) \"a\"\l23: add (3) #1\l24: call OutputNum (23)\l"]
 b_4 -> b_1[color="green"];
 b_7 -> b_2[color="green"];
 b_10 -> b_5[color="green"];
@@ -23,16 +23,16 @@ b_5 -> b_2[color="green"];
 b_2 -> b_7;
 b_2 -> b_1[color="green"];
 b_1 -> b_3;
-b_3 [label="b_3\l15: add #2 #5\l17: cmp #1 (15)\l20: bge b_12\l"]
+b_3 [label="b_3\l17: cmp #1 #7\l20: bge b_12\l"]
 b_3 -> b_11;
-b_11 [label="b_11\l18: sub #1 #2\l21: bra b_13\l"]
+b_11 [label="b_11\l21: bra b_13\l"]
 b_11 -> b_13;
-b_13 [label="b_13\l19: phi (22) (18) \"a\"\l"]
+b_13 [label="b_13\l19: phi #4 #-1 \"a\"\l"]
 b_13 -> b_4;
 b_13 -> b_3[color="green"];
 b_11 -> b_3[color="green"];
 b_3 -> b_12;
-b_12 [label="b_12\l22: add #1 #3\l"]
+b_12 [label="b_12\l"]
 b_12 -> b_13;
 b_12 -> b_3[color="green"];
 b_3 -> b_1[color="green"];

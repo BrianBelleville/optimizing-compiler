@@ -3,9 +3,9 @@ node [shape=box];
 __MAIN__ -> b_1;
 b_1 [label="b_1\l1: cmp #1 #2\l4: ble b_3\l"]
 b_1 -> b_2;
-b_2 [label="b_2\l2: add #1 #1\l5: bra b_4\l"]
+b_2 [label="b_2\l5: bra b_4\l"]
 b_2 -> b_4;
-b_4 [label="b_4\l7: phi #2 (6) \"b\"\l3: phi #1 (2) \"a\"\l8: cmp (3) (7)\l11: bge b_7\l"]
+b_4 [label="b_4\l7: phi #2 #3 \"b\"\l3: phi #1 #2 \"a\"\l8: cmp (3) (7)\l11: bge b_7\l"]
 b_4 -> b_5;
 b_5 [label="b_5\l9: sub (3) #1\l"]
 b_5 -> b_7;
@@ -16,7 +16,7 @@ b_4 -> b_7;
 b_4 -> b_1[color="green"];
 b_2 -> b_1[color="green"];
 b_1 -> b_3;
-b_3 [label="b_3\l6: add #2 #1\l"]
+b_3 [label="b_3\l"]
 b_3 -> b_4;
 b_3 -> b_1[color="green"];
 }
