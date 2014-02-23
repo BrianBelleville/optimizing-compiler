@@ -5,15 +5,15 @@ b_1 [label="b_1\l1: call OutputNum #55\l2: adda GBP var_b_addr\l3: store (2) #2\
 bar -> b_2;
 b_2 [label="b_2\l12: call OutputNum #35\l13: adda GBP var_b_addr\l14: store (13) #3\l15: adda GBP var_c_addr\l16: store (15) #4\l17: adda GBP var_b_addr\l18: load (17)\l19: adda GBP var_c_addr\l20: load (19)\l21: add (18) (20)\l22: ret (21)\l"]
 __MAIN__ -> b_3;
-b_3 [label="b_3\l23: add array_a_addr #44\l24: adda FP (23)\l25: store (24) #1\l26: add array_a_addr #40\l27: adda FP (26)\l28: store (27) #2\l29: add array_a_addr #44\l30: adda FP (29)\l31: load (30)\l32: add array_a_addr #40\l33: adda FP (32)\l34: load (33)\l35: cmp (31) (34)\l40: ble b_5\l"]
+b_3 [label="b_3\l47: add array_a_addr #44\l48: adda FP (47)\l24: store (48) #1\l49: add array_a_addr #40\l50: adda FP (49)\l26: store (50) #2\l51: add array_a_addr #44\l52: adda FP (51)\l28: load (52)\l53: add array_a_addr #40\l54: adda FP (53)\l30: load (54)\l31: cmp (28) (30)\l35: ble b_5\l"]
 b_3 -> b_4;
-b_4 [label="b_4\l36: call foo\l37: add array_a_addr #36\l38: adda FP (37)\l39: store (38) (36)\l41: bra b_6\l"]
+b_4 [label="b_4\l32: call foo\l55: add array_a_addr #36\l56: adda FP (55)\l34: store (56) (32)\l36: bra b_6\l"]
 b_4 -> b_6;
-b_6 [label="b_6\l46: add array_a_addr #36\l47: adda FP (46)\l48: load (47)\l49: adda GBP var_b_addr\l50: store (49) (48)\l51: adda GBP var_b_addr\l52: load (51)\l53: call OutputNum (52)\l"]
+b_6 [label="b_6\l57: add array_a_addr #36\l58: adda FP (57)\l41: load (58)\l42: adda GBP var_b_addr\l43: store (42) (41)\l44: adda GBP var_b_addr\l45: load (44)\l46: call OutputNum (45)\l"]
 b_6 -> b_3[color="green"];
 b_4 -> b_3[color="green"];
 b_3 -> b_5;
-b_5 [label="b_5\l42: call foo\l43: add array_a_addr #36\l44: adda FP (43)\l45: store (44) (42)\l"]
+b_5 [label="b_5\l37: call foo\l59: add array_a_addr #36\l60: adda FP (59)\l39: store (60) (37)\l"]
 b_5 -> b_6;
 b_5 -> b_3[color="green"];
 }

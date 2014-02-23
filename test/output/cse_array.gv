@@ -1,7 +1,7 @@
 digraph Computation {
 node [shape=box];
 arrayTest -> b_1;
-b_1 [label="b_1\l1: add array_t1_addr #16\l2: adda FP (1)\l3: load (2)\l7: add (3) #2\l8: mul arg_x #4\l9: add array_g1_addr (8)\l10: adda GBP (9)\l11: store (10) arg_y\l12: ret \l"]
+b_1 [label="b_1\l10: add array_t1_addr #16\l11: adda FP (10)\l2: load (11)\l5: add (2) #2\l14: mul arg_x #4\l15: add array_g1_addr (14)\l16: adda GBP (15)\l7: store (16) arg_y\l8: ret \l"]
 __MAIN__ -> b_2;
-b_2 [label="b_2\l13: call arrayTest var_x var_y #4\l"]
+b_2 [label="b_2\l9: call arrayTest var_x var_y #4\l"]
 }
