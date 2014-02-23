@@ -1,11 +1,11 @@
 digraph Computation {
 node [shape=box];
 ifTest -> b_1;
-b_1 [label="b_1\l1: add arg_x arg_y\l21: add array_t_addr #16\l22: adda FP (21)\l3: load (22)\l5: cmp (1) arg_z\l11: bge b_3\l"]
+b_1 [label="b_1\l1: add arg_x arg_y\l22: add array_t_addr #16\l23: adda FP (22)\l3: load (23)\l5: cmp (1) arg_z\l11: bge b_3\l"]
 b_1 -> b_2;
 b_2 [label="b_2\l6: add arg_y arg_z\l9: add arg_x (1)\l12: bra b_4\l"]
 b_2 -> b_4;
-b_4 [label="b_4\l10: phi var_a (9) \"a\"\l7: phi (13) (6) \"v\"\l15: load (22)\l16: add arg_z (3)\l18: call OutoutNum (1)\l19: ret \l"]
+b_4 [label="b_4\l10: phi var_a (9) \"a\"\l7: phi (13) (6) \"v\"\l15: load (23)\l16: add arg_z (3)\l18: call OutoutNum (1)\l19: ret \l"]
 b_4 -> b_1[color="green"];
 b_2 -> b_1[color="green"];
 b_1 -> b_3;
@@ -13,5 +13,5 @@ b_3 [label="b_3\l13: add arg_z (3)\l"]
 b_3 -> b_4;
 b_3 -> b_1[color="green"];
 __MAIN__ -> b_5;
-b_5 [label="b_5\l20: call ifTest #1 #2 #3\l"]
+b_5 [label="b_5\l20: call ifTest #1 #2 #3\l21: end\l"]
 }

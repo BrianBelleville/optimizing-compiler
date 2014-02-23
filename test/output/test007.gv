@@ -9,7 +9,7 @@ b_4 [label="b_4\l7: phi #2 #3 \"b\"\l3: phi #1 #2 \"a\"\l8: cmp (3) (7)\l11: bge
 b_4 -> b_5;
 b_5 [label="b_5\l9: sub (3) #1\l"]
 b_5 -> b_7;
-b_7 [label="b_7\l10: phi (3) (9) \"a\"\l12: call OutputNum (10)\l13: call OutputNum (7)\l"]
+b_7 [label="b_7\l10: phi (3) (9) \"a\"\l12: call OutputNum (10)\l13: call OutputNum (7)\l14: end\l"]
 b_7 -> b_4[color="green"];
 b_5 -> b_4[color="green"];
 b_4 -> b_7;

@@ -45,7 +45,7 @@ b_15 -> b_16;
 b_15 -> b_12[color="green"];
 b_12 -> b_11[color="green"];
 b_11 -> b_13;
-b_13 [label="b_13\l38: call OutputNum (35)\l"]
+b_13 [label="b_13\l38: call OutputNum (35)\l39: end\l"]
 b_13 -> b_11[color="green"];
 b_11 -> b_10[color="green"];
 b_10 -> b_8[color="green"];

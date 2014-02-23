@@ -1,7 +1,7 @@
 digraph Computation {
 node [shape=box];
 useGlobals -> b_1;
-b_1 [label="b_1\l1: call InputNum\l2: adda GBP var_g_addr\l3: store (2) (1)\l5: load (2)\l6: call InputNum\l48: mul (5) #4\l49: add array_ag_addr (48)\l50: adda GBP (49)\l8: store (50) (6)\l9: ret \l"]
+b_1 [label="b_1\l1: call InputNum\l2: adda GBP var_g_addr\l3: store (2) (1)\l5: load (2)\l6: call InputNum\l49: mul (5) #4\l50: add array_ag_addr (49)\l51: adda GBP (50)\l8: store (51) (6)\l9: ret \l"]
 __MAIN__ -> b_2;
-b_2 [label="b_2\l51: add array_ag_addr #12\l52: adda GBP (51)\l11: load (52)\l14: add (11) #3\l15: adda GBP var_g_addr\l16: load (15)\l19: add (16) #3\l55: add array_al_addr #16\l56: adda FP (55)\l21: load (56)\l24: add (21) #3\l25: call useGlobals\l27: load (15)\l28: add (27) #3\l30: load (52)\l37: store (15) #2\l63: add array_ag_addr #16\l64: adda GBP (63)\l39: store (64) #8\l65: add array_al_addr #24\l66: adda FP (65)\l41: store (66) #16\l43: load (15)\l45: load (56)\l47: load (52)\l"]
+b_2 [label="b_2\l52: add array_ag_addr #12\l53: adda GBP (52)\l11: load (53)\l14: add (11) #3\l15: adda GBP var_g_addr\l16: load (15)\l19: add (16) #3\l56: add array_al_addr #16\l57: adda FP (56)\l21: load (57)\l24: add (21) #3\l25: call useGlobals\l27: load (15)\l28: add (27) #3\l30: load (53)\l37: store (15) #2\l64: add array_ag_addr #16\l65: adda GBP (64)\l39: store (65) #8\l66: add array_al_addr #24\l67: adda FP (66)\l41: store (67) #16\l43: load (15)\l45: load (57)\l47: load (53)\l48: end\l"]
 }

@@ -19,7 +19,7 @@ b_7 -> b_5[color="green"];
 b_5 -> b_3[color="green"];
 b_3 -> b_2[color="green"];
 b_2 -> b_4;
-b_4 [label="b_4\l16: call OutputNum (4)\l17: call OutputNum (14)\l18: call OutputNum (6)\l"]
+b_4 [label="b_4\l16: call OutputNum (4)\l17: call OutputNum (14)\l18: call OutputNum (6)\l19: end\l"]
 b_4 -> b_2[color="green"];
 b_2 -> b_1[color="green"];
 }

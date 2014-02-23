@@ -22,5 +22,5 @@ b_8 -> b_5[color="green"];
 b_6 -> b_5[color="green"];
 b_5 -> b_8;
 __MAIN__ -> b_9;
-b_9 [label="b_9\l16: call InputNum\l17: call factIter (16)\l18: call OutputNum (17)\l19: call OutputNewLine\l20: call factRec (16)\l21: call OutputNum (20)\l22: call OutputNewLine\l"]
+b_9 [label="b_9\l16: call InputNum\l17: call factIter (16)\l18: call OutputNum (17)\l19: call OutputNewLine\l20: call factRec (16)\l21: call OutputNum (20)\l22: call OutputNewLine\l23: end\l"]
 }

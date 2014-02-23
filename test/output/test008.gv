@@ -9,7 +9,7 @@ b_3 [label="b_3\l3: add (4) #1\l5: bra b_2\l"]
 b_3 -> b_2;
 b_3 -> b_2[color="green"];
 b_2 -> b_4;
-b_4 [label="b_4\l"]
+b_4 [label="b_4\l6: end\l"]
 b_4 -> b_2[color="green"];
 b_2 -> b_1[color="green"];
 }
