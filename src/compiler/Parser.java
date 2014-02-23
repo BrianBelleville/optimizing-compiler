@@ -384,18 +384,15 @@ public class Parser {
 
     private void returnStatement_rest() throws Exception
     {
-        Value arg = null;
+        Ret r = null;        
         if(scan.sym == Token.closecurly || scan.sym == Token.semicolon) {
             // if there is no expression to be returned
-            arg = new NamedValue(""); // don't want a null value, may
-                                      // want some other placeholder
-                                      // in the future;
-
+            r = new Ret();
         } else {
             // else there is an expression to be returned
-            arg = expression();
+            r = new Ret(expression());
         }
-        currentBB.addInstruction(new Ret(arg));
+        currentBB.addInstruction(r);
     }
 
     private void statement() throws Exception
@@ -558,7 +555,7 @@ public class Parser {
                 scan.next();
                 if(!currentBB.hasFinalReturn()) {
                     // make sure all functions end in a return
-                    currentBB.addInstruction(new Ret(new NamedValue(""))); 
+                    currentBB.addInstruction(new Ret()); 
                 }
             } else {
                 throw new Exception("Funcion body: no closing '}'");
