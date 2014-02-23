@@ -556,6 +556,10 @@ public class Parser {
             }
             if(scan.sym == Token.closecurly) {
                 scan.next();
+                if(!currentBB.hasFinalReturn()) {
+                    // make sure all functions end in a return
+                    currentBB.addInstruction(new Ret(new NamedValue(""))); 
+                }
             } else {
                 throw new Exception("Funcion body: no closing '}'");
             }
