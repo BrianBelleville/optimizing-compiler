@@ -12,4 +12,8 @@ public abstract class Pass {
     // as necessary. The method run will always be called with an iterator such
     // that i.hasNext() == true;
     public abstract void run(ListIterator<Instruction> i) throws Exception;
+
+    public boolean requireBreadthFistTraversal() {
+        return false;           // most passes don't require this
+    }
 }
