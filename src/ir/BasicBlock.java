@@ -6,6 +6,7 @@ import java.util.ListIterator;
 import support.Environment;
 import support.Identifier;
 import ir.Ret;
+import ir.End;
 import ir.base.BranchInstruction;
 import ir.base.Instruction;
 import ir.base.Value;
@@ -32,6 +33,11 @@ public class BasicBlock {
     public boolean hasFinalReturn() {
         // if empty return false, otherwise check if the last instruction is a Ret
         return !instructions.isEmpty() && instructions.getLast() instanceof Ret;
+    }
+
+    public boolean hasFinalEnd() {
+        // if empty return false, otherwise check if the last instruction is an End
+        return !instructions.isEmpty() && instructions.getLast() instanceof End;
     }
 
     public BasicBlock(BasicBlock dominator) {
