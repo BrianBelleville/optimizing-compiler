@@ -1,7 +1,7 @@
 package ir.base;
 
-public class OrderIndependentBinaryInstruction extends ArithmeticInstruction {
-    public OrderIndependentBinaryInstruction(Opcode o, Value a1, Value a2) {
+public class OrderIndependentArithmeticInstruction extends ArithmeticInstruction {
+    public OrderIndependentArithmeticInstruction(Opcode o, Value a1, Value a2) {
         super(o, a1, a2);
     }
     
