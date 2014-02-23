@@ -10,7 +10,7 @@ public class NoArgInstruction extends Instruction {
 
     @Override
     public ArrayList<Value> getArguments() {
-	return null;
+	return new ArrayList<Value>(); // return empty arg list
     }
 
     @Override
