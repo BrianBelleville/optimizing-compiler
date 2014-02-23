@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.ListIterator;
 import support.Environment;
 import support.Identifier;
+import ir.Ret;
 import ir.base.BranchInstruction;
 import ir.base.Instruction;
 import ir.base.Value;
@@ -26,6 +27,11 @@ public class BasicBlock {
     private int getNextBlockNum() {
         blockNum += 1;
         return blockNum;
+    }
+
+    public boolean hasFinalReturn() {
+        // if empty return false, otherwise check if the last instruction is a Ret
+        return !instructions.isEmpty() && instructions.getLast() instanceof Ret;
     }
 
     public BasicBlock(BasicBlock dominator) {
