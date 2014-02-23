@@ -9,9 +9,9 @@ b_3 [label="b_3\l4: add (7) (1)\l6: call InputNum\l8: bra b_2\l"]
 b_3 -> b_2;
 b_3 -> b_2[color="green"];
 b_2 -> b_4;
-b_4 [label="b_4\l"]
+b_4 [label="b_4\l9: ret \l"]
 b_4 -> b_2[color="green"];
 b_2 -> b_1[color="green"];
 __MAIN__ -> b_5;
-b_5 [label="b_5\l9: call test1\l"]
+b_5 [label="b_5\l10: call test1\l"]
 }

@@ -1329,7 +1329,7 @@ b_498 [label="b_498\l1323: call InputNum\l1325: call OutputNum (1323)\l1326: add
 b_498 -> b_497;
 b_498 -> b_497[color="green"];
 b_497 -> b_499;
-b_499 [label="b_499\l"]
+b_499 [label="b_499\l1329: ret \l"]
 b_499 -> b_497[color="green"];
 b_497 -> b_496[color="green"];
 b_496 -> b_494[color="green"];
@@ -1663,5 +1663,5 @@ b_5 -> b_4[color="green"];
 b_4 -> b_2[color="green"];
 b_2 -> b_1[color="green"];
 __MAIN__ -> b_500;
-b_500 [label="b_500\l1329: call foo\l"]
+b_500 [label="b_500\l1330: call foo\l"]
 }
