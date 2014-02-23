@@ -30,6 +30,13 @@ public class Main {
                     break;
                 case "-no-dead-code-elim":
                     Globals.performDeadCodeElimination = false;
+                    break;
+                case "-constant-arithmetic":
+                    Globals.performConstantArithmetic = true;
+                    break;
+                case "-no-constant-arithmetic":
+                    Globals.performConstantArithmetic = false;
+                    break;
                 default:
                     // interpret as an input filename
                     input = args[i];
@@ -58,6 +65,10 @@ public class Main {
             // dominator information.
             passes.add(new InvalidateDominatorInformation());
 
+            if(Globals.performConstantArithmetic) {
+                passes.add(new ConstantArithmetic());
+            }
+                            
             passes.add(new ConstructUseChain());
 
             // This depends on having the use information to determine
