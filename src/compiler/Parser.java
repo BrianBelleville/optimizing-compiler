@@ -13,6 +13,7 @@ public class Parser {
     private IdentifierTable idTable;
     private Environment env;
     private Scanner scan;
+    private boolean inMain = false; // initially we are not in main
 
     public Parser(File f, IdentifierTable t) throws Exception {
         idTable = t;
@@ -384,12 +385,15 @@ public class Parser {
 
     private void returnStatement_rest() throws Exception
     {
-        Ret r = null;        
+        Instruction r = null;        
         if(scan.sym == Token.closecurly || scan.sym == Token.semicolon) {
             // if there is no expression to be returned
-            r = new Ret();
+            r = inMain ? new End() : new Ret();
         } else {
             // else there is an expression to be returned
+            if(inMain) {
+                throw new Exception("Attempt to return value from __MAIN__");
+            }
             r = new Ret(expression());
         }
         currentBB.addInstruction(r);
@@ -583,6 +587,7 @@ public class Parser {
             // globals have been used in other functions,
             env.freezeGlobals();
             if(scan.sym == Token.opencurly) {
+                inMain = true;  // we are now parsing the main procedure
                 currentBB = new BasicBlock(null);
                 currentJoinBlock = null;
                 Function main = new Function();
@@ -591,6 +596,9 @@ public class Parser {
                 rval.add(main);
                 scan.next();
                 statSequence();
+                if(!currentBB.hasFinalEnd()) {
+                    currentBB.addInstruction(new End());
+                }
                 if(scan.sym == Token.closecurly) {
                     scan.next();
                     if(scan.sym == Token.period) {
