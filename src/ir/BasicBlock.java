@@ -170,11 +170,40 @@ public class BasicBlock {
     }
 
     public void runPass(Pass p) throws Exception {
-        runPassInternal(p);
+        if(p.requireBreadthFistTraversal()) {
+            runBreadthFirstPass(p);
+            currentPass++;
+        }
+        runDepthFirstPass(p);
         currentPass++;
     }
 
-    public void runPassInternal(Pass p) throws Exception {
+    public void runBreadthFirstPass(Pass p) throws Exception {
+        LinkedList<BasicBlock> blocks = new LinkedList<BasicBlock>();
+        blocks.add(this);       // start on current BB
+        while(!blocks.isEmpty()) {
+            BasicBlock bb = blocks.pop();
+            if(bb.localPass == currentPass) {
+                continue;
+            }
+            bb.localPass = currentPass;
+            // run pass on instructions in basic block
+            ListIterator<Instruction> i = bb.instructions.listIterator(0);
+            while(i.hasNext()) {
+                p.run(i);
+            }
+            BasicBlock ch1 = bb.getFallThrough();
+            BasicBlock ch2 = bb.getBranchTarget();
+            if(ch1 != null) {
+                blocks.add(ch1);
+            }
+            if(ch2 != null) {
+                blocks.add(ch2);
+            }
+        }
+    }
+
+    public void runDepthFirstPass(Pass p) throws Exception {
         if(localPass == currentPass) {
             return;
         }
@@ -186,14 +215,13 @@ public class BasicBlock {
         BasicBlock ch1 = getFallThrough();
         BasicBlock ch2 = getBranchTarget();
         if(ch1 != null) {
-            ch1.runPassInternal(p);
+            ch1.runDepthFirstPass(p);
         }
         if(ch2 != null) {
-            ch2.runPassInternal(p);
+            ch2.runDepthFirstPass(p);
         }
-
     }
-    
+
     private void stripVarRefsInternal() throws Exception {
         if(localPass == currentPass) {
             return;
