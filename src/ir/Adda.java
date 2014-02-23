@@ -10,4 +10,10 @@ public class Adda extends OrderIndependentBinaryInstruction {
         super(Opcode.adda, a1, a2);
     }
 
+    @Override
+    public boolean isComputable() {
+        // adda instructinos are order independant, but can't really
+        // be computed at compile time
+        return false;           
+    }
 }
