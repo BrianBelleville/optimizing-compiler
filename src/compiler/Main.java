@@ -43,6 +43,9 @@ public class Main {
             // create list of passes based on program arguments
             ArrayList<Pass> passes = new ArrayList<Pass>();
             passes.add(new StripVariableReference());
+            passes.add(new GenerateArrayIndexingComputations());
+            passes.add(new UpdateArguments());
+            
             if(Globals.performCSE) {
                 passes.add(new CommonSubexpressionElimination());
             }
@@ -57,6 +60,8 @@ public class Main {
 
             passes.add(new ConstructUseChain());
 
+            // This depends on having the use information to determine
+            // what is dead code
             if(Globals.performDeadCodeElimination) {
                 passes.add(new DeadCodeElimination());
                 passes.add(new RemoveDeletedInstructions());
