@@ -1,0 +1,54 @@
+digraph Computation {
+node [shape=box];
+foo -> b_1;
+b_1 [label="b_1\l9: cmp #1 #2\l31: bge b_3\l"]
+b_1 -> b_2;
+b_2 [label="b_2\l16: cmp #2 #3\l27: bge b_7\l"]
+b_2 -> b_5;
+b_5 [label="b_5\l"]
+b_5 -> b_8;
+b_8 [label="b_8\l24: phi #2 (22) \"a\"\l20: cmp (24) #9\l21: bge b_10\l"]
+b_8 -> b_9;
+b_9 [label="b_9\l22: add (24) #1\l25: bra b_8\l"]
+b_9 -> b_8;
+b_9 -> b_8[color="green"];
+b_8 -> b_10;
+b_10 [label="b_10\l"]
+b_10 -> b_7;
+b_7 [label="b_7\l26: phi #2 (24) \"a\"\l19: phi #3 #9 \"c\"\l32: bra b_4\l"]
+b_7 -> b_4;
+b_4 [label="b_4\l62: phi #8 #425 \"h\"\l60: phi #4 (59) \"d\"\l38: phi #6 #7 \"f\"\l35: phi #2 (52) \"b\"\l30: phi #7 #9 \"g\"\l28: phi (42) (19) \"c\"\l15: phi #5 #6 \"e\"\l12: phi #1 (26) \"a\"\l63: call OutputNum (12)\l64: call OutputNum (35)\l65: call OutputNum (28)\l66: call OutputNum (60)\l67: call OutputNum (15)\l68: call OutputNum (38)\l69: call OutputNum (62)\l70: ret \l"]
+b_4 -> b_1[color="green"];
+b_7 -> b_2[color="green"];
+b_10 -> b_8[color="green"];
+b_8 -> b_5[color="green"];
+b_5 -> b_2[color="green"];
+b_2 -> b_7;
+b_2 -> b_1[color="green"];
+b_1 -> b_3;
+b_3 [label="b_3\l39: cmp #1 #3\l53: bge b_12\l"]
+b_3 -> b_11;
+b_11 [label="b_11\l"]
+b_11 -> b_14;
+b_14 [label="b_14\l50: phi #9 (48) \"c\"\l47: phi #1 (45) \"b\"\l43: cmp (47) (50)\l44: bge b_16\l"]
+b_14 -> b_15;
+b_15 [label="b_15\l45: add (47) #1\l48: sub (50) #1\l51: bra b_14\l"]
+b_15 -> b_14;
+b_15 -> b_14[color="green"];
+b_14 -> b_16;
+b_16 [label="b_16\l54: bra b_13\l"]
+b_16 -> b_13;
+b_13 [label="b_13\l59: phi #4 #5 \"d\"\l52: phi #1 (47) \"b\"\l42: phi #12 (50) \"c\"\l"]
+b_13 -> b_4;
+b_13 -> b_3[color="green"];
+b_16 -> b_14[color="green"];
+b_14 -> b_11[color="green"];
+b_11 -> b_3[color="green"];
+b_3 -> b_12;
+b_12 [label="b_12\l"]
+b_12 -> b_13;
+b_12 -> b_3[color="green"];
+b_3 -> b_1[color="green"];
+__MAIN__ -> b_17;
+b_17 [label="b_17\l71: call foo\l72: end\l"]
+}

@@ -1,0 +1,15 @@
+digraph Computation {
+node [shape=box];
+__MAIN__ -> b_1;
+b_1 [label="b_1\l"]
+b_1 -> b_2;
+b_2 [label="b_2\l9: phi #1 (7) \"a\"\l6: phi var_b (4) \"b\"\l2: cmp (9) (6)\l3: beq b_4\l"]
+b_2 -> b_3;
+b_3 [label="b_3\l4: add (9) #1\l7: mul (9) #2\l10: bra b_2\l"]
+b_3 -> b_2;
+b_3 -> b_2[color="green"];
+b_2 -> b_4;
+b_4 [label="b_4\l12: end\l"]
+b_4 -> b_2[color="green"];
+b_2 -> b_1[color="green"];
+}
