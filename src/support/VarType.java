@@ -4,6 +4,7 @@ import ir.BasicBlock;
 import ir.Adda;
 import ir.Load;
 import ir.Store;
+import ir.Move;
 import ir.NamedValue;
 import ir.base.Value;
 
@@ -27,7 +28,10 @@ public class VarType extends Type {
         } else {
             Identifier var = d.getVarName();
             Value old = env.get(var);
-            env.put(var, newVal);
+            // generate a move instruction to indicate the value assignment
+            Move move = new Move(newVal);
+            cur.addInstruction(move);
+            env.put(var, move);
             // get the variable reference to replace old references with
             Value replaceWith = env.get(var);
             if(join != null) {
