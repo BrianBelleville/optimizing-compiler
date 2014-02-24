@@ -3,13 +3,13 @@ node [shape=box];
 __MAIN__ -> b_1;
 b_1 [label="b_1\l"]
 b_1 -> b_2;
-b_2 [label="b_2\l4: phi #0 (3) \"j\"\l1: cmp #0 #1000\l2: bge b_4\l"]
+b_2 [label="b_2\l7: phi #0 (5) \"j\"\l3: cmp #0 #1000\l4: bge b_4\l"]
 b_2 -> b_3;
-b_3 [label="b_3\l3: add (4) #1\l5: bra b_2\l"]
+b_3 [label="b_3\l5: add (7) #1\l8: bra b_2\l"]
 b_3 -> b_2;
 b_3 -> b_2[color="green"];
 b_2 -> b_4;
-b_4 [label="b_4\l6: end\l"]
+b_4 [label="b_4\l9: end\l"]
 b_4 -> b_2[color="green"];
 b_2 -> b_1[color="green"];
 }

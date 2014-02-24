@@ -1,17 +1,17 @@
 digraph Computation {
 node [shape=box];
 test1 -> b_1;
-b_1 [label="b_1\l1: call InputNum\l"]
+b_1 [label="b_1\l2: call InputNum\l"]
 b_1 -> b_2;
-b_2 [label="b_2\l7: phi (1) (6) \"y\"\l5: phi var_w (4) \"w\"\l2: cmp #0 (7)\l3: bge b_4\l"]
+b_2 [label="b_2\l12: phi (2) (10) \"y\"\l9: phi var_w (7) \"w\"\l5: cmp #0 (12)\l6: bge b_4\l"]
 b_2 -> b_3;
-b_3 [label="b_3\l4: add (7) (1)\l6: call InputNum\l8: bra b_2\l"]
+b_3 [label="b_3\l7: add (12) (2)\l10: call InputNum\l13: bra b_2\l"]
 b_3 -> b_2;
 b_3 -> b_2[color="green"];
 b_2 -> b_4;
-b_4 [label="b_4\l9: ret \l"]
+b_4 [label="b_4\l14: ret \l"]
 b_4 -> b_2[color="green"];
 b_2 -> b_1[color="green"];
 __MAIN__ -> b_5;
-b_5 [label="b_5\l10: call test1\l11: end\l"]
+b_5 [label="b_5\l15: call test1\l16: end\l"]
 }

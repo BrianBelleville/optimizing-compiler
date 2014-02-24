@@ -1,24 +1,24 @@
 digraph Computation {
 node [shape=box];
 max -> b_1;
-b_1 [label="b_1\l47: add array_arg_addr #4\l48: adda FP (47)\l2: store (48) arg_a1\l49: add array_arg_addr #8\l50: adda FP (49)\l4: store (50) arg_a2\l51: add array_arg_addr #12\l52: adda FP (51)\l6: store (52) arg_a3\l53: add array_arg_addr #16\l54: adda FP (53)\l8: store (54) arg_a4\l55: add array_arg_addr #20\l56: adda FP (55)\l10: store (56) arg_a5\l57: add array_arg_addr #4\l58: adda FP (57)\l12: load (58)\l"]
+b_1 [label="b_1\l53: add array_arg_addr #4\l54: adda FP (53)\l2: store (54) arg_a1\l55: add array_arg_addr #8\l56: adda FP (55)\l4: store (56) arg_a2\l57: add array_arg_addr #12\l58: adda FP (57)\l6: store (58) arg_a3\l59: add array_arg_addr #16\l60: adda FP (59)\l8: store (60) arg_a4\l61: add array_arg_addr #20\l62: adda FP (61)\l10: store (62) arg_a5\l63: add array_arg_addr #4\l64: adda FP (63)\l14: load (64)\l"]
 b_1 -> b_2;
-b_2 [label="b_2\l24: phi #2 (23) \"i\"\l22: phi (12) (20) \"temp\"\l13: cmp (24) #5\l14: bgt b_4\l"]
+b_2 [label="b_2\l29: phi #2 (27) \"i\"\l26: phi (14) (24) \"temp\"\l16: cmp (29) #5\l17: bgt b_4\l"]
 b_2 -> b_3;
-b_3 [label="b_3\l59: mul (24) #4\l60: add array_arg_addr (59)\l61: adda FP (60)\l16: load (61)\l17: cmp (16) (22)\l21: ble b_7\l"]
+b_3 [label="b_3\l65: mul (29) #4\l66: add array_arg_addr (65)\l67: adda FP (66)\l19: load (67)\l20: cmp (19) (26)\l25: ble b_7\l"]
 b_3 -> b_5;
-b_5 [label="b_5\l62: mul (24) #4\l63: add array_arg_addr (62)\l64: adda FP (63)\l19: load (64)\l"]
+b_5 [label="b_5\l68: mul (29) #4\l69: add array_arg_addr (68)\l70: adda FP (69)\l22: load (70)\l"]
 b_5 -> b_7;
-b_7 [label="b_7\l20: phi (22) (19) \"temp\"\l23: add (24) #1\l25: bra b_2\l"]
+b_7 [label="b_7\l24: phi (26) (22) \"temp\"\l27: add (29) #1\l30: bra b_2\l"]
 b_7 -> b_2;
 b_7 -> b_3[color="green"];
 b_5 -> b_3[color="green"];
 b_3 -> b_7;
 b_3 -> b_2[color="green"];
 b_2 -> b_4;
-b_4 [label="b_4\l26: ret (22)\l"]
+b_4 [label="b_4\l31: ret (26)\l"]
 b_4 -> b_2[color="green"];
 b_2 -> b_1[color="green"];
 __MAIN__ -> b_8;
-b_8 [label="b_8\l65: add array_input_addr #4\l66: adda FP (65)\l28: store (66) #22\l67: add array_input_addr #8\l68: adda FP (67)\l30: store (68) #61\l69: add array_input_addr #12\l70: adda FP (69)\l32: store (70) #17\l71: add array_input_addr #16\l72: adda FP (71)\l34: store (72) #34\l73: add array_input_addr #20\l74: adda FP (73)\l36: store (74) #11\l75: add array_input_addr #4\l76: adda FP (75)\l38: load (76)\l77: add array_input_addr #8\l78: adda FP (77)\l40: load (78)\l79: add array_input_addr #12\l80: adda FP (79)\l42: load (80)\l81: add array_input_addr #16\l82: adda FP (81)\l44: load (82)\l45: call max (38) (40) (42) (44)\l46: end\l"]
+b_8 [label="b_8\l71: add array_input_addr #4\l72: adda FP (71)\l33: store (72) #22\l73: add array_input_addr #8\l74: adda FP (73)\l35: store (74) #61\l75: add array_input_addr #12\l76: adda FP (75)\l37: store (76) #17\l77: add array_input_addr #16\l78: adda FP (77)\l39: store (78) #34\l79: add array_input_addr #20\l80: adda FP (79)\l41: store (80) #11\l81: add array_input_addr #4\l82: adda FP (81)\l43: load (82)\l83: add array_input_addr #8\l84: adda FP (83)\l45: load (84)\l85: add array_input_addr #12\l86: adda FP (85)\l47: load (86)\l87: add array_input_addr #16\l88: adda FP (87)\l49: load (88)\l50: call max (43) (45) (47) (49)\l52: end\l"]
 }

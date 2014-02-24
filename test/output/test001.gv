@@ -1,5 +1,5 @@
 digraph Computation {
 node [shape=box];
 __MAIN__ -> b_1;
-b_1 [label="b_1\l2: call OutputNum #102\l3: end\l"]
+b_1 [label="b_1\l4: call OutputNum #102\l5: end\l"]
 }

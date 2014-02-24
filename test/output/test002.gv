@@ -3,37 +3,37 @@ node [shape=box];
 foo -> b_1;
 b_1 [label="b_1\l"]
 b_1 -> b_2;
-b_2 [label="b_2\l20: phi #0 (19) \"i\"\l18: phi var_d (17) \"d\"\l1: cmp (20) #10\l2: bge b_4\l"]
+b_2 [label="b_2\l23: phi #0 (21) \"i\"\l20: phi var_d (18) \"d\"\l2: cmp (23) #10\l3: bge b_4\l"]
 b_2 -> b_3;
-b_3 [label="b_3\l3: adda GBP var_y_addr\l4: load (3)\l5: add (4) #2\l6: adda GBP var_y_addr\l7: store (6) (5)\l8: adda GBP var_x_addr\l9: load (8)\l10: add (9) #2\l11: adda GBP var_z_addr\l12: store (11) (10)\l13: adda GBP var_y_addr\l14: load (13)\l15: adda GBP var_z_addr\l16: load (15)\l17: add (14) (16)\l19: add (20) #1\l21: bra b_2\l"]
+b_3 [label="b_3\l4: adda GBP var_y_addr\l5: load (4)\l6: add (5) #2\l7: adda GBP var_y_addr\l8: store (7) (6)\l9: adda GBP var_x_addr\l10: load (9)\l11: add (10) #2\l12: adda GBP var_z_addr\l13: store (12) (11)\l14: adda GBP var_y_addr\l15: load (14)\l16: adda GBP var_z_addr\l17: load (16)\l18: add (15) (17)\l21: add (23) #1\l24: bra b_2\l"]
 b_3 -> b_2;
 b_3 -> b_2[color="green"];
 b_2 -> b_4;
-b_4 [label="b_4\l22: ret (18)\l"]
+b_4 [label="b_4\l25: ret (20)\l"]
 b_4 -> b_2[color="green"];
 b_2 -> b_1[color="green"];
 bar -> b_5;
 b_5 [label="b_5\l"]
 b_5 -> b_6;
-b_6 [label="b_6\l36: phi #0 (35) \"i\"\l32: phi #0 (30) \"j\"\l23: cmp (36) #4\l24: bge b_8\l"]
+b_6 [label="b_6\l43: phi #0 (41) \"i\"\l38: phi #0 (36) \"j\"\l28: cmp (43) #4\l29: bge b_8\l"]
 b_6 -> b_7;
 b_7 [label="b_7\l"]
 b_7 -> b_9;
-b_9 [label="b_9\l30: phi (32) (29) \"j\"\l25: cmp (30) #4\l26: bge b_11\l"]
+b_9 [label="b_9\l36: phi (38) (34) \"j\"\l30: cmp (36) #4\l31: bge b_11\l"]
 b_9 -> b_10;
-b_10 [label="b_10\l53: mul (36) #16\l54: mul (30) #4\l55: add (53) (54)\l56: add array_b_addr (55)\l57: adda GBP (56)\l28: store (57) (30)\l29: add (30) #1\l31: bra b_9\l"]
+b_10 [label="b_10\l61: mul (43) #16\l62: mul (36) #4\l63: add (61) (62)\l64: add array_b_addr (63)\l65: adda GBP (64)\l33: store (65) (36)\l34: add (36) #1\l37: bra b_9\l"]
 b_10 -> b_9;
 b_10 -> b_9[color="green"];
 b_9 -> b_11;
-b_11 [label="b_11\l58: mul (36) #4\l59: add array_a_addr (58)\l60: adda GBP (59)\l34: store (60) (36)\l35: add (36) #1\l37: bra b_6\l"]
+b_11 [label="b_11\l66: mul (43) #4\l67: add array_a_addr (66)\l68: adda GBP (67)\l40: store (68) (43)\l41: add (43) #1\l44: bra b_6\l"]
 b_11 -> b_6;
 b_11 -> b_9[color="green"];
 b_9 -> b_7[color="green"];
 b_7 -> b_6[color="green"];
 b_6 -> b_8;
-b_8 [label="b_8\l38: ret \l"]
+b_8 [label="b_8\l45: ret \l"]
 b_8 -> b_6[color="green"];
 b_6 -> b_5[color="green"];
 __MAIN__ -> b_12;
-b_12 [label="b_12\l39: adda GBP var_x_addr\l40: store (39) #0\l41: adda GBP var_y_addr\l42: store (41) #0\l43: adda GBP var_z_addr\l44: store (43) #0\l45: adda GBP var_x_addr\l46: load (45)\l47: adda GBP var_z_addr\l48: load (47)\l49: call bar (46) (48)\l50: call foo\l51: call OutputNum (50)\l52: end\l"]
+b_12 [label="b_12\l46: adda GBP var_x_addr\l47: store (46) #0\l48: adda GBP var_y_addr\l49: store (48) #0\l50: adda GBP var_z_addr\l51: store (50) #0\l52: adda GBP var_x_addr\l53: load (52)\l54: adda GBP var_z_addr\l55: load (54)\l56: call bar (53) (55)\l57: call foo\l59: call OutputNum (57)\l60: end\l"]
 }

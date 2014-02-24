@@ -1,17 +1,17 @@
 digraph Computation {
 node [shape=box];
 test1 -> b_1;
-b_1 [label="b_1\l1: call InputNum\l2: call InputNum\l3: call InputNum\l4: add (2) (3)\l5: add (1) #1\l"]
+b_1 [label="b_1\l1: call InputNum\l3: call InputNum\l5: call InputNum\l7: add (3) (5)\l9: add (1) #1\l"]
 b_1 -> b_2;
-b_2 [label="b_2\l13: phi (2) (12) \"y\"\l11: phi (3) (10) \"z\"\l9: phi (4) (8) \"w\"\l6: cmp (1) (11)\l7: bge b_4\l"]
+b_2 [label="b_2\l21: phi (3) (19) \"y\"\l18: phi (5) (16) \"z\"\l15: phi (7) (13) \"w\"\l11: cmp (1) (18)\l12: bge b_4\l"]
 b_2 -> b_3;
-b_3 [label="b_3\l8: add (13) (11)\l10: add (11) (11)\l12: add (10) (13)\l14: bra b_2\l"]
+b_3 [label="b_3\l13: add (21) (18)\l16: add (18) (18)\l19: add (16) (21)\l22: bra b_2\l"]
 b_3 -> b_2;
 b_3 -> b_2[color="green"];
 b_2 -> b_4;
-b_4 [label="b_4\l16: call OutputNum (5)\l17: add (13) (1)\l18: call OutputNum (17)\l19: call OutputNum (13)\l20: call OutputNum (9)\l21: ret \l"]
+b_4 [label="b_4\l24: call OutputNum (9)\l25: add (21) (1)\l26: call OutputNum (25)\l27: call OutputNum (21)\l28: call OutputNum (15)\l29: ret \l"]
 b_4 -> b_2[color="green"];
 b_2 -> b_1[color="green"];
 __MAIN__ -> b_5;
-b_5 [label="b_5\l22: call test1\l23: end\l"]
+b_5 [label="b_5\l30: call test1\l31: end\l"]
 }

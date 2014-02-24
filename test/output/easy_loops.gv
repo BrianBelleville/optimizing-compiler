@@ -3,49 +3,49 @@ node [shape=box];
 __MAIN__ -> b_1;
 b_1 [label="b_1\l"]
 b_1 -> b_2;
-b_2 [label="b_2\l5: phi var_x (11) \"x\"\l1: cmp (5) var_y\l2: bge b_4\l"]
+b_2 [label="b_2\l6: phi var_x (13) \"x\"\l1: cmp (6) var_y\l2: bge b_4\l"]
 b_2 -> b_3;
-b_3 [label="b_3\l3: call OutputNum (5)\l4: add var_z #4\l6: call OutputNum (4)\l"]
+b_3 [label="b_3\l3: call OutputNum (6)\l4: add var_z #4\l7: call OutputNum (4)\l"]
 b_3 -> b_5;
-b_5 [label="b_5\l11: phi (4) #99 \"x\"\l7: cmp (11) #3\l8: bge b_7\l"]
+b_5 [label="b_5\l13: phi (4) #99 \"x\"\l8: cmp (13) #3\l9: bge b_7\l"]
 b_5 -> b_6;
-b_6 [label="b_6\l9: call OutputNum (11)\l10: add (11) #1\l12: call OutputNum (10)\l13: bra b_5\l"]
+b_6 [label="b_6\l10: call OutputNum (13)\l11: add (13) #1\l14: call OutputNum (11)\l16: bra b_5\l"]
 b_6 -> b_5;
 b_6 -> b_5[color="green"];
 b_5 -> b_7;
-b_7 [label="b_7\l14: bra b_2\l"]
+b_7 [label="b_7\l17: bra b_2\l"]
 b_7 -> b_2;
 b_7 -> b_5[color="green"];
 b_5 -> b_3[color="green"];
 b_3 -> b_2[color="green"];
 b_2 -> b_4;
-b_4 [label="b_4\l15: call OutputNum (5)\l"]
+b_4 [label="b_4\l18: call OutputNum (6)\l"]
 b_4 -> b_8;
-b_8 [label="b_8\l20: phi (5) (19) \"x\"\l16: cmp (20) #3\l17: bge b_10\l"]
+b_8 [label="b_8\l24: phi (6) (22) \"x\"\l19: cmp (24) #3\l20: bge b_10\l"]
 b_8 -> b_9;
-b_9 [label="b_9\l18: call OutputNum (20)\l19: add (20) #1\l21: call OutputNum (19)\l22: bra b_8\l"]
+b_9 [label="b_9\l21: call OutputNum (24)\l22: add (24) #1\l25: call OutputNum (22)\l26: bra b_8\l"]
 b_9 -> b_8;
 b_9 -> b_8[color="green"];
 b_8 -> b_10;
-b_10 [label="b_10\l23: call OutputNum (20)\l"]
+b_10 [label="b_10\l27: call OutputNum (24)\l"]
 b_10 -> b_11;
-b_11 [label="b_11\l35: phi (20) (29) \"x\"\l24: cmp (35) #3\l25: bge b_13\l"]
+b_11 [label="b_11\l41: phi (24) (34) \"x\"\l28: cmp (41) #3\l29: bge b_13\l"]
 b_11 -> b_12;
-b_12 [label="b_12\l26: call OutputNum (35)\l27: cmp (35) #3\l31: bge b_15\l"]
+b_12 [label="b_12\l30: call OutputNum (41)\l31: cmp (41) #3\l36: bge b_15\l"]
 b_12 -> b_14;
-b_14 [label="b_14\l28: call OutputNum (35)\l30: call OutputNum #16\l32: bra b_16\l"]
+b_14 [label="b_14\l32: call OutputNum (41)\l35: call OutputNum #16\l37: bra b_16\l"]
 b_14 -> b_16;
-b_16 [label="b_16\l29: phi #32 #16 \"x\"\l36: call OutputNum (29)\l37: bra b_11\l"]
+b_16 [label="b_16\l34: phi #32 #16 \"x\"\l42: call OutputNum (34)\l43: bra b_11\l"]
 b_16 -> b_11;
 b_16 -> b_12[color="green"];
 b_14 -> b_12[color="green"];
 b_12 -> b_15;
-b_15 [label="b_15\l33: call OutputNum (35)\l34: call OuptputNum #32\l"]
+b_15 [label="b_15\l38: call OutputNum (41)\l40: call OuptputNum #32\l"]
 b_15 -> b_16;
 b_15 -> b_12[color="green"];
 b_12 -> b_11[color="green"];
 b_11 -> b_13;
-b_13 [label="b_13\l38: call OutputNum (35)\l39: end\l"]
+b_13 [label="b_13\l44: call OutputNum (41)\l45: end\l"]
 b_13 -> b_11[color="green"];
 b_11 -> b_10[color="green"];
 b_10 -> b_8[color="green"];
