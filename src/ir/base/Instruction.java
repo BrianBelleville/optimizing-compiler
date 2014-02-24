@@ -32,6 +32,9 @@ public abstract class Instruction extends Value {
     }
 
     public void printInstruction(Writer w) throws Exception {
+        if(isDeleted()) {
+            throw new Exception("Deleted instruction printed as part of CFG");
+        }
 	w.write(Integer.toString(number) + ": " + opcode.toString());
 	ArrayList<Value> args = getArguments();
 	for(Value v : args) {
