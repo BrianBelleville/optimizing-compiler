@@ -50,6 +50,10 @@ public class Main {
             // create list of passes based on program arguments
             ArrayList<Pass> passes = new ArrayList<Pass>();
             passes.add(new StripVariableReference());
+            
+            passes.add(new DeleteMove());
+            passes.add(new UpdateArguments());
+            
             passes.add(new GenerateArrayIndexingComputations());
             passes.add(new UpdateArguments());
             
