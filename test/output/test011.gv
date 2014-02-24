@@ -1,0 +1,55 @@
+digraph Computation {
+node [shape=box];
+__MAIN__ -> b_1;
+b_1 [label="b_1\l5: cmp #1 #2\l20: bge b_3\l"]
+b_1 -> b_2;
+b_2 [label="b_2\l"]
+b_2 -> b_5;
+b_5 [label="b_5\l16: phi #4 (14) \"d\"\l13: phi #3 (11) \"c\"\l9: cmp (13) (16)\l10: bge b_7\l"]
+b_5 -> b_6;
+b_6 [label="b_6\l11: add (13) #2\l14: add (16) #1\l17: bra b_5\l"]
+b_6 -> b_5;
+b_6 -> b_5[color="green"];
+b_5 -> b_7;
+b_7 [label="b_7\l21: bra b_4\l"]
+b_7 -> b_4;
+b_4 [label="b_4\l19: phi (28) (13) \"c\"\l18: phi (31) (16) \"d\"\l8: phi #3 #2 \"a\"\l"]
+b_4 -> b_11;
+b_11 [label="b_11\l43: phi #2 (37) \"b\"\l42: phi (19) (41) \"c\"\l33: cmp (43) (18)\l34: bge b_13\l"]
+b_11 -> b_12;
+b_12 [label="b_12\l35: cmp (8) (18)\l38: ble b_15\l"]
+b_12 -> b_14;
+b_14 [label="b_14\l39: bra b_16\l"]
+b_14 -> b_16;
+b_16 [label="b_16\l41: phi (42) (43) \"c\"\l37: phi (43) (42) \"b\"\l44: bra b_11\l"]
+b_16 -> b_11;
+b_16 -> b_12[color="green"];
+b_14 -> b_12[color="green"];
+b_12 -> b_15;
+b_15 [label="b_15\l"]
+b_15 -> b_16;
+b_15 -> b_12[color="green"];
+b_12 -> b_11[color="green"];
+b_11 -> b_13;
+b_13 [label="b_13\l45: end\l"]
+b_13 -> b_11[color="green"];
+b_11 -> b_4[color="green"];
+b_4 -> b_1[color="green"];
+b_7 -> b_5[color="green"];
+b_5 -> b_2[color="green"];
+b_2 -> b_1[color="green"];
+b_1 -> b_3;
+b_3 [label="b_3\l"]
+b_3 -> b_8;
+b_8 [label="b_8\l31: phi #4 (29) \"d\"\l28: phi #3 (26) \"c\"\l24: cmp (28) (31)\l25: bge b_10\l"]
+b_8 -> b_9;
+b_9 [label="b_9\l26: add (28) #3\l29: add (31) #2\l32: bra b_8\l"]
+b_9 -> b_8;
+b_9 -> b_8[color="green"];
+b_8 -> b_10;
+b_10 [label="b_10\l"]
+b_10 -> b_4;
+b_10 -> b_8[color="green"];
+b_8 -> b_3[color="green"];
+b_3 -> b_1[color="green"];
+}
