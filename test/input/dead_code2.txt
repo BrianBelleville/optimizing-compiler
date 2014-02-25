@@ -1,0 +1,20 @@
+#% -dead-code-elim
+# Brian Belleville 2014
+
+main 
+var x, y, z, w;
+{
+    let x <- call InputNum();
+    let y <- 2 * x;
+
+    if x < y then     # after this point it will all be dead code (comparison is not dead code)
+      let z <- x + y;
+      let w <- y * 42
+    else
+      let z <- y * 5;
+      let w <- 42 + x
+    fi;
+    # phi will also be dead code
+    
+    call OutputNum(y)
+}.
