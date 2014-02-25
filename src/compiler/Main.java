@@ -53,6 +53,10 @@ public class Main {
             
             passes.add(new DeleteMove());
             passes.add(new UpdateArguments());
+
+            if(Globals.performConstantArithmetic) {
+                passes.add(new ConstantArithmetic());
+            }
             
             passes.add(new GenerateArrayIndexingComputations());
             passes.add(new UpdateArguments());
@@ -69,10 +73,6 @@ public class Main {
             // dominator information.
             passes.add(new InvalidateDominatorInformation());
 
-            if(Globals.performConstantArithmetic) {
-                passes.add(new ConstantArithmetic());
-            }
-                            
             passes.add(new ConstructUseChain());
 
             // This depends on having the use information to determine
