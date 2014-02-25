@@ -1,0 +1,23 @@
+#% -dead-code-elim
+# Brian Belleville 2014
+
+main 
+var x, y, z, w;
+{
+    let x <- call InputNum();
+    let y <- 2 * x;
+
+    # assignments to w will be dead code, but assignments to z will
+    # not. Assignments to z will result in a phi instruction, but that
+    # phi will actually be choosing between the same values.
+    if x < y then    
+      let z <- x;
+      let w <- y * 42
+    else
+      let z <- x;
+      let w <- 42 + x
+    fi;
+
+    call OutputNum(z);
+    call OutputNum(y)
+}.

@@ -1,0 +1,22 @@
+#% -dead-code-elim
+# Brian Belleville 2014
+
+# there is no dead code in this test case
+main 
+var x, y, z, w;
+{
+    let x <- call InputNum();
+    let y <- 2 * x;
+
+    if x < y then    
+      let z <- x;
+      let w <- y * 42
+    else
+      let z <- x;
+      let w <- 42 + x
+    fi;
+
+    call OutputNum(w);
+    call OutputNum(z);
+    call OutputNum(y)
+}.
