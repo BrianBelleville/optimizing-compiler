@@ -2,9 +2,7 @@ package compiler;
 
 import java.io.File;
 import java.util.ArrayList;
-
 import ir.*;
-import ir.base.*;
 import support.*;
 
 public class Parser {

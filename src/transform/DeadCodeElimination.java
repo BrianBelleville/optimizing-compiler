@@ -1,9 +1,10 @@
 package transform;
 
 import java.util.ListIterator;
-import ir.base.Instruction;
-import ir.base.Value;
+
+import ir.Instruction;
 import ir.NamedValue;
+import ir.Value;
 
 public class DeadCodeElimination extends Pass {
     private static Value deleteFor = new NamedValue("DELETED");

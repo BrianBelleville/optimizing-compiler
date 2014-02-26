@@ -6,7 +6,7 @@ import ir.Load;
 import ir.Store;
 import ir.Move;
 import ir.NamedValue;
-import ir.base.Value;
+import ir.Value;
 
 public class VarType extends Type {
     private boolean global;

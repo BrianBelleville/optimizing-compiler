@@ -1,6 +1,5 @@
-package ir.base;
+package ir;
 
-import ir.Immediate;
 
 public class ArithmeticInstruction extends BinaryInstruction {
     public ArithmeticInstruction(Opcode o, Value a1, Value a2) {

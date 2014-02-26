@@ -2,10 +2,6 @@ package ir;
 
 import ir.Store;
 import ir.Call;
-import ir.base.Instruction;
-import ir.base.Opcode;
-import ir.base.UnaryInstruction;
-import ir.base.Value;
 import support.Identifier;
 
 public class Load extends UnaryInstruction {

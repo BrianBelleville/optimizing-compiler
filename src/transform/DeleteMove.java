@@ -1,8 +1,9 @@
 package transform;
 
 import java.util.ListIterator;
+
+import ir.Instruction;
 import ir.Move;
-import ir.base.Instruction;
 
 public class DeleteMove extends Pass {
     @Override

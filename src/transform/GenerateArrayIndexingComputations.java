@@ -4,7 +4,8 @@ import java.util.ListIterator;
 import ir.ArrayIndex;
 import ir.Adda;
 import ir.BasicBlock;
-import ir.base.Instruction;
+import ir.Instruction;
+
 import java.util.ArrayList;
 
 public class GenerateArrayIndexingComputations extends Pass {

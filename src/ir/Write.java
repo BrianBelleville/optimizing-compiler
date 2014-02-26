@@ -1,10 +1,7 @@
 package ir;
 
-import ir.base.Instruction;
-import ir.base.Opcode;
-import ir.base.Value;
 
-public class Write extends ir.base.UnaryInstruction {
+public class Write extends ir.UnaryInstruction {
 
     public Write(Value arg) {
         super(Opcode.write, arg);

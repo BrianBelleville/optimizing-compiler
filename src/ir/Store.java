@@ -1,9 +1,5 @@
 package ir;
 
-import ir.base.BinaryInstruction;
-import ir.base.Instruction;
-import ir.base.Opcode;
-import ir.base.Value;
 import support.Identifier;
 
 public class Store extends BinaryInstruction {

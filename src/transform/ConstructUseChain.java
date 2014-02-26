@@ -2,8 +2,9 @@ package transform;
 
 import java.util.ListIterator;
 import java.util.ArrayList;
-import ir.base.Value;
-import ir.base.Instruction;
+
+import ir.Instruction;
+import ir.Value;
 
 public class ConstructUseChain extends Pass {
     @Override

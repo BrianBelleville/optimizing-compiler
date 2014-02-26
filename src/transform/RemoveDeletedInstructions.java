@@ -1,7 +1,8 @@
 package transform;
 
 import java.util.ListIterator;
-import ir.base.Instruction;
+
+import ir.Instruction;
 
 public class RemoveDeletedInstructions extends Pass {
     @Override

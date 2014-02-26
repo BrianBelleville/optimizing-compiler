@@ -1,7 +1,6 @@
-package ir.base;
+package ir;
 
 
-import ir.BasicBlock;
 import java.io.Writer;
 import java.util.ArrayList;
 

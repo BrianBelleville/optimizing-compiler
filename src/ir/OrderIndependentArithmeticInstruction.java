@@ -1,4 +1,4 @@
-package ir.base;
+package ir;
 
 public class OrderIndependentArithmeticInstruction extends ArithmeticInstruction {
     public OrderIndependentArithmeticInstruction(Opcode o, Value a1, Value a2) {

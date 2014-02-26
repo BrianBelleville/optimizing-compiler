@@ -1,9 +1,10 @@
 package transform;
 
 import java.util.ListIterator;
-import ir.base.Instruction;
-import ir.base.ArithmeticInstruction;
-import ir.base.Value;
+
+import ir.ArithmeticInstruction;
+import ir.Instruction;
+import ir.Value;
 
 public class ConstantArithmetic extends Pass {
 

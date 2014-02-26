@@ -1,6 +1,5 @@
 package ir;
 
-import ir.base.Value;
 import support.Identifier;
 
 public class Argument {

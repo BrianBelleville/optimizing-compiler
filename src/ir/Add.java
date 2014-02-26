@@ -1,8 +1,5 @@
 package ir;
 
-import ir.base.Opcode;
-import ir.base.OrderIndependentArithmeticInstruction;
-import ir.base.Value;
 
 public class Add extends OrderIndependentArithmeticInstruction {
 

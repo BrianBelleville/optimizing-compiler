@@ -1,7 +1,6 @@
 package ir;
 
 import support.Identifier;
-import ir.base.Value;
 import transform.ReplaceVariableInLoop;
 
 // the difference between this and a normal BasicBlock is that this

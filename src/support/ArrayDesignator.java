@@ -1,6 +1,7 @@
 package support;
 
-import ir.base.Value;
+import ir.Value;
+
 import java.util.ArrayList;
 
 public class ArrayDesignator extends Designator {

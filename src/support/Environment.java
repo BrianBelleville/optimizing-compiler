@@ -2,8 +2,9 @@ package support;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import ir.Value;
 import ir.VariableReference;
-import ir.base.Value;
 
 public class Environment {
     private ArrayList< HashMap<Identifier, VariableReference>> env;

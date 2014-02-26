@@ -1,8 +1,5 @@
 package ir;
 
-import ir.base.ArithmeticInstruction;
-import ir.base.Opcode;
-import ir.base.Value;
 
 public class Div extends ArithmeticInstruction {
 

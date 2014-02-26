@@ -1,9 +1,5 @@
 package ir;
 
-import ir.base.BinaryInstruction;
-import ir.base.Instruction;
-import ir.base.Opcode;
-import ir.base.Value;
 
 public class Cmp extends BinaryInstruction {
     public enum CmpType {

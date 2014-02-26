@@ -5,7 +5,8 @@ import ir.Load;
 import ir.Store;
 import ir.ArrayIndex;
 import ir.NamedValue;
-import ir.base.Value;
+import ir.Value;
+
 import java.util.ArrayList;
 
 public class ArrayType extends Type {

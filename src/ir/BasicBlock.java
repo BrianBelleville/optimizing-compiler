@@ -7,9 +7,6 @@ import support.Environment;
 import support.Identifier;
 import ir.Ret;
 import ir.End;
-import ir.base.BranchInstruction;
-import ir.base.Instruction;
-import ir.base.Value;
 import java.io.Writer;
 
 // todo: have a table containing the most recent instance of a
@@ -157,7 +154,7 @@ public class BasicBlock {
         // if we are here, we need to add a new phi. Wrap the new
         // value in VariableReference to the correct variable, the old
         // value will be a variable reference
-        assert oldVal instanceof VariableReference;
+        assert (oldVal instanceof VariableReference);
         Phi p = new Phi(var, oldVal, new VariableReference(var, newVal));
         if(instructions.isEmpty()) {
             // if this is the first instruction, make it the most recent dominating

@@ -1,10 +1,6 @@
 package ir;
 
 import java.io.Writer;
-import ir.base.BinaryInstruction;
-import ir.base.Instruction;
-import ir.base.Opcode;
-import ir.base.Value;
 import support.Identifier;
 
 public class Phi extends BinaryInstruction {

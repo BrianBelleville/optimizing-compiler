@@ -1,10 +1,11 @@
 package transform;
 
 import java.util.ListIterator;
-import ir.base.Instruction;
+
+import ir.Instruction;
 import ir.Phi;
+import ir.Value;
 import ir.VariableReference;
-import ir.base.Value;
 import support.Identifier;
 
 public class ReplaceVariableInLoop extends Pass {

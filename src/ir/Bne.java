@@ -1,7 +1,5 @@
 package ir;
 
-import ir.base.BranchInstruction;
-import ir.base.Opcode;
 
 public class Bne extends BranchInstruction {
 

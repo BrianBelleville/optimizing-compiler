@@ -2,8 +2,6 @@ package ir;
 
 import java.io.Writer;
 
-import ir.base.Instruction;
-import ir.base.Value;
 import support.Identifier;
 
 // this class wraps a value

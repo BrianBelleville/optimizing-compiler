@@ -1,4 +1,4 @@
-package ir.base;
+package ir;
 
 public enum Opcode {
     add,

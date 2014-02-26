@@ -1,6 +1,5 @@
 package ir;
 
-import ir.base.Value;
 import java.io.Writer;
 
 public class Immediate extends Value {
