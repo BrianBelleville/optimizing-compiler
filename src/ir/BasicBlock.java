@@ -173,11 +173,6 @@ public class BasicBlock {
         return p;
     }
 
-    public void stripVarRefs() throws Exception {
-        stripVarRefsInternal();
-        BasicBlock.currentPass++;
-    }
-
     public void runPass(Pass p) throws Exception {
         if(p.requireBreadthFistTraversal()) {
             runBreadthFirstPass(p);
@@ -228,24 +223,6 @@ public class BasicBlock {
         }
         if(ch2 != null) {
             ch2.runDepthFirstPass(p);
-        }
-    }
-
-    private void stripVarRefsInternal() throws Exception {
-        if(localPass == currentPass) {
-            return;
-        }
-        localPass = BasicBlock.currentPass;
-        for(Instruction i : instructions) {
-            i.removeVariableReferenceArguments();
-        }
-        BasicBlock ch1 = getFallThrough();
-        BasicBlock ch2 = getBranchTarget();
-        if(ch1 != null) {
-            ch1.stripVarRefsInternal();
-        }
-        if(ch2 != null) {
-            ch2.stripVarRefsInternal();
         }
     }
 }
