@@ -92,6 +92,10 @@ public class Main {
                 }
             }
 
+            FileWriter out = new FileWriter("out.gv");
+            program.get(0).entryPoint.calcLiveRange().printGraph(out);
+            out.close();
+
             if(cfgOut != null) {
                 outputCFG(cfgOut, program);
             }
