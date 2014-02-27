@@ -1,0 +1,19 @@
+#% -dead-code-elim
+# Brian Belleville 2014
+
+main 
+var x, y;
+array[8][8] a;
+{
+  let x <- 0;
+  while x < 8 do
+    # generates a phi for y, but it can be eliminated
+    let y <- 0;
+    while y < 8 do
+      let a[x][y] <- 0;
+      let y <- y + 1
+    od;
+    let x <- x + 1
+  od;
+  call OutputNum(a[4][4])
+}.
