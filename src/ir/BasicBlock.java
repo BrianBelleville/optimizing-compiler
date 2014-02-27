@@ -25,7 +25,7 @@ public class BasicBlock {
     protected static int currentPass = 0;
     private boolean printed = false;
     private Instruction mostRecentDominating;
-
+    private HashSet<Value> live;
     private int getNextBlockNum() {
         blockNum += 1;
         return blockNum;
@@ -45,6 +45,7 @@ public class BasicBlock {
         this.dominator = dominator;
         number = getNextBlockNum();
         instructions = new LinkedList<Instruction>();
+        live = new HashSet<Value>();
         if(this.dominator != null) {
             mostRecentDominating = this.dominator.mostRecentDominating;
         } else {
@@ -186,9 +187,10 @@ public class BasicBlock {
         if(p.requireBreadthFistTraversal()) {
             runBreadthFirstPass(p);
             currentPass++;
+        } else {
+            runDepthFirstPass(p);
+            currentPass++;
         }
-        runDepthFirstPass(p);
-        currentPass++;
     }
 
     public void runBreadthFirstPass(Pass p) throws Exception {
@@ -253,18 +255,67 @@ public class BasicBlock {
         }
     }
 
-    public InterferenceGraph calcLiveRange() throws Exception {
-        HashSet<Value> live = new HashSet<Value>();
+    private HashSet<Value> calcLiveRangeInternal(int branchNum, boolean secondTime, InterferenceGraph G) {
+        HashSet<Value> live;
+        if(localPass >= currentPass) {
+            live = new HashSet<Value>(this.live);
+        } else {
+            localPass++;
+            live = new HashSet<Value>();
+            if(secondTime) {
+                // go through all loop headers and add them to b.live
+            }
+
+            BasicBlock ch1 = getFallThrough();
+            BasicBlock ch2 = getBranchTarget();
+            if(ch1 != null) {
+                HashSet<Value> t = ch1.calcLiveRangeInternal(1, secondTime, G);
+                live.addAll(t);
+            }
+            if(ch2 != null) {
+                HashSet<Value> t = ch2.calcLiveRangeInternal(2, secondTime, G);
+                live.addAll(t);
+            }
+
+            // for all non phi instructions do backwards
+            Iterator<Instruction> iter = instructions.descendingIterator();
+            while(iter.hasNext()) {
+                Instruction i = iter.next();
+                if(i instanceof Phi) {
+                    break;
+                }
+                live.remove(i);
+                for(Value v : live) {
+                    G.addEdge(i, v);
+                }
+                live.addAll(i.getArguments());
+            }
+            // this.live = copy(live)
+            this.live = new HashSet<Value>(live);
+        }
+        // for all phi instructions do backwards
         Iterator<Instruction> iter = instructions.descendingIterator();
-        InterferenceGraph g = new InterferenceGraph();
         while(iter.hasNext()) {
             Instruction i = iter.next();
-            live.remove(i);
-            for(Value v : live) {
-                g.addEdge(i, v);
+            if(i instanceof Phi) {
+                Phi p = (Phi)i;
+                live.remove(p);
+                for(Value v : live) {
+                    G.addEdge(p, v);
+                }
+                // add phi argument to live based on the branch number
             }
-            live.addAll(i.getArguments());
         }
+
+        return live;
+    }
+
+    public InterferenceGraph calcLiveRange() throws Exception {
+        InterferenceGraph g = new InterferenceGraph();
+        calcLiveRangeInternal(1, false, g);
+        currentPass++;
+        calcLiveRangeInternal(1, true, g);
+        currentPass++;
         return g;
     }
 }
