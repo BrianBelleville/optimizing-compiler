@@ -181,9 +181,9 @@ public class BasicBlock {
     public void runPass(Pass p) throws Exception {
         if(p.requireBreadthFistTraversal()) {
             runBreadthFirstPass(p);
-            currentPass++;
+        } else {
+            runDepthFirstPass(p);
         }
-        runDepthFirstPass(p);
         currentPass++;
     }
 
