@@ -1,10 +1,14 @@
 package ir;
 
 import transform.Pass;
+
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.ListIterator;
+import java.util.HashSet;
 import support.Environment;
 import support.Identifier;
+import support.InterferenceGraph;
 import ir.Ret;
 import ir.End;
 import java.io.Writer;
@@ -247,5 +251,20 @@ public class BasicBlock {
         if(ch2 != null) {
             ch2.stripVarRefsInternal();
         }
+    }
+
+    public InterferenceGraph calcLiveRange() throws Exception {
+        HashSet<Value> live = new HashSet<Value>();
+        Iterator<Instruction> iter = instructions.descendingIterator();
+        InterferenceGraph g = new InterferenceGraph();
+        while(iter.hasNext()) {
+            Instruction i = iter.next();
+            live.remove(i);
+            for(Value v : live) {
+                g.addEdge(i, v);
+            }
+            live.addAll(i.getArguments());
+        }
+        return g;
     }
 }
