@@ -21,4 +21,8 @@ public abstract class Value {
     public boolean needsRegister() {
         return false;           // default for values is that they don't need to be in a register
     }
+
+    public void setColor(Integer n) {
+        // default is nop
+    }
 }
