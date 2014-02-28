@@ -22,6 +22,15 @@ public class BinaryInstruction extends Instruction {
         return arg2;
     }
 
+    protected void setArg1(Value v) {
+        arg1 = v;
+    }
+
+    protected void setArg2(Value v) {
+        arg2 = v;
+    }
+
+
     @Override
     public boolean isCommonSubexpression(Instruction i) {
         if(i instanceof BinaryInstruction) {

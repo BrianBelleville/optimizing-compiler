@@ -28,6 +28,9 @@ public class BasicBlock {
     private boolean printed = false;
     private Instruction mostRecentDominating;
     private HashSet<Value> live;
+    private int currentBranch = 1; // always initially generate incomming branch 1
+    private BasicBlock incomingBranch1;
+    private BasicBlock incomingBranch2;
 
     private int getNextBlockNum() {
         blockNum += 1;
@@ -36,6 +39,22 @@ public class BasicBlock {
 
     public HashSet<Value> getLive() {
         return live;
+    }
+
+    public void setCurrentBranch(int i) {
+        assert (i >= 1 && i <= 2);
+        currentBranch = i;
+    }
+
+    public void setIncomingBranch(BasicBlock b) {
+        assert (currentBranch >= 1 && currentBranch <= 2);
+        if(currentBranch == 1) {
+            assert (incomingBranch1 == null); // only set once
+            incomingBranch1 = b;
+        } else if (currentBranch == 2) {
+            assert (incomingBranch2 == null);
+            incomingBranch2 = b;
+        }
     }
 
     public boolean hasFinalReturn() {
@@ -152,7 +171,8 @@ public class BasicBlock {
                     // update the phi since there is already one for
                     // this variable, throw if the old value isn't
                     // part of the phi
-                    p.replaceArgument(oldVal, new VariableReference(var, newVal), true);
+                    p.updateArgument(oldVal, new VariableReference(var, newVal),
+                                     currentBranch);
                     // we are now done, didn't add a new Phi
                     return null;
                 }
@@ -167,7 +187,16 @@ public class BasicBlock {
         // value in VariableReference to the correct variable, the old
         // value will be a variable reference
         assert (oldVal instanceof VariableReference);
-        Phi p = new Phi(var, oldVal, new VariableReference(var, newVal));
+        Phi p = null;
+
+        if(currentBranch == 1) {
+            p = new Phi(var, new VariableReference(var, newVal), oldVal);
+        } else if (currentBranch == 2) {
+            p = new Phi(var, oldVal, new VariableReference(var, newVal));
+        } else {
+            throw new Exception("Invalid Phi position");
+        }
+
         if(instructions.isEmpty()) {
             // if this is the first instruction, make it the most recent dominating
             p.setDominating(mostRecentDominating);
@@ -264,7 +293,8 @@ public class BasicBlock {
 
 
 
-    private HashSet<Value> calcLiveRangeInternal(int branchNum, boolean secondTime, InterferenceGraph G) {
+    private HashSet<Value> calcLiveRangeInternal(BasicBlock branch, boolean secondTime, InterferenceGraph G)
+        throws Exception {
         HashSet<Value> live;
         if(localLiveRangePass >= currentLiveRangePass) {
             live = new HashSet<Value>(this.live);
@@ -302,11 +332,11 @@ public class BasicBlock {
             BasicBlock ch1 = getFallThrough();
             BasicBlock ch2 = getBranchTarget();
             if(ch1 != null) {
-                HashSet<Value> t = ch1.calcLiveRangeInternal(1, secondTime, G);
+                HashSet<Value> t = ch1.calcLiveRangeInternal(this, secondTime, G);
                 live.addAll(t);
             }
             if(ch2 != null) {
-                HashSet<Value> t = ch2.calcLiveRangeInternal(2, secondTime, G);
+                HashSet<Value> t = ch2.calcLiveRangeInternal(this, secondTime, G);
                 live.addAll(t);
             }
 
@@ -340,10 +370,22 @@ public class BasicBlock {
             if(i instanceof Phi) {
                 Phi p = (Phi)i;
                 live.remove(p);
+                // phi instructoins will always need a register
                 for(Value v : live) {
                     G.addEdge(p, v);
                 }
                 // add phi argument to live based on the branch number
+                Value add = null;
+                if(branch.equals(incomingBranch1)) {
+                    add = p.getArg1();
+                } else if (branch.equals(incomingBranch2)) {
+                    add = p.getArg2();
+                } else {
+                    throw new Exception("Branch doesn't match");
+                }
+                if(add.needsRegister()) {
+                    live.add(add);
+                }
             }
         }
 
@@ -352,9 +394,9 @@ public class BasicBlock {
 
     public InterferenceGraph calcLiveRange() throws Exception {
         InterferenceGraph g = new InterferenceGraph();
-        calcLiveRangeInternal(1, false, g);
+        calcLiveRangeInternal(this, false, g);
         currentLiveRangePass++;
-        calcLiveRangeInternal(1, true, g);
+        calcLiveRangeInternal(this, true, g);
         currentLiveRangePass++;
         return g;
     }

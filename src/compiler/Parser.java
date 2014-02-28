@@ -270,9 +270,13 @@ public class Parser {
         currentJoinBlock = nextBB;
 
 	// generate code for the 'if' body
+        currentJoinBlock.setCurrentBranch(1);
         env.enter();
         statSequence();
         env.exit();
+        currentJoinBlock.setIncomingBranch(currentBB);
+
+        currentJoinBlock.setCurrentBranch(2);
         if(scan.sym == Token.else_t) {
 	    scan.next();
 
@@ -291,11 +295,13 @@ public class Parser {
             statSequence();
             env.exit();
             currentBB.setFallThrough(nextBB);
+            currentJoinBlock.setIncomingBranch(currentBB);
         } else {
             // otherwise, no else, so the next block will be the target of the branch
             oldCurrent.addInstruction(makeProperBranch(comp, nextBB));
             // 'if' branch will fall through
             currentBB.setFallThrough(nextBB);
+            currentJoinBlock.setIncomingBranch(oldCurrent);
         }
         if(scan.sym == Token.fi) {
             scan.next();
@@ -352,11 +358,17 @@ public class Parser {
         oldCurrent.setFallThrough(loopHeader);
         // and the header will fall through to the loop body
         loopHeader.setFallThrough(loopBodyStart);
+
+        // set up the incomming basic block for the loop header
+        loopHeader.setCurrentBranch(1);
+        loopHeader.setIncomingBranch(oldCurrent);
+        
         currentBB = loopHeader;
         currentJoinBlock = loopHeader; // relations can't perform assignment, so it's all good
         Cmp comp = relation();
         // add the branch instruction
         loopHeader.addInstruction(makeProperBranch(comp, nextBB));
+        loopHeader.setCurrentBranch(2);
         if(scan.sym == Token.do_t) {
             scan.next();
             currentBB = loopBodyStart;
@@ -365,6 +377,8 @@ public class Parser {
             // add branch to loop header
             currentBB.addInstruction(new Bra(loopHeader));
             env.exit();
+
+            loopHeader.setIncomingBranch(currentBB);
 
             if(scan.sym == Token.od) {
                 scan.next();
