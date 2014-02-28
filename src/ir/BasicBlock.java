@@ -23,12 +23,19 @@ public class BasicBlock {
     private int number;
     protected int localPass = -1;
     protected static int currentPass = 0;
+    protected int localLiveRangePass = -1;
+    protected static int currentLiveRangePass = 0;
     private boolean printed = false;
     private Instruction mostRecentDominating;
     private HashSet<Value> live;
+
     private int getNextBlockNum() {
         blockNum += 1;
         return blockNum;
+    }
+
+    public HashSet<Value> getLive() {
+        return live;
     }
 
     public boolean hasFinalReturn() {
@@ -255,15 +262,41 @@ public class BasicBlock {
         }
     }
 
+
+
     private HashSet<Value> calcLiveRangeInternal(int branchNum, boolean secondTime, InterferenceGraph G) {
         HashSet<Value> live;
-        if(localPass >= currentPass) {
+        if(localLiveRangePass >= currentLiveRangePass) {
             live = new HashSet<Value>(this.live);
         } else {
-            localPass++;
+            localLiveRangePass++;
             live = new HashSet<Value>();
             if(secondTime) {
                 // go through all loop headers and add them to b.live
+                // search through loop headers in breadth first order
+                LinkedList<BasicBlock> blocks = new LinkedList<BasicBlock>();
+                blocks.add(this);       // start on current BB
+                while(!blocks.isEmpty()) {
+                    BasicBlock bb = blocks.pop();
+                    // need to change this to use a different pass
+                    // number variable
+                    if(bb.localPass == currentPass) {
+                        continue;
+                    }
+                    bb.localPass = currentPass;
+                    if(bb instanceof LoopHeader) {
+                        this.live.addAll(bb.getLive());
+                    }
+                    BasicBlock ch1 = bb.getFallThrough();
+                    BasicBlock ch2 = bb.getBranchTarget();
+                    if(ch1 != null) {
+                        blocks.add(ch1);
+                    }
+                    if(ch2 != null) {
+                        blocks.add(ch2);
+                    }
+                }
+                currentPass++;
             }
 
             BasicBlock ch1 = getFallThrough();
@@ -313,9 +346,9 @@ public class BasicBlock {
     public InterferenceGraph calcLiveRange() throws Exception {
         InterferenceGraph g = new InterferenceGraph();
         calcLiveRangeInternal(1, false, g);
-        currentPass++;
+        currentLiveRangePass++;
         calcLiveRangeInternal(1, true, g);
-        currentPass++;
+        currentLiveRangePass++;
         return g;
     }
 }
