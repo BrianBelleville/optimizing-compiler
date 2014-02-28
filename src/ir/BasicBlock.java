@@ -318,10 +318,17 @@ public class BasicBlock {
                     break;
                 }
                 live.remove(i);
-                for(Value v : live) {
-                    G.addEdge(i, v);
+                if(i.needsRegister()) {
+                    G.addNode(i);
+                    for(Value v : live) {
+                        G.addEdge(i, v);
+                    }
                 }
-                live.addAll(i.getArguments());
+                for(Value v : i.getArguments()) {
+                    if(v.needsRegister()) {
+                        live.add(v);
+                    }
+                }
             }
             // this.live = copy(live)
             this.live = new HashSet<Value>(live);

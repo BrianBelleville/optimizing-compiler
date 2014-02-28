@@ -52,5 +52,10 @@ public class BranchInstruction extends Instruction {
     @Override
     public boolean isDeadCode() {
         return false;           // can not be dead code
-    }        
+    }
+
+    @Override
+    public boolean needsRegister() {
+        return false;
+    }
 }

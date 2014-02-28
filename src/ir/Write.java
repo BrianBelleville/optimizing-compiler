@@ -21,4 +21,10 @@ public class Write extends ir.UnaryInstruction {
     public boolean isDeadCode() {
         return false;           // can not be dead code
     }
+
+    @Override
+    public boolean needsRegister() {
+        return false;
+    }
+
 }

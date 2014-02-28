@@ -26,4 +26,9 @@ public class Ret extends UnaryInstruction {
         return false;           // can not be dead code
     }        
 
+    @Override
+    public boolean needsRegister() {
+        return false;
+    }
+
 }

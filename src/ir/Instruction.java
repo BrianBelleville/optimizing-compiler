@@ -23,6 +23,11 @@ public abstract class Instruction extends Value {
     }
 
     @Override
+    public boolean needsRegister() {
+        return true;            // most instructions will produce a result that needs to be in a register
+    }
+    
+    @Override
     public void printAsArg(Writer w) throws Exception {
         if(isDeleted()) {
             throw new Exception("Deleted instruction used as an argument");

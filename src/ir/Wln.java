@@ -21,4 +21,10 @@ public class Wln extends NoArgInstruction {
     public boolean isDeadCode() {
         return false;           // can not be dead code
     }
+    
+    @Override
+    public boolean needsRegister() {
+        return false;
+    }
+
 }
