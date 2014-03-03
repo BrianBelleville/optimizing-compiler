@@ -17,4 +17,12 @@ public abstract class Value {
         return this;            // default, return this, no variable reference
     }
     abstract public void printAsArg(Writer w) throws Exception;
+
+    public boolean needsRegister() {
+        return false;           // default for values is that they don't need to be in a register
+    }
+
+    public void setColor(Integer n) {
+        // default is nop
+    }
 }

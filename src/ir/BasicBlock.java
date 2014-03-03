@@ -1,10 +1,14 @@
 package ir;
 
 import transform.Pass;
+
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.ListIterator;
+import java.util.HashSet;
 import support.Environment;
 import support.Identifier;
+import support.InterferenceGraph;
 import ir.Ret;
 import ir.End;
 import java.io.Writer;
@@ -19,12 +23,38 @@ public class BasicBlock {
     private int number;
     protected int localPass = -1;
     protected static int currentPass = 0;
+    protected int localLiveRangePass = -1;
+    protected static int currentLiveRangePass = 0;
     private boolean printed = false;
     private Instruction mostRecentDominating;
+    private HashSet<Value> live;
+    private int currentBranch = 1; // always initially generate incomming branch 1
+    private BasicBlock incomingBranch1;
+    private BasicBlock incomingBranch2;
 
     private int getNextBlockNum() {
         blockNum += 1;
         return blockNum;
+    }
+
+    public HashSet<Value> getLive() {
+        return live;
+    }
+
+    public void setCurrentBranch(int i) {
+        assert (i >= 1 && i <= 2);
+        currentBranch = i;
+    }
+
+    public void setIncomingBranch(BasicBlock b) {
+        assert (currentBranch >= 1 && currentBranch <= 2);
+        if(currentBranch == 1) {
+            assert (incomingBranch1 == null); // only set once
+            incomingBranch1 = b;
+        } else if (currentBranch == 2) {
+            assert (incomingBranch2 == null);
+            incomingBranch2 = b;
+        }
     }
 
     public boolean hasFinalReturn() {
@@ -41,6 +71,7 @@ public class BasicBlock {
         this.dominator = dominator;
         number = getNextBlockNum();
         instructions = new LinkedList<Instruction>();
+        live = new HashSet<Value>();
         if(this.dominator != null) {
             mostRecentDominating = this.dominator.mostRecentDominating;
         } else {
@@ -140,7 +171,8 @@ public class BasicBlock {
                     // update the phi since there is already one for
                     // this variable, throw if the old value isn't
                     // part of the phi
-                    p.replaceArgument(oldVal, new VariableReference(var, newVal), true);
+                    p.updateArgument(oldVal, new VariableReference(var, newVal),
+                                     currentBranch);
                     // we are now done, didn't add a new Phi
                     return null;
                 }
@@ -155,7 +187,16 @@ public class BasicBlock {
         // value in VariableReference to the correct variable, the old
         // value will be a variable reference
         assert (oldVal instanceof VariableReference);
-        Phi p = new Phi(var, oldVal, new VariableReference(var, newVal));
+        Phi p = null;
+
+        if(currentBranch == 1) {
+            p = new Phi(var, new VariableReference(var, newVal), oldVal);
+        } else if (currentBranch == 2) {
+            p = new Phi(var, oldVal, new VariableReference(var, newVal));
+        } else {
+            throw new Exception("Invalid Phi position");
+        }
+
         if(instructions.isEmpty()) {
             // if this is the first instruction, make it the most recent dominating
             p.setDominating(mostRecentDominating);
@@ -224,5 +265,133 @@ public class BasicBlock {
         if(ch2 != null) {
             ch2.runDepthFirstPass(p);
         }
+    }
+
+    private void stripVarRefsInternal() throws Exception {
+        if(localPass == currentPass) {
+            return;
+        }
+        localPass = BasicBlock.currentPass;
+        for(Instruction i : instructions) {
+            i.removeVariableReferenceArguments();
+        }
+        BasicBlock ch1 = getFallThrough();
+        BasicBlock ch2 = getBranchTarget();
+        if(ch1 != null) {
+            ch1.stripVarRefsInternal();
+        }
+        if(ch2 != null) {
+            ch2.stripVarRefsInternal();
+        }
+    }
+
+
+
+    private HashSet<Value> calcLiveRangeInternal(BasicBlock branch, boolean secondTime, InterferenceGraph G)
+        throws Exception {
+        HashSet<Value> live;
+        if(localLiveRangePass >= currentLiveRangePass) {
+            live = new HashSet<Value>(this.live);
+        } else {
+            localLiveRangePass++;
+            live = new HashSet<Value>();
+            if(secondTime) {
+                // go through all loop headers and add them to b.live
+                // search through loop headers in breadth first order
+                LinkedList<BasicBlock> blocks = new LinkedList<BasicBlock>();
+                blocks.add(this);       // start on current BB
+                while(!blocks.isEmpty()) {
+                    BasicBlock bb = blocks.pop();
+                    // need to change this to use a different pass
+                    // number variable
+                    if(bb.localPass == currentPass) {
+                        continue;
+                    }
+                    bb.localPass = currentPass;
+                    if(bb instanceof LoopHeader) {
+                        this.live.addAll(bb.getLive());
+                    }
+                    BasicBlock ch1 = bb.getFallThrough();
+                    BasicBlock ch2 = bb.getBranchTarget();
+                    if(ch1 != null) {
+                        blocks.add(ch1);
+                    }
+                    if(ch2 != null) {
+                        blocks.add(ch2);
+                    }
+                }
+                currentPass++;
+            }
+
+            BasicBlock ch1 = getFallThrough();
+            BasicBlock ch2 = getBranchTarget();
+            if(ch1 != null) {
+                HashSet<Value> t = ch1.calcLiveRangeInternal(this, secondTime, G);
+                live.addAll(t);
+            }
+            if(ch2 != null) {
+                HashSet<Value> t = ch2.calcLiveRangeInternal(this, secondTime, G);
+                live.addAll(t);
+            }
+
+            // for all non phi instructions do backwards
+            Iterator<Instruction> iter = instructions.descendingIterator();
+            while(iter.hasNext()) {
+                Instruction i = iter.next();
+                if(i instanceof Phi) {
+                    break;
+                }
+                live.remove(i);
+                if(i.needsRegister()) {
+                    G.addNode(i);
+                    for(Value v : live) {
+                        G.addEdge(i, v);
+                    }
+                }
+                for(Value v : i.getArguments()) {
+                    if(v.needsRegister()) {
+                        live.add(v);
+                    }
+                }
+            }
+            // this.live = copy(live)
+            this.live = new HashSet<Value>(live);
+        }
+        // for all phi instructions do backwards
+        Iterator<Instruction> iter = instructions.descendingIterator();
+        while(iter.hasNext()) {
+            Instruction i = iter.next();
+            if(i instanceof Phi) {
+                Phi p = (Phi)i;
+                live.remove(p);
+                // phi instructoins will always need a register
+                for(Value v : live) {
+                    G.addEdge(p, v);
+                }
+                // add phi argument to live based on the branch number
+                Value add = null;
+                if(branch.equals(incomingBranch1)) {
+                    add = p.getArg1();
+                } else if (branch.equals(incomingBranch2)) {
+                    add = p.getArg2();
+                } else {
+                    throw new Exception("Branch doesn't match");
+                }
+                if(add.needsRegister()) {
+                    live.add(add);
+                }
+            }
+        }
+
+        return live;
+    }
+
+    public InterferenceGraph calcLiveRange() throws Exception {
+        InterferenceGraph g = new InterferenceGraph();
+        calcLiveRangeInternal(this, false, g);
+        currentLiveRangePass++;
+        calcLiveRangeInternal(this, true, g);
+        currentLiveRangePass++;
+        return g;
     }
 }

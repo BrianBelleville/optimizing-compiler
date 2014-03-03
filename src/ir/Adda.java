@@ -13,4 +13,9 @@ public class Adda extends OrderIndependentArithmeticInstruction {
         // be computed at compile time
         return false;           
     }
+
+    @Override
+    public boolean needsRegister() {
+        return false;
+    }
 }

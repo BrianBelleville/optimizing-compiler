@@ -85,4 +85,9 @@ public class ArrayIndex extends NaryInstruction {
     public void printInstruction(Writer w) throws Exception {
         throw new Exception("Attempt to print ArrayIndex, should have been eliminated");
     }
+
+    @Override
+    public boolean needsRegister() {
+        return false;
+    }
 }

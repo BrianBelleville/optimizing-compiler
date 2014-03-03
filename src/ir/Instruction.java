@@ -13,6 +13,7 @@ public abstract class Instruction extends Value {
     private Instruction dominating;
     private Opcode opcode;
     public ArrayList<Instruction> uses;
+    private Integer color;
 
     abstract public ArrayList<Value> getArguments();
 
@@ -20,8 +21,14 @@ public abstract class Instruction extends Value {
         number = getNextInstructionNum();
         opcode = o;
         uses = new ArrayList<Instruction>();
+        color = null;
     }
 
+    @Override
+    public boolean needsRegister() {
+        return true;            // most instructions will produce a result that needs to be in a register
+    }
+    
     @Override
     public void printAsArg(Writer w) throws Exception {
         if(isDeleted()) {
@@ -30,11 +37,20 @@ public abstract class Instruction extends Value {
 	w.write(" (" + Integer.toString(number) + ")");
     }
 
+    @Override
+    public void setColor(Integer n) {
+        color = n;
+    }
+
     public void printInstruction(Writer w) throws Exception {
         if(isDeleted()) {
             throw new Exception("Deleted instruction printed as part of CFG");
         }
 	w.write(Integer.toString(number) + ": " + opcode.toString());
+
+        if(color != null) {
+            w.write(" " + color.toString() + " :=");
+        }
 	ArrayList<Value> args = getArguments();
 	for(Value v : args) {
 	    v.printAsArg(w);

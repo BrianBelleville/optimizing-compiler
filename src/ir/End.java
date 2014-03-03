@@ -20,5 +20,11 @@ public class End extends NoArgInstruction {
     @Override
     public boolean isDeadCode() {
         return false;           // can not be dead code
-    }        
+    }
+
+    @Override
+    public boolean needsRegister() {
+        return false;
+    }
+
 }

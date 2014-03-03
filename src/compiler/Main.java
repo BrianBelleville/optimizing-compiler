@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileWriter;
 import transform.*;
 import support.IdentifierTable;
+import support.InterferenceGraph;
 import java.util.ArrayList;
 import ir.Function;
 
@@ -91,6 +92,12 @@ public class Main {
                     func.entryPoint.runPass(p);
                 }
             }
+
+            FileWriter out = new FileWriter("out.gv");
+            InterferenceGraph g = program.get(0).entryPoint.calcLiveRange();
+            g.printGraph(out);
+            out.close();
+            g.colorGraph();
 
             if(cfgOut != null) {
                 outputCFG(cfgOut, program);

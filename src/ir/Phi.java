@@ -14,6 +14,25 @@ public class Phi extends BinaryInstruction {
 	return variable;
     }
 
+    public void updateArgument(Value old, Value newVal, int branch)
+        throws Exception {
+        if(branch < 1 || branch > 2) {
+            throw new Exception("Incorrect branch number");
+        }
+        if(branch == 1) {
+            if(!getArg1().equals(old)) {
+                throw new Exception("Old value does not match the Phi argument");
+            }
+            setArg1(newVal);
+        }
+        else if(branch == 2) {
+            if(!getArg2().equals(old)) {
+                throw new Exception("Old value does not match the Phi argument");
+            }
+            setArg2(newVal);
+        }
+    }
+
     @Override
     public void printInstruction(Writer w) throws Exception {
 	super.printInstruction(w);

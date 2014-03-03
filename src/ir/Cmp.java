@@ -34,4 +34,9 @@ public class Cmp extends BinaryInstruction {
     public boolean isDeadCode() {
         return false;           // can not be dead code
     }
+
+    @Override
+    public boolean needsRegister() {
+        return false;
+    }
 }
