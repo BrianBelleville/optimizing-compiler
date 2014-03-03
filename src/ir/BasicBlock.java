@@ -267,26 +267,6 @@ public class BasicBlock {
         }
     }
 
-    private void stripVarRefsInternal() throws Exception {
-        if(localPass == currentPass) {
-            return;
-        }
-        localPass = BasicBlock.currentPass;
-        for(Instruction i : instructions) {
-            i.removeVariableReferenceArguments();
-        }
-        BasicBlock ch1 = getFallThrough();
-        BasicBlock ch2 = getBranchTarget();
-        if(ch1 != null) {
-            ch1.stripVarRefsInternal();
-        }
-        if(ch2 != null) {
-            ch2.stripVarRefsInternal();
-        }
-    }
-
-
-
     private HashSet<Value> calcLiveRangeInternal(BasicBlock branch, boolean secondTime, InterferenceGraph G)
         throws Exception {
         HashSet<Value> live;
