@@ -9,7 +9,7 @@ b_3 [label="b_3\l65: mul (29) #4\l66: add array_arg_addr (65)\l67: adda FP (66)\
 b_3 -> b_5;
 b_5 [label="b_5\l68: mul (29) #4\l69: add array_arg_addr (68)\l70: adda FP (69)\l22: load (70)\l"]
 b_5 -> b_7;
-b_7 [label="b_7\l24: phi (26) (22) \"temp\"\l27: add (29) #1\l30: bra b_2\l"]
+b_7 [label="b_7\l24: phi (22) (26) \"temp\"\l27: add (29) #1\l30: bra b_2\l"]
 b_7 -> b_2;
 b_7 -> b_3[color="green"];
 b_5 -> b_3[color="green"];

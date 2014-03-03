@@ -35,7 +35,7 @@ b_12 [label="b_12\l30: call OutputNum (41)\l31: cmp (41) #3\l36: bge b_15\l"]
 b_12 -> b_14;
 b_14 [label="b_14\l32: call OutputNum (41)\l35: call OutputNum #16\l37: bra b_16\l"]
 b_14 -> b_16;
-b_16 [label="b_16\l34: phi #32 #16 \"x\"\l42: call OutputNum (34)\l43: bra b_11\l"]
+b_16 [label="b_16\l34: phi #16 #32 \"x\"\l42: call OutputNum (34)\l43: bra b_11\l"]
 b_16 -> b_11;
 b_16 -> b_12[color="green"];
 b_14 -> b_12[color="green"];

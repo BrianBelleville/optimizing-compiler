@@ -9,7 +9,7 @@ b_3 [label="b_3\l9: add (25) #5\l10: sub (9) #2\l12: cmp (10) #12\l20: ble b_6\l
 b_3 -> b_5;
 b_5 [label="b_5\l13: div (25) #3\l14: mul (13) (24)\l17: sub (24) #1\l21: bra b_7\l"]
 b_5 -> b_7;
-b_7 [label="b_7\l19: phi (22) (17) \"d\"\l16: phi (25) (14) \"a\"\l26: bra b_2\l"]
+b_7 [label="b_7\l19: phi (17) (22) \"d\"\l16: phi (14) (25) \"a\"\l26: bra b_2\l"]
 b_7 -> b_2;
 b_7 -> b_3[color="green"];
 b_5 -> b_3[color="green"];

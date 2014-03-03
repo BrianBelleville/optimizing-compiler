@@ -5,7 +5,7 @@ b_1 [label="b_1\l1: call InputNum\l3: add (1) #2\l5: cmp (1) #0\l8: ble b_3\l"]
 b_1 -> b_2;
 b_2 [label="b_2\l9: bra b_4\l"]
 b_2 -> b_4;
-b_4 [label="b_4\l7: phi (11) (3) \"z\"\l13: call OutputNum (7)\l14: ret \l"]
+b_4 [label="b_4\l7: phi (3) (11) \"z\"\l13: call OutputNum (7)\l14: ret \l"]
 b_4 -> b_1[color="green"];
 b_2 -> b_1[color="green"];
 b_1 -> b_3;

@@ -13,7 +13,7 @@ b_6 -> b_5[color="green"];
 b_5 -> b_7;
 b_7 [label="b_7\l21: bra b_4\l"]
 b_7 -> b_4;
-b_4 [label="b_4\l19: phi (28) (13) \"c\"\l18: phi (31) (16) \"d\"\l8: phi #3 #2 \"a\"\l"]
+b_4 [label="b_4\l19: phi (13) (28) \"c\"\l18: phi (16) (31) \"d\"\l8: phi #2 #3 \"a\"\l"]
 b_4 -> b_11;
 b_11 [label="b_11\l43: phi #2 (37) \"b\"\l42: phi (19) (41) \"c\"\l33: cmp (43) (18)\l34: bge b_13\l"]
 b_11 -> b_12;
@@ -21,7 +21,7 @@ b_12 [label="b_12\l35: cmp (8) (18)\l38: ble b_15\l"]
 b_12 -> b_14;
 b_14 [label="b_14\l39: bra b_16\l"]
 b_14 -> b_16;
-b_16 [label="b_16\l41: phi (42) (43) \"c\"\l37: phi (43) (42) \"b\"\l44: bra b_11\l"]
+b_16 [label="b_16\l41: phi (42) (43) \"c\"\l37: phi (42) (43) \"b\"\l44: bra b_11\l"]
 b_16 -> b_11;
 b_16 -> b_12[color="green"];
 b_14 -> b_12[color="green"];

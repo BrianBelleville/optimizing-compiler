@@ -9,11 +9,11 @@ b_5 [label="b_5\l12: cmp #3 #8\l15: beq b_10\l"]
 b_5 -> b_8;
 b_8 [label="b_8\l"]
 b_8 -> b_10;
-b_10 [label="b_10\l14: phi #3 #8 \"c\"\l"]
+b_10 [label="b_10\l14: phi #8 #3 \"c\"\l"]
 b_10 -> b_7;
-b_7 [label="b_7\l16: phi #3 (14) \"c\"\l11: phi #2 #8 \"a\"\l20: bra b_4\l"]
+b_7 [label="b_7\l16: phi (14) #3 \"c\"\l11: phi #8 #2 \"a\"\l20: bra b_4\l"]
 b_7 -> b_4;
-b_4 [label="b_4\l23: phi #2 #7 \"b\"\l18: phi #3 (16) \"c\"\l7: phi (27) (11) \"a\"\l32: add (7) #1\l34: call OutputNum (32)\l35: end\l"]
+b_4 [label="b_4\l23: phi #2 #7 \"b\"\l18: phi (16) #3 \"c\"\l7: phi (11) (27) \"a\"\l32: add (7) #1\l34: call OutputNum (32)\l35: end\l"]
 b_4 -> b_1[color="green"];
 b_7 -> b_2[color="green"];
 b_10 -> b_5[color="green"];
@@ -27,7 +27,7 @@ b_3 [label="b_3\l24: cmp #1 #7\l28: bge b_12\l"]
 b_3 -> b_11;
 b_11 [label="b_11\l29: bra b_13\l"]
 b_11 -> b_13;
-b_13 [label="b_13\l27: phi #4 #-1 \"a\"\l"]
+b_13 [label="b_13\l27: phi #-1 #4 \"a\"\l"]
 b_13 -> b_4;
 b_13 -> b_3[color="green"];
 b_11 -> b_3[color="green"];
