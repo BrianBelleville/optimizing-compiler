@@ -82,6 +82,8 @@ public class Main {
                 passes.add(new RemoveDeletedInstructions());
             }
 
+            passes.add(new ReplaceDefaultVariableValues());
+
             File f = new File(input);
             IdentifierTable t = new IdentifierTable();
             Parser parse = new Parser(f, t);
