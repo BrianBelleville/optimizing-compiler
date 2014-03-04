@@ -5,7 +5,7 @@ b_1 [label="b_1\l1: add arg_x arg_y\l30: add array_t_addr #16\l31: adda FP (30)\
 b_1 -> b_2;
 b_2 [label="b_2\l8: add arg_y arg_z\l12: add arg_x (1)\l16: bra b_4\l"]
 b_2 -> b_4;
-b_4 [label="b_4\l14: phi (12) #0 \"a\"\l10: phi (8) (17) \"v\"\l20: load (31)\l22: add arg_z (4)\l26: call OutoutNum (1)\l27: ret \l"]
+b_4 [label="b_4\l14: phi (12) #0 \"a\"\l10: phi (8) (17) \"v\"\l20: load (31)\l22: add arg_z (4)\l26: write (1)\l27: ret \l"]
 b_4 -> b_1[color="green"];
 b_2 -> b_1[color="green"];
 b_1 -> b_3;

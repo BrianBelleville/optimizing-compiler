@@ -1,7 +1,7 @@
 digraph Computation {
 node [shape=box];
 test1 -> b_1;
-b_1 [label="b_1\l1: call InputNum\l3: call InputNum\l5: call InputNum\l7: add (3) (5)\l9: add (1) #1\l"]
+b_1 [label="b_1\l1: read\l3: read\l5: read\l7: add (3) (5)\l9: add (1) #1\l"]
 b_1 -> b_2;
 b_2 [label="b_2\l21: phi (3) (19) \"y\"\l18: phi (5) (16) \"z\"\l15: phi (7) (13) \"w\"\l11: cmp (1) (18)\l12: bge b_4\l"]
 b_2 -> b_3;
@@ -9,7 +9,7 @@ b_3 [label="b_3\l13: add (21) (18)\l16: add (18) (18)\l19: add (16) (21)\l22: br
 b_3 -> b_2;
 b_3 -> b_2[color="green"];
 b_2 -> b_4;
-b_4 [label="b_4\l24: call OutputNum (9)\l25: add (21) (1)\l26: call OutputNum (25)\l27: call OutputNum (21)\l28: call OutputNum (15)\l29: ret \l"]
+b_4 [label="b_4\l24: write (9)\l25: add (21) (1)\l26: write (25)\l27: write (21)\l28: write (15)\l29: ret \l"]
 b_4 -> b_2[color="green"];
 b_2 -> b_1[color="green"];
 __MAIN__ -> b_5;

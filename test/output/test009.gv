@@ -13,7 +13,7 @@ b_10 [label="b_10\l14: phi #8 #3 \"c\"\l"]
 b_10 -> b_7;
 b_7 [label="b_7\l16: phi (14) #3 \"c\"\l11: phi #8 #2 \"a\"\l20: bra b_4\l"]
 b_7 -> b_4;
-b_4 [label="b_4\l23: phi #2 #7 \"b\"\l18: phi (16) #3 \"c\"\l7: phi (11) (27) \"a\"\l32: add (7) #1\l34: call OutputNum (32)\l35: end\l"]
+b_4 [label="b_4\l23: phi #2 #7 \"b\"\l18: phi (16) #3 \"c\"\l7: phi (11) (27) \"a\"\l32: add (7) #1\l34: write (32)\l35: end\l"]
 b_4 -> b_1[color="green"];
 b_7 -> b_2[color="green"];
 b_10 -> b_5[color="green"];

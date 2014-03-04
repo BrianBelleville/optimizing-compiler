@@ -5,11 +5,11 @@ b_1 [label="b_1\l"]
 b_1 -> b_2;
 b_2 [label="b_2\l20: phi #2 (18) \"b\"\l11: phi #3 (9) \"c\"\l8: phi #1 (6) \"a\"\l4: cmp (8) (20)\l5: bge b_4\l"]
 b_2 -> b_3;
-b_3 [label="b_3\l6: add (8) #1\l9: add (11) #1\l12: call OutputNum (6)\l"]
+b_3 [label="b_3\l6: add (8) #1\l9: add (11) #1\l12: write (6)\l"]
 b_3 -> b_5;
 b_5 [label="b_5\l18: phi (20) (16) \"b\"\l13: cmp (18) (9)\l14: bge b_7\l"]
 b_5 -> b_6;
-b_6 [label="b_6\l15: call OutputNum (9)\l16: add (18) #1\l19: bra b_5\l"]
+b_6 [label="b_6\l15: write (9)\l16: add (18) #1\l19: bra b_5\l"]
 b_6 -> b_5;
 b_6 -> b_5[color="green"];
 b_5 -> b_7;
@@ -19,7 +19,7 @@ b_7 -> b_5[color="green"];
 b_5 -> b_3[color="green"];
 b_3 -> b_2[color="green"];
 b_2 -> b_4;
-b_4 [label="b_4\l22: call OutputNum (8)\l23: call OutputNum (20)\l24: call OutputNum (11)\l25: end\l"]
+b_4 [label="b_4\l22: write (8)\l23: write (20)\l24: write (11)\l25: end\l"]
 b_4 -> b_2[color="green"];
 b_2 -> b_1[color="green"];
 }

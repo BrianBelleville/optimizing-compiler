@@ -1,7 +1,7 @@
 digraph Computation {
 node [shape=box];
 test1 -> b_1;
-b_1 [label="b_1\l1: call InputNum\l3: call InputNum\l5: add (1) (3)\l"]
+b_1 [label="b_1\l1: read\l3: read\l5: add (1) (3)\l"]
 b_1 -> b_2;
 b_2 [label="b_2\l17: phi (3) (15) \"x\"\l8: cmp (5) (3)\l9: bge b_4\l"]
 b_2 -> b_3;
@@ -13,13 +13,13 @@ b_6 [label="b_6\l12: call foo (5) (3) (17)\l13: call foo (17) (17) (17)\l14: bra
 b_6 -> b_5;
 b_6 -> b_5[color="green"];
 b_5 -> b_7;
-b_7 [label="b_7\l15: call InputNum\l18: bra b_2\l"]
+b_7 [label="b_7\l15: read\l18: bra b_2\l"]
 b_7 -> b_2;
 b_7 -> b_5[color="green"];
 b_5 -> b_3[color="green"];
 b_3 -> b_2[color="green"];
 b_2 -> b_4;
-b_4 [label="b_4\l19: call OutputNum (17)\l20: ret \l"]
+b_4 [label="b_4\l19: write (17)\l20: ret \l"]
 b_4 -> b_2[color="green"];
 b_2 -> b_1[color="green"];
 constantsTest -> b_8;
@@ -27,7 +27,7 @@ b_8 [label="b_8\l"]
 b_8 -> b_9;
 b_9 [label="b_9\l38: phi #1 (36) \"w\"\l25: cmp (38) #0\l26: ble b_11\l"]
 b_9 -> b_10;
-b_10 [label="b_10\l27: add (38) #2\l28: add (27) #3\l29: add (28) #4\l30: call OutputNum (29)\l48: mul (38) #256\l49: add (48) #192\l50: add array_a_addr (49)\l51: adda FP (50)\l32: store (51) #64\l52: mul (38) #256\l53: add (52) #192\l54: add array_a_addr (53)\l55: adda FP (54)\l34: load (55)\l35: call OutputNum (34)\l36: call InputNum\l39: bra b_9\l"]
+b_10 [label="b_10\l27: add (38) #2\l28: add (27) #3\l29: add (28) #4\l30: write (29)\l48: mul (38) #256\l49: add (48) #192\l50: add array_a_addr (49)\l51: adda FP (50)\l32: store (51) #64\l52: mul (38) #256\l53: add (52) #192\l54: add array_a_addr (53)\l55: adda FP (54)\l34: load (55)\l35: write (34)\l36: read\l39: bra b_9\l"]
 b_10 -> b_9;
 b_10 -> b_9[color="green"];
 b_9 -> b_11;
@@ -35,7 +35,7 @@ b_11 [label="b_11\l40: ret \l"]
 b_11 -> b_9[color="green"];
 b_9 -> b_8[color="green"];
 foo -> b_12;
-b_12 [label="b_12\l41: call OutputNum arg_x\l42: call OutputNum arg_y\l43: call OutputNum arg_z\l44: ret \l"]
+b_12 [label="b_12\l41: write arg_x\l42: write arg_y\l43: write arg_z\l44: ret \l"]
 __MAIN__ -> b_13;
 b_13 [label="b_13\l45: call test1\l46: call constantsTest\l47: end\l"]
 }

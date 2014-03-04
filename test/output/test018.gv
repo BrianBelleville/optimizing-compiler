@@ -5,7 +5,7 @@ b_1 [label="b_1\l11: cmp #0 #0\l15: bge b_3\l"]
 b_1 -> b_2;
 b_2 [label="b_2\l16: bra b_4\l"]
 b_2 -> b_4;
-b_4 [label="b_4\l24: phi #0 (22) \"c\"\l19: phi #0 #0 \"f\"\l14: phi #1 #0 \"h\"\l27: call OutputNum #0\l28: call OutputNum #0\l29: call OutputNum (24)\l30: call OutputNum #0\l31: call OutputNum (19)\l32: call OutputNum #0\l33: call OutputNum (14)\l34: ret \l"]
+b_4 [label="b_4\l24: phi #0 (22) \"c\"\l19: phi #0 #0 \"f\"\l14: phi #1 #0 \"h\"\l27: write #0\l28: write #0\l29: write (24)\l30: write #0\l31: write (19)\l32: write #0\l33: write (14)\l34: ret \l"]
 b_4 -> b_1[color="green"];
 b_2 -> b_1[color="green"];
 b_1 -> b_3;

@@ -1,11 +1,11 @@
 digraph Computation {
 node [shape=box];
 test1 -> b_1;
-b_1 [label="b_1\l2: call InputNum\l"]
+b_1 [label="b_1\l2: read\l"]
 b_1 -> b_2;
 b_2 [label="b_2\l12: phi (2) (10) \"y\"\l9: phi #0 (7) \"w\"\l5: cmp #0 (12)\l6: bge b_4\l"]
 b_2 -> b_3;
-b_3 [label="b_3\l7: add (12) (2)\l10: call InputNum\l13: bra b_2\l"]
+b_3 [label="b_3\l7: add (12) (2)\l10: read\l13: bra b_2\l"]
 b_3 -> b_2;
 b_3 -> b_2[color="green"];
 b_2 -> b_4;

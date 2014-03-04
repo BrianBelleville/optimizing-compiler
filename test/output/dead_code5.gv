@@ -19,7 +19,7 @@ b_7 -> b_5[color="green"];
 b_5 -> b_3[color="green"];
 b_3 -> b_2[color="green"];
 b_2 -> b_4;
-b_4 [label="b_4\l27: add array_a_addr #144\l28: adda FP (27)\l19: load (28)\l20: call OutputNum (19)\l21: end\l"]
+b_4 [label="b_4\l27: add array_a_addr #144\l28: adda FP (27)\l19: load (28)\l20: write (19)\l21: end\l"]
 b_4 -> b_2[color="green"];
 b_2 -> b_1[color="green"];
 }

@@ -35,5 +35,5 @@ b_8 [label="b_8\l45: ret \l"]
 b_8 -> b_6[color="green"];
 b_6 -> b_5[color="green"];
 __MAIN__ -> b_12;
-b_12 [label="b_12\l46: adda GBP var_x_addr\l47: store (46) #0\l48: adda GBP var_y_addr\l49: store (48) #0\l50: adda GBP var_z_addr\l51: store (50) #0\l52: adda GBP var_x_addr\l53: load (52)\l54: adda GBP var_z_addr\l55: load (54)\l56: call bar (53) (55)\l57: call foo\l59: call OutputNum (57)\l60: end\l"]
+b_12 [label="b_12\l46: adda GBP var_x_addr\l47: store (46) #0\l48: adda GBP var_y_addr\l49: store (48) #0\l50: adda GBP var_z_addr\l51: store (50) #0\l52: adda GBP var_x_addr\l53: load (52)\l54: adda GBP var_z_addr\l55: load (54)\l56: call bar (53) (55)\l57: call foo\l59: write (57)\l60: end\l"]
 }
