@@ -473,17 +473,21 @@ public class Parser {
         }
     }
 
+    private Value defaultVariableValue(Identifier varName) {
+        return Globals.zeroInitializeVariables ? new Immediate(0) : new DefaultValue(varName);
+    }
+
     private void varDecl(boolean global) throws Exception
     {
         Type type = typeDecl(global);
         Identifier varName = ident();
         // todo: use the default value to detect uninitialized variables
-        env.put(varName, new Immediate(0));
+        env.put(varName, defaultVariableValue(varName));
         env.putType(varName, type);
         while(scan.sym == Token.comma) {
             scan.next();
             varName = ident();
-            env.put(varName, new Immediate(0));
+            env.put(varName, defaultVariableValue(varName));
             env.putType(varName, type);
         }
         // look for error

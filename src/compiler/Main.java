@@ -37,6 +37,12 @@ public class Main {
                 case "-no-constant-arithmetic":
                     Globals.performConstantArithmetic = false;
                     break;
+                case "-zero-initialize-variables":
+                    Globals.zeroInitializeVariables = true;
+                    break;
+                case "-no-zero-initialize-variables":
+                    Globals.zeroInitializeVariables = false;
+                    break;  
                 default:
                     // interpret as an input filename
                     input = args[i];
