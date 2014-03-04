@@ -5,9 +5,9 @@ b_1 [label="b_1\l"]
 b_1 -> b_2;
 b_2 [label="b_2\l6: phi #0 (13) \"x\"\l1: cmp (6) #0\l2: bge b_4\l"]
 b_2 -> b_3;
-b_3 [label="b_3\l3: call OutputNum (6)\l4: add #0 #4\l7: call OutputNum (4)\l"]
+b_3 [label="b_3\l3: call OutputNum (6)\l7: call OutputNum #4\l"]
 b_3 -> b_5;
-b_5 [label="b_5\l13: phi (4) #99 \"x\"\l8: cmp (13) #3\l9: bge b_7\l"]
+b_5 [label="b_5\l13: phi #4 #99 \"x\"\l8: cmp (13) #3\l9: bge b_7\l"]
 b_5 -> b_6;
 b_6 [label="b_6\l10: call OutputNum (13)\l11: add (13) #1\l14: call OutputNum (11)\l16: bra b_5\l"]
 b_6 -> b_5;

@@ -1,19 +1,19 @@
 digraph Computation {
 node [shape=box];
 foo -> b_1;
-b_1 [label="b_1\l1: add #0 #0\l4: mul (1) (1)\l6: add #0 (1)\l9: add (4) (1)\l11: cmp (9) (1)\l15: bge b_3\l"]
+b_1 [label="b_1\l11: cmp #0 #0\l15: bge b_3\l"]
 b_1 -> b_2;
-b_2 [label="b_2\l12: add (4) #1\l16: bra b_4\l"]
+b_2 [label="b_2\l16: bra b_4\l"]
 b_2 -> b_4;
-b_4 [label="b_4\l24: phi (1) (22) \"c\"\l19: phi (6) (17) \"f\"\l14: phi (12) #0 \"h\"\l25: mul (4) (9)\l27: call OutputNum (9)\l28: call OutputNum (25)\l29: call OutputNum (24)\l30: call OutputNum (1)\l31: call OutputNum (19)\l32: call OutputNum (4)\l33: call OutputNum (14)\l34: ret \l"]
+b_4 [label="b_4\l24: phi #0 (22) \"c\"\l19: phi #0 #0 \"f\"\l14: phi #1 #0 \"h\"\l27: call OutputNum #0\l28: call OutputNum #0\l29: call OutputNum (24)\l30: call OutputNum #0\l31: call OutputNum (19)\l32: call OutputNum #0\l33: call OutputNum (14)\l34: ret \l"]
 b_4 -> b_1[color="green"];
 b_2 -> b_1[color="green"];
 b_1 -> b_3;
-b_3 [label="b_3\l17: sub (1) (4)\l20: cmp (17) (9)\l23: ble b_7\l"]
+b_3 [label="b_3\l20: cmp #0 #0\l23: ble b_7\l"]
 b_3 -> b_5;
 b_5 [label="b_5\l"]
 b_5 -> b_7;
-b_7 [label="b_7\l22: phi #2 (1) \"c\"\l"]
+b_7 [label="b_7\l22: phi #2 #0 \"c\"\l"]
 b_7 -> b_4;
 b_7 -> b_3[color="green"];
 b_5 -> b_3[color="green"];
