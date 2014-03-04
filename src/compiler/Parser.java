@@ -478,12 +478,12 @@ public class Parser {
         Type type = typeDecl(global);
         Identifier varName = ident();
         // todo: use the default value to detect uninitialized variables
-        env.put(varName, new NamedValue("var_" + varName.getString()));
+        env.put(varName, new DefaultValue(varName));
         env.putType(varName, type);
         while(scan.sym == Token.comma) {
             scan.next();
             varName = ident();
-            env.put(varName, new NamedValue("var_" + varName.getString()));
+            env.put(varName, new DefaultValue(varName));
             env.putType(varName, type);
         }
         // look for error
