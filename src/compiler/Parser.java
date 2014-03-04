@@ -13,10 +13,26 @@ public class Parser {
     private Scanner scan;
     private boolean inMain = false; // initially we are not in main
 
+    // builtin function names
+    private static Identifier inputNum = null;
+    private static Identifier outputNum = null;
+    private static Identifier outputNewLine = null;
+
     public Parser(File f, IdentifierTable t) throws Exception {
         idTable = t;
         scan = new Scanner(f, idTable);
         env = new Environment();
+
+        // add builtin function names
+        if(inputNum == null) {
+            inputNum = idTable.addToTable("InputNum");
+        }
+        if(outputNum == null) {
+            outputNum = idTable.addToTable("OutputNum");
+        }
+        if(outputNewLine == null) {
+            outputNewLine = idTable.addToTable("OutputNewLine");
+        }            
     }
 
     // parse should return a cfg, should basically be a list of functions
@@ -232,10 +248,34 @@ public class Parser {
                 throw new Exception("funcCall: no closing ')'");
             }
         } while (false);
-        // todo: check for builtin functions
-        Instruction rval = new Call(funcName, args);
+        
+        Instruction rval = makeCall(funcName, args);
         currentBB.addInstruction(rval);
         return rval;
+    }
+
+    
+    private Instruction makeCall(Identifier name, ArrayList<Value> args)
+        throws Exception {
+        if(name.equals(inputNum)) {
+            if(args.size() != 0) {
+                throw new Exception("Incorrect number of arguments for builtin function");
+            }
+            return new Read();
+        }
+        if(name.equals(outputNum)) {
+            if(args.size() != 1) {
+                throw new Exception("Incorrect number of arguments for builtin function");
+            }
+            return new Write(args.get(0));
+        }
+        if(name.equals(outputNewLine)) {
+            if(args.size() != 0) {
+                throw new Exception("Incorrect number of arguments for builtin function");
+            }
+            return new Wln();
+        }
+        return new Call(name, args);
     }
 
     // this should handle creating the different basic blocks and the
