@@ -3,7 +3,7 @@ node [shape=box];
 foo -> b_1;
 b_1 [label="b_1\l"]
 b_1 -> b_2;
-b_2 [label="b_2\l23: phi #0 (21) \"i\"\l20: phi var_d (18) \"d\"\l2: cmp (23) #10\l3: bge b_4\l"]
+b_2 [label="b_2\l23: phi #0 (21) \"i\"\l20: phi #0 (18) \"d\"\l2: cmp (23) #10\l3: bge b_4\l"]
 b_2 -> b_3;
 b_3 [label="b_3\l4: adda GBP var_y_addr\l5: load (4)\l6: add (5) #2\l7: adda GBP var_y_addr\l8: store (7) (6)\l9: adda GBP var_x_addr\l10: load (9)\l11: add (10) #2\l12: adda GBP var_z_addr\l13: store (12) (11)\l14: adda GBP var_y_addr\l15: load (14)\l16: adda GBP var_z_addr\l17: load (16)\l18: add (15) (17)\l21: add (23) #1\l24: bra b_2\l"]
 b_3 -> b_2;

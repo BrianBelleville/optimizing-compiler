@@ -3,7 +3,7 @@ node [shape=box];
 foo -> b_1;
 b_1 [label="b_1\l"]
 b_1 -> b_2;
-b_2 [label="b_2\l10: phi #1 (8) \"i\"\l6: phi var_b (4) \"b\"\l2: cmp (10) #4\l3: bge b_4\l"]
+b_2 [label="b_2\l10: phi #1 (8) \"i\"\l6: phi #0 (4) \"b\"\l2: cmp (10) #4\l3: bge b_4\l"]
 b_2 -> b_3;
 b_3 [label="b_3\l4: call InputNum\l7: call OutputNum (4)\l8: add (10) #1\l11: bra b_2\l"]
 b_3 -> b_2;

@@ -3,5 +3,5 @@ node [shape=box];
 arrayTest -> b_1;
 b_1 [label="b_1\l13: add array_t1_addr #16\l14: adda FP (13)\l2: load (14)\l6: add (2) #2\l17: mul arg_x #4\l18: add array_g1_addr (17)\l19: adda GBP (18)\l9: store (19) arg_y\l10: ret \l"]
 __MAIN__ -> b_2;
-b_2 [label="b_2\l11: call arrayTest var_x var_y #4\l12: end\l"]
+b_2 [label="b_2\l11: call arrayTest #0 #0 #4\l12: end\l"]
 }

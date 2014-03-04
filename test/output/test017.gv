@@ -5,7 +5,7 @@ b_1 [label="b_1\l5: cmp #4 #1\l9: ble b_4\l"]
 b_1 -> b_2;
 b_2 [label="b_2\l"]
 b_2 -> b_4;
-b_4 [label="b_4\l8: phi #3 var_d \"d\"\l12: end\l"]
+b_4 [label="b_4\l8: phi #3 #0 \"d\"\l12: end\l"]
 b_4 -> b_1[color="green"];
 b_2 -> b_1[color="green"];
 b_1 -> b_4;
