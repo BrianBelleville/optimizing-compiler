@@ -32,7 +32,7 @@ array[100] t;
 
   # this should be eliminated, x + y is in a dominating BB
   let v <- x + y;
-  call OutoutNum(v)
+  call OutputNum(v)
 };
 
 {
