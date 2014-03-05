@@ -98,12 +98,10 @@ public class Main {
                 }
             }
 
-            // this demonstrates how one can color and output the CFG
-            // FileWriter out = new FileWriter("out.gv");
-            // InterferenceGraph g = program.get(0).entryPoint.calcLiveRange();
-            // g.printGraph(out);
-            // out.close();
-            // g.colorGraph();
+            // determine the interference graph for all functions
+            for(Function func : program) {
+                func.ig = func.entryPoint.calcLiveRange();
+            }
 
             if(cfgOut != null) {
                 outputCFG(cfgOut, program);
