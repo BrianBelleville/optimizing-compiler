@@ -11,13 +11,19 @@ public class Main {
 
     public static void main(String[] args) {
         try {
-            String input = null, cfgOut = null;
+            String input = null, cfgOut = null, igOut = null;
             for(int i = 0; i < args.length; i++) {
                 switch(args[i]) {
                 case "-cfg":
                     // next item will be the filename for CFG output
                     i++;
                     cfgOut = args[i];
+                    break;
+                case "-ig":
+                    // next item will be the filename for the
+                    // interference graph output
+                    i++;
+                    igOut = args[i];
                     break;
                 case "-no-cse":
                     Globals.performCSE = false;
@@ -101,6 +107,10 @@ public class Main {
             // determine the interference graph for all functions
             for(Function func : program) {
                 func.ig = func.entryPoint.calcLiveRange();
+            }
+
+            if(igOut != null) {
+                outputIG(igOut, program);
             }
 
             if(cfgOut != null) {
