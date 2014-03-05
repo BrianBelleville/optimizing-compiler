@@ -581,14 +581,21 @@ public class Parser {
         if(scan.sym == Token.openparen) {
             scan.next();
             if(scan.sym != Token.closeparen) {
+                int argPosition = 0;
                 Identifier i = ident();
-                env.put(i, new NamedValue("arg_" + i.getString()));
+                Instruction getArg = new Fetch(i, argPosition);
+                currentBB.addInstruction(getArg);
+                env.put(i, getArg);
                 env.putType(i, new VarType(false));
+                argPosition++;
                 while(scan.sym == Token.comma) {
                     scan.next();
                     i = ident();
-                    env.put(i, new NamedValue("arg_" + i.getString()));
+                    getArg = new Fetch(i, argPosition);
+                    currentBB.addInstruction(getArg);
+                    env.put(i, getArg);
                     env.putType(i, new VarType(false));
+                    argPosition++;
                 }
             }
             if(scan.sym == Token.closeparen) {
