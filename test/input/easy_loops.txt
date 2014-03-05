@@ -35,7 +35,7 @@ var z;
       else
         call OutputNum(x);
 	let x <- 32;
-	call OuptputNum(x)
+	call OutputNum(x)
       fi;
       call OutputNum(x)
     od;
