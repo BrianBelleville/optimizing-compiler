@@ -28,4 +28,8 @@ public class Store extends BinaryInstruction {
         return false;           // can not be dead code
     }        
 
+    @Override
+    public boolean needsRegister() {
+        return false;
+    }
 }
