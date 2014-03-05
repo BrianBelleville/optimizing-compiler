@@ -1,7 +1,7 @@
 digraph Computation {
 node [shape=box];
 max -> b_1;
-b_1 [label="b_1\l1: fetch a1\l2: fetch a2\l3: fetch a3\l4: fetch a4\l5: fetch a5\l58: add array_arg_addr #4\l59: adda FP (58)\l7: store (59) (1)\l60: add array_arg_addr #8\l61: adda FP (60)\l9: store (61) (2)\l62: add array_arg_addr #12\l63: adda FP (62)\l11: store (63) (3)\l64: add array_arg_addr #16\l65: adda FP (64)\l13: store (65) (4)\l66: add array_arg_addr #20\l67: adda FP (66)\l15: store (67) (5)\l68: add array_arg_addr #4\l69: adda FP (68)\l19: load (69)\l"]
+b_1 [label="b_1\l1: fetch a1\l2: fetch a2\l3: fetch a3\l4: fetch a4\l5: fetch a5\l58: add array_arg_addr #4\l59: adda FP (58)\l7: store (59) (1)\l60: add array_arg_addr #8\l61: adda FP (60)\l9: store (61) (2)\l62: add array_arg_addr #12\l63: adda FP (62)\l11: store (63) (3)\l64: add array_arg_addr #16\l65: adda FP (64)\l13: store (65) (4)\l66: add array_arg_addr #20\l67: adda FP (66)\l15: store (67) (5)\l19: load (59)\l"]
 b_1 -> b_2;
 b_2 [label="b_2\l34: phi #2 (32) \"i\"\l31: phi (19) (29) \"temp\"\l21: cmp (34) #5\l22: bgt b_4\l"]
 b_2 -> b_3;
@@ -20,5 +20,5 @@ b_4 [label="b_4\l36: ret (31)\l"]
 b_4 -> b_2[color="green"];
 b_2 -> b_1[color="green"];
 __MAIN__ -> b_8;
-b_8 [label="b_8\l76: add array_input_addr #4\l77: adda FP (76)\l38: store (77) #22\l78: add array_input_addr #8\l79: adda FP (78)\l40: store (79) #61\l80: add array_input_addr #12\l81: adda FP (80)\l42: store (81) #17\l82: add array_input_addr #16\l83: adda FP (82)\l44: store (83) #34\l84: add array_input_addr #20\l85: adda FP (84)\l46: store (85) #11\l86: add array_input_addr #4\l87: adda FP (86)\l48: load (87)\l88: add array_input_addr #8\l89: adda FP (88)\l50: load (89)\l90: add array_input_addr #12\l91: adda FP (90)\l52: load (91)\l92: add array_input_addr #16\l93: adda FP (92)\l54: load (93)\l55: call max (48) (50) (52) (54)\l57: end\l"]
+b_8 [label="b_8\l76: add array_input_addr #4\l77: adda FP (76)\l38: store (77) #22\l78: add array_input_addr #8\l79: adda FP (78)\l40: store (79) #61\l80: add array_input_addr #12\l81: adda FP (80)\l42: store (81) #17\l82: add array_input_addr #16\l83: adda FP (82)\l44: store (83) #34\l84: add array_input_addr #20\l85: adda FP (84)\l46: store (85) #11\l48: load (77)\l50: load (79)\l52: load (81)\l54: load (83)\l55: call max (48) (50) (52) (54)\l57: end\l"]
 }

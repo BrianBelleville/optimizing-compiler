@@ -1,15 +1,15 @@
 digraph Computation {
 node [shape=box];
 foo -> b_1;
-b_1 [label="b_1\l1: write #55\l2: adda GBP var_b_addr\l3: store (2) #2\l4: adda GBP var_c_addr\l5: store (4) #3\l6: adda GBP var_b_addr\l7: load (6)\l8: adda GBP var_c_addr\l9: load (8)\l10: add (7) (9)\l11: ret (10)\l"]
+b_1 [label="b_1\l1: write #55\l2: adda GBP var_b_addr\l3: store (2) #2\l4: adda GBP var_c_addr\l5: store (4) #3\l7: load (2)\l9: load (4)\l10: add (7) (9)\l11: ret (10)\l"]
 bar -> b_2;
-b_2 [label="b_2\l12: write #35\l13: adda GBP var_b_addr\l14: store (13) #3\l15: adda GBP var_c_addr\l16: store (15) #4\l17: adda GBP var_b_addr\l18: load (17)\l19: adda GBP var_c_addr\l20: load (19)\l21: add (18) (20)\l22: ret (21)\l"]
+b_2 [label="b_2\l12: write #35\l13: adda GBP var_b_addr\l14: store (13) #3\l15: adda GBP var_c_addr\l16: store (15) #4\l18: load (13)\l20: load (15)\l21: add (18) (20)\l22: ret (21)\l"]
 __MAIN__ -> b_3;
-b_3 [label="b_3\l48: add array_a_addr #44\l49: adda FP (48)\l24: store (49) #1\l50: add array_a_addr #40\l51: adda FP (50)\l26: store (51) #2\l52: add array_a_addr #44\l53: adda FP (52)\l28: load (53)\l54: add array_a_addr #40\l55: adda FP (54)\l30: load (55)\l31: cmp (28) (30)\l35: ble b_5\l"]
+b_3 [label="b_3\l48: add array_a_addr #44\l49: adda FP (48)\l24: store (49) #1\l50: add array_a_addr #40\l51: adda FP (50)\l26: store (51) #2\l28: load (49)\l30: load (51)\l31: cmp (28) (30)\l35: ble b_5\l"]
 b_3 -> b_4;
 b_4 [label="b_4\l32: call foo\l56: add array_a_addr #36\l57: adda FP (56)\l34: store (57) (32)\l36: bra b_6\l"]
 b_4 -> b_6;
-b_6 [label="b_6\l58: add array_a_addr #36\l59: adda FP (58)\l41: load (59)\l42: adda GBP var_b_addr\l43: store (42) (41)\l44: adda GBP var_b_addr\l45: load (44)\l46: write (45)\l47: end\l"]
+b_6 [label="b_6\l58: add array_a_addr #36\l59: adda FP (58)\l41: load (59)\l42: adda GBP var_b_addr\l43: store (42) (41)\l45: load (42)\l46: write (45)\l47: end\l"]
 b_6 -> b_3[color="green"];
 b_4 -> b_3[color="green"];
 b_3 -> b_5;
