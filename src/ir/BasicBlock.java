@@ -345,6 +345,7 @@ public class BasicBlock {
                 Phi p = (Phi)i;
                 live.remove(p);
                 // phi instructoins will always need a register
+                G.addNode(i);
                 for(Value v : live) {
                     G.addEdge(p, v);
                 }
