@@ -1,17 +1,17 @@
 digraph Computation {
 node [shape=box];
 ifTest -> b_1;
-b_1 [label="b_1\l1: add arg_x arg_y\l30: add array_t_addr #16\l31: adda FP (30)\l4: load (31)\l7: cmp (1) arg_z\l15: bge b_3\l"]
+b_1 [label="b_1\l1: fetch x\l2: fetch y\l3: fetch z\l4: add (1) (2)\l33: add array_t_addr #16\l34: adda FP (33)\l7: load (34)\l10: cmp (4) (3)\l18: bge b_3\l"]
 b_1 -> b_2;
-b_2 [label="b_2\l8: add arg_y arg_z\l12: add arg_x (1)\l16: bra b_4\l"]
+b_2 [label="b_2\l11: add (2) (3)\l15: add (1) (4)\l19: bra b_4\l"]
 b_2 -> b_4;
-b_4 [label="b_4\l14: phi (12) #0 \"a\"\l10: phi (8) (17) \"v\"\l20: load (31)\l22: add arg_z (4)\l26: write (1)\l27: ret \l"]
+b_4 [label="b_4\l17: phi (15) #0 \"a\"\l13: phi (11) (20) \"v\"\l23: load (34)\l25: add (3) (7)\l29: write (4)\l30: ret \l"]
 b_4 -> b_1[color="green"];
 b_2 -> b_1[color="green"];
 b_1 -> b_3;
-b_3 [label="b_3\l17: add arg_z (4)\l"]
+b_3 [label="b_3\l20: add (3) (7)\l"]
 b_3 -> b_4;
 b_3 -> b_1[color="green"];
 __MAIN__ -> b_5;
-b_5 [label="b_5\l28: call ifTest #1 #2 #3\l29: end\l"]
+b_5 [label="b_5\l31: call ifTest #1 #2 #3\l32: end\l"]
 }

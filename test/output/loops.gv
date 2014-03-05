@@ -27,7 +27,7 @@ b_8 [label="b_8\l"]
 b_8 -> b_9;
 b_9 [label="b_9\l38: phi #1 (36) \"w\"\l25: cmp (38) #0\l26: ble b_11\l"]
 b_9 -> b_10;
-b_10 [label="b_10\l27: add (38) #2\l28: add (27) #3\l29: add (28) #4\l30: write (29)\l48: mul (38) #256\l49: add (48) #192\l50: add array_a_addr (49)\l51: adda FP (50)\l32: store (51) #64\l52: mul (38) #256\l53: add (52) #192\l54: add array_a_addr (53)\l55: adda FP (54)\l34: load (55)\l35: write (34)\l36: read\l39: bra b_9\l"]
+b_10 [label="b_10\l27: add (38) #2\l28: add (27) #3\l29: add (28) #4\l30: write (29)\l51: mul (38) #256\l52: add (51) #192\l53: add array_a_addr (52)\l54: adda FP (53)\l32: store (54) #64\l55: mul (38) #256\l56: add (55) #192\l57: add array_a_addr (56)\l58: adda FP (57)\l34: load (58)\l35: write (34)\l36: read\l39: bra b_9\l"]
 b_10 -> b_9;
 b_10 -> b_9[color="green"];
 b_9 -> b_11;
@@ -35,7 +35,7 @@ b_11 [label="b_11\l40: ret \l"]
 b_11 -> b_9[color="green"];
 b_9 -> b_8[color="green"];
 foo -> b_12;
-b_12 [label="b_12\l41: write arg_x\l42: write arg_y\l43: write arg_z\l44: ret \l"]
+b_12 [label="b_12\l41: fetch x\l42: fetch y\l43: fetch z\l44: write (41)\l45: write (42)\l46: write (43)\l47: ret \l"]
 __MAIN__ -> b_13;
-b_13 [label="b_13\l45: call test1\l46: call constantsTest\l47: end\l"]
+b_13 [label="b_13\l48: call test1\l49: call constantsTest\l50: end\l"]
 }

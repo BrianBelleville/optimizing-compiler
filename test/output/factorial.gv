@@ -1,26 +1,26 @@
 digraph Computation {
 node [shape=box];
 factIter -> b_1;
-b_1 [label="b_1\l"]
+b_1 [label="b_1\l1: fetch n\l"]
 b_1 -> b_2;
-b_2 [label="b_2\l10: phi #1 (8) \"i\"\l7: phi #1 (5) \"f\"\l3: cmp (10) arg_n\l4: bgt b_4\l"]
+b_2 [label="b_2\l11: phi #1 (9) \"i\"\l8: phi #1 (6) \"f\"\l4: cmp (11) (1)\l5: bgt b_4\l"]
 b_2 -> b_3;
-b_3 [label="b_3\l5: mul (7) (10)\l8: add (10) #1\l11: bra b_2\l"]
+b_3 [label="b_3\l6: mul (8) (11)\l9: add (11) #1\l12: bra b_2\l"]
 b_3 -> b_2;
 b_3 -> b_2[color="green"];
 b_2 -> b_4;
-b_4 [label="b_4\l12: ret (7)\l"]
+b_4 [label="b_4\l13: ret (8)\l"]
 b_4 -> b_2[color="green"];
 b_2 -> b_1[color="green"];
 factRec -> b_5;
-b_5 [label="b_5\l13: cmp arg_n #1\l15: bgt b_8\l"]
+b_5 [label="b_5\l14: fetch n\l15: cmp (14) #1\l17: bgt b_8\l"]
 b_5 -> b_6;
-b_6 [label="b_6\l14: ret #1\l"]
+b_6 [label="b_6\l16: ret #1\l"]
 b_6 -> b_8;
-b_8 [label="b_8\l16: sub arg_n #1\l17: call factRec (16)\l18: mul (17) arg_n\l19: ret (18)\l"]
+b_8 [label="b_8\l18: sub (14) #1\l19: call factRec (18)\l20: mul (19) (14)\l21: ret (20)\l"]
 b_8 -> b_5[color="green"];
 b_6 -> b_5[color="green"];
 b_5 -> b_8;
 __MAIN__ -> b_9;
-b_9 [label="b_9\l20: read\l22: call factIter (20)\l23: write (22)\l24: wln\l25: call factRec (20)\l26: write (25)\l27: wln\l28: end\l"]
+b_9 [label="b_9\l22: read\l24: call factIter (22)\l25: write (24)\l26: wln\l27: call factRec (22)\l28: write (27)\l29: wln\l30: end\l"]
 }

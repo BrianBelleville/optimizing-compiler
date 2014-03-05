@@ -1,7 +1,7 @@
 digraph Computation {
 node [shape=box];
 arithTest -> b_1;
-b_1 [label="b_1\l1: add arg_x arg_y\l5: ret \l"]
+b_1 [label="b_1\l1: fetch x\l2: fetch y\l3: fetch z\l4: add (1) (2)\l8: ret \l"]
 __MAIN__ -> b_2;
-b_2 [label="b_2\l6: call arithTest #1 #2 #3\l7: end\l"]
+b_2 [label="b_2\l9: call arithTest #1 #2 #3\l10: end\l"]
 }

@@ -13,27 +13,27 @@ b_4 [label="b_4\l25: ret (20)\l"]
 b_4 -> b_2[color="green"];
 b_2 -> b_1[color="green"];
 bar -> b_5;
-b_5 [label="b_5\l"]
+b_5 [label="b_5\l26: fetch x\l27: fetch z\l"]
 b_5 -> b_6;
-b_6 [label="b_6\l43: phi #0 (41) \"i\"\l38: phi #0 (36) \"j\"\l28: cmp (43) #4\l29: bge b_8\l"]
+b_6 [label="b_6\l45: phi #0 (43) \"i\"\l40: phi #0 (38) \"j\"\l30: cmp (45) #4\l31: bge b_8\l"]
 b_6 -> b_7;
 b_7 [label="b_7\l"]
 b_7 -> b_9;
-b_9 [label="b_9\l36: phi (38) (34) \"j\"\l30: cmp (36) #4\l31: bge b_11\l"]
+b_9 [label="b_9\l38: phi (40) (36) \"j\"\l32: cmp (38) #4\l33: bge b_11\l"]
 b_9 -> b_10;
-b_10 [label="b_10\l61: mul (43) #16\l62: mul (36) #4\l63: add (61) (62)\l64: add array_b_addr (63)\l65: adda GBP (64)\l33: store (65) (36)\l34: add (36) #1\l37: bra b_9\l"]
+b_10 [label="b_10\l63: mul (45) #16\l64: mul (38) #4\l65: add (63) (64)\l66: add array_b_addr (65)\l67: adda GBP (66)\l35: store (67) (38)\l36: add (38) #1\l39: bra b_9\l"]
 b_10 -> b_9;
 b_10 -> b_9[color="green"];
 b_9 -> b_11;
-b_11 [label="b_11\l66: mul (43) #4\l67: add array_a_addr (66)\l68: adda GBP (67)\l40: store (68) (43)\l41: add (43) #1\l44: bra b_6\l"]
+b_11 [label="b_11\l68: mul (45) #4\l69: add array_a_addr (68)\l70: adda GBP (69)\l42: store (70) (45)\l43: add (45) #1\l46: bra b_6\l"]
 b_11 -> b_6;
 b_11 -> b_9[color="green"];
 b_9 -> b_7[color="green"];
 b_7 -> b_6[color="green"];
 b_6 -> b_8;
-b_8 [label="b_8\l45: ret \l"]
+b_8 [label="b_8\l47: ret \l"]
 b_8 -> b_6[color="green"];
 b_6 -> b_5[color="green"];
 __MAIN__ -> b_12;
-b_12 [label="b_12\l46: adda GBP var_x_addr\l47: store (46) #0\l48: adda GBP var_y_addr\l49: store (48) #0\l50: adda GBP var_z_addr\l51: store (50) #0\l52: adda GBP var_x_addr\l53: load (52)\l54: adda GBP var_z_addr\l55: load (54)\l56: call bar (53) (55)\l57: call foo\l59: write (57)\l60: end\l"]
+b_12 [label="b_12\l48: adda GBP var_x_addr\l49: store (48) #0\l50: adda GBP var_y_addr\l51: store (50) #0\l52: adda GBP var_z_addr\l53: store (52) #0\l54: adda GBP var_x_addr\l55: load (54)\l56: adda GBP var_z_addr\l57: load (56)\l58: call bar (55) (57)\l59: call foo\l61: write (59)\l62: end\l"]
 }
