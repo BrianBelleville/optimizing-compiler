@@ -77,8 +77,7 @@ public class InterferenceGraph {
     }
 
     public void printGraph(Writer w) throws Exception {
-        w.write("strict graph Interference {\n");
-        for(Entry<Value, EdgeInfo> v  : adjacencyList.entrySet()) {
+            for(Entry<Value, EdgeInfo> v  : adjacencyList.entrySet()) {
             Value node = v.getKey();
             HashSet<Value> edges = v.getValue().edges;
             // first write the node so that nodes that have no edges
@@ -94,6 +93,5 @@ public class InterferenceGraph {
                 w.write("\";\n");
             }
         }
-        w.write("}");
     }
 }

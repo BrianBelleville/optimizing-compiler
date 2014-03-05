@@ -115,6 +115,16 @@ public class Main {
         }
     }
 
+    public static void outputIG(String filename,  ArrayList<Function> program)
+        throws Exception {
+        FileWriter out = new FileWriter(filename);
+        out.write("strict graph InterferenceGraph {\n");
+        for(Function func : program) {
+            func.printInterferenceGraph(out);
+        }
+        out.write("}");
+        out.close();
+    }    
     public static void outputCFG(String filename, ArrayList<Function> program)
         throws Exception {
         FileWriter out = new FileWriter(filename);
