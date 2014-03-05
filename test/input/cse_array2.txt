@@ -1,0 +1,21 @@
+#% -cse
+# Brian Belleville 2014
+
+main
+var x;
+var y;
+var z;
+array[64] g1;
+
+{
+  let x <- call InputNum();
+  let y <- call InputNum();
+  let z <- x + y;
+
+  # this should result in 1 load, but 3 writes
+  call OutputNum(g1[z]);
+  # the addition should be eliminated as well
+  call OutputNum(g1[x + y]);
+  call OutputNum(g1[y + x]);
+  call OutputNum(x + y + z)
+}.
