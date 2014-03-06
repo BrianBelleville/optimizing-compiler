@@ -5,15 +5,15 @@ b_1 [label="b_1\l1: write #55\l2: adda GBP #-4\l3: store (2) #2\l4: adda GBP #-8
 bar -> b_2;
 b_2 [label="b_2\l12: write #35\l13: adda GBP #-4\l14: store (13) #3\l15: adda GBP #-8\l16: store (15) #4\l18: load (13)\l20: load (15)\l21: add (18) (20)\l22: ret (21)\l"]
 __MAIN__ -> b_3;
-b_3 [label="b_3\l48: add #4 #44\l49: adda FP (48)\l24: store (49) #1\l50: add #4 #40\l51: adda FP (50)\l26: store (51) #2\l28: load (49)\l30: load (51)\l31: cmp (28) (30)\l35: ble b_5\l"]
+b_3 [label="b_3\l48: adda FP #48\l24: store (48) #1\l49: adda FP #44\l26: store (49) #2\l28: load (48)\l30: load (49)\l31: cmp (28) (30)\l35: ble b_5\l"]
 b_3 -> b_4;
-b_4 [label="b_4\l32: call foo\l56: add #4 #36\l57: adda FP (56)\l34: store (57) (32)\l36: bra b_6\l"]
+b_4 [label="b_4\l32: call foo\l52: adda FP #40\l34: store (52) (32)\l36: bra b_6\l"]
 b_4 -> b_6;
-b_6 [label="b_6\l58: add #4 #36\l59: adda FP (58)\l41: load (59)\l42: adda GBP #-4\l43: store (42) (41)\l45: load (42)\l46: write (45)\l47: end\l"]
+b_6 [label="b_6\l53: adda FP #40\l41: load (53)\l42: adda GBP #-4\l43: store (42) (41)\l45: load (42)\l46: write (45)\l47: end\l"]
 b_6 -> b_3[color="green"];
 b_4 -> b_3[color="green"];
 b_3 -> b_5;
-b_5 [label="b_5\l37: call foo\l60: add #4 #36\l61: adda FP (60)\l39: store (61) (37)\l"]
+b_5 [label="b_5\l37: call foo\l54: adda FP #40\l39: store (54) (37)\l"]
 b_5 -> b_6;
 b_5 -> b_3[color="green"];
 }

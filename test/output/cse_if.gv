@@ -1,11 +1,11 @@
 digraph Computation {
 node [shape=box];
 ifTest -> b_1;
-b_1 [label="b_1\l1: fetch x\l2: fetch y\l3: fetch z\l4: add (1) (2)\l33: add #4 #16\l34: adda FP (33)\l7: load (34)\l10: cmp (4) (3)\l18: bge b_3\l"]
+b_1 [label="b_1\l1: fetch x\l2: fetch y\l3: fetch z\l4: add (1) (2)\l33: adda FP #20\l7: load (33)\l10: cmp (4) (3)\l18: bge b_3\l"]
 b_1 -> b_2;
 b_2 [label="b_2\l11: add (2) (3)\l15: add (1) (4)\l19: bra b_4\l"]
 b_2 -> b_4;
-b_4 [label="b_4\l17: phi (15) #0 \"a\"\l13: phi (11) (20) \"v\"\l23: load (34)\l25: add (3) (7)\l29: write (4)\l30: ret \l"]
+b_4 [label="b_4\l17: phi (15) #0 \"a\"\l13: phi (11) (20) \"v\"\l23: load (33)\l25: add (3) (7)\l29: write (4)\l30: ret \l"]
 b_4 -> b_1[color="green"];
 b_2 -> b_1[color="green"];
 b_1 -> b_3;
