@@ -1,19 +1,26 @@
 package support;
 
+import ir.Immediate;
 import ir.BasicBlock;
 import ir.Adda;
 import ir.Load;
 import ir.Store;
 import ir.Move;
-import ir.NamedValue;
 import ir.Value;
 
 public class VarType extends Type {
     private boolean global;
     private boolean used;
-    public VarType(boolean global) {
+    private MemoryRegion globals;
+    public VarType(boolean global, MemoryRegion globals) {
+        this.globals = globals;
         this.global = global;
         this.used = false;
+    }
+
+    @Override
+    public int getSize() {
+        return getWordSize();
     }
 
     @Override
@@ -64,7 +71,10 @@ public class VarType extends Type {
         }
     }
 
-    private Value getAddr(Designator d) {
-        return new NamedValue("var_" + d.getVarName().getString() + "_addr");
+    private Value getAddr(Designator d) throws Exception{
+        if(global) {
+            return new Immediate(globals.getAddress(d.getVarName(), getSize()));
+        }
+        throw new Exception("attempt to get address for a local variable");
     }
 }

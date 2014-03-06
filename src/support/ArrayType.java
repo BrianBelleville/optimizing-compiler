@@ -1,10 +1,10 @@
 package support;
 
+import ir.Immediate;
 import ir.BasicBlock;
 import ir.Load;
 import ir.Store;
 import ir.ArrayIndex;
-import ir.NamedValue;
 import ir.Value;
 
 import java.util.ArrayList;
@@ -14,18 +14,28 @@ public class ArrayType extends Type {
     private int[] multipliers;
     private boolean global;
     private boolean used = false;
-    private int word_size = 4;  // assume 32 bit machine, may have to change this, or make it configurable
+    private int totalSize;
+    private MemoryRegion globals;
+    private MemoryRegion locals;
 
-    public ArrayType(ArrayList<Integer> dimension, boolean global) {
+    public ArrayType(ArrayList<Integer> dimension, boolean global, MemoryRegion globals, MemoryRegion locals) {
+        this.globals = globals;
+        this.locals = locals;
         int size = 1;
         multipliers = new int[dimension.size()];
         for(int i = dimension.size() - 1; i >= 0; i--) {
             // factor the word size into the multipliers to avoid
             // having to perform another multiplication at runtime.
-            multipliers[i] = size * word_size;
+            multipliers[i] = size * getWordSize();
             size = dimension.get(i) * size;
         }
+        totalSize = size * getWordSize();
         this.global = global;
+    }
+
+    @Override
+    public int getSize() {
+        return totalSize;
     }
 
     @Override
@@ -80,7 +90,10 @@ public class ArrayType extends Type {
         return rval;
     }
 
-    private Value getAddr(Designator d) {
-        return new NamedValue("array_" + d.getVarName().getString() + "_addr");
+    private Value getAddr(Designator d) throws Exception {
+        if(global) {
+            return new Immediate(globals.getAddress(d.getVarName(), getSize()));
+        }
+        return new Immediate(locals.getAddress(d.getVarName(), getSize()));
     }
 }
