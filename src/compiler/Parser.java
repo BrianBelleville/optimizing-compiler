@@ -11,6 +11,8 @@ public class Parser {
     private IdentifierTable idTable;
     private Environment env;
     private Scanner scan;
+    private Function currentFunction;
+    private MemoryRegion globals;
     private boolean inMain = false; // initially we are not in main
 
     // builtin function names
@@ -488,7 +490,7 @@ public class Parser {
     {
         if(scan.sym == Token.var) {
             scan.next();
-            return new VarType(global);
+            return new VarType(global, globals);
         } else if (scan.sym == Token.array) {
             scan.next();
             if(scan.sym == Token.opensquare) {
@@ -503,7 +505,7 @@ public class Parser {
                         throw new Exception("Type declaration: no closing ']'");
                     }
                 }
-                return new ArrayType(dimension, global);
+                return new ArrayType(dimension, global, globals, currentFunction.locals);
             } else {
                 // must be at least one boundary description
                 throw new Exception("Type declaration: there must be at least one boundary description for an array");
@@ -545,6 +547,7 @@ public class Parser {
     private Function funcDecl() throws Exception
     {
         Function rval = new Function();
+        currentFunction = rval;
         currentBB = new BasicBlock(null);
         currentJoinBlock = null;
         rval.entryPoint = currentBB;
@@ -586,7 +589,7 @@ public class Parser {
                 Instruction getArg = new Fetch(i, argPosition);
                 currentBB.addInstruction(getArg);
                 env.put(i, getArg);
-                env.putType(i, new VarType(false));
+                env.putType(i, new VarType(false, globals));
                 argPosition++;
                 while(scan.sym == Token.comma) {
                     scan.next();
@@ -594,7 +597,7 @@ public class Parser {
                     getArg = new Fetch(i, argPosition);
                     currentBB.addInstruction(getArg);
                     env.put(i, getArg);
-                    env.putType(i, new VarType(false));
+                    env.putType(i, new VarType(false, globals));
                     argPosition++;
                 }
             }
@@ -634,6 +637,8 @@ public class Parser {
 
     private ArrayList<Function> computation() throws Exception
     {
+        Function main = new Function();
+        globals = new GlobalMemoryRegion();
         ArrayList<Function> rval = new ArrayList<Function>();
         env.enter();
         if(scan.sym == Token.main) {
@@ -641,6 +646,8 @@ public class Parser {
             // variable declarations shouldn't actually cause any SSA
             // to be emited, but will be stored in env
             while(scan.sym == Token.var || scan.sym == Token.array) {
+                // these are global variables, but could be optimized to become main local variables.
+                currentFunction = main; 
                 varDecl(true);
             }
             while(scan.sym == Token.function || scan.sym == Token.procedure) {
@@ -653,7 +660,7 @@ public class Parser {
                 inMain = true;  // we are now parsing the main procedure
                 currentBB = new BasicBlock(null);
                 currentJoinBlock = null;
-                Function main = new Function();
+                currentFunction = main;
                 main.name = idTable.addToTable("__MAIN__");
                 main.entryPoint = currentBB;
                 rval.add(main);
