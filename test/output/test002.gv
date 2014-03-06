@@ -5,7 +5,7 @@ b_1 [label="b_1\l"]
 b_1 -> b_2;
 b_2 [label="b_2\l23: phi #0 (21) \"i\"\l20: phi #0 (18) \"d\"\l2: cmp (23) #10\l3: bge b_4\l"]
 b_2 -> b_3;
-b_3 [label="b_3\l4: adda GBP var_y_addr\l5: load (4)\l6: add (5) #2\l8: store (4) (6)\l9: adda GBP var_x_addr\l10: load (9)\l11: add (10) #2\l12: adda GBP var_z_addr\l13: store (12) (11)\l15: load (4)\l17: load (12)\l18: add (15) (17)\l21: add (23) #1\l24: bra b_2\l"]
+b_3 [label="b_3\l4: adda GBP #-4\l5: load (4)\l6: add (5) #2\l8: store (4) (6)\l9: adda GBP #-8\l10: load (9)\l11: add (10) #2\l12: adda GBP #-12\l13: store (12) (11)\l15: load (4)\l17: load (12)\l18: add (15) (17)\l21: add (23) #1\l24: bra b_2\l"]
 b_3 -> b_2;
 b_3 -> b_2[color="green"];
 b_2 -> b_4;
@@ -21,11 +21,11 @@ b_7 [label="b_7\l"]
 b_7 -> b_9;
 b_9 [label="b_9\l38: phi (40) (36) \"j\"\l32: cmp (38) #4\l33: bge b_11\l"]
 b_9 -> b_10;
-b_10 [label="b_10\l63: mul (45) #16\l64: mul (38) #4\l65: add (63) (64)\l66: add array_b_addr (65)\l67: adda GBP (66)\l35: store (67) (38)\l36: add (38) #1\l39: bra b_9\l"]
+b_10 [label="b_10\l63: mul (45) #16\l64: mul (38) #4\l65: add (63) (64)\l66: add #-76 (65)\l67: adda GBP (66)\l35: store (67) (38)\l36: add (38) #1\l39: bra b_9\l"]
 b_10 -> b_9;
 b_10 -> b_9[color="green"];
 b_9 -> b_11;
-b_11 [label="b_11\l68: mul (45) #4\l69: add array_a_addr (68)\l70: adda GBP (69)\l42: store (70) (45)\l43: add (45) #1\l46: bra b_6\l"]
+b_11 [label="b_11\l68: mul (45) #4\l69: add #-92 (68)\l70: adda GBP (69)\l42: store (70) (45)\l43: add (45) #1\l46: bra b_6\l"]
 b_11 -> b_6;
 b_11 -> b_9[color="green"];
 b_9 -> b_7[color="green"];
@@ -35,5 +35,5 @@ b_8 [label="b_8\l47: ret \l"]
 b_8 -> b_6[color="green"];
 b_6 -> b_5[color="green"];
 __MAIN__ -> b_12;
-b_12 [label="b_12\l48: adda GBP var_x_addr\l49: store (48) #0\l50: adda GBP var_y_addr\l51: store (50) #0\l52: adda GBP var_z_addr\l53: store (52) #0\l55: load (48)\l57: load (52)\l58: call bar (55) (57)\l59: call foo\l61: write (59)\l62: end\l"]
+b_12 [label="b_12\l48: adda GBP #-8\l49: store (48) #0\l50: adda GBP #-4\l51: store (50) #0\l52: adda GBP #-12\l53: store (52) #0\l55: load (48)\l57: load (52)\l58: call bar (55) (57)\l59: call foo\l61: write (59)\l62: end\l"]
 }
