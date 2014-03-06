@@ -1,6 +1,5 @@
 package support;
 
-import ir.Immediate;
 import ir.BasicBlock;
 import ir.Load;
 import ir.Store;
@@ -90,10 +89,10 @@ public class ArrayType extends Type {
         return rval;
     }
 
-    private Value getAddr(Designator d) throws Exception {
+    private int getAddr(Designator d) throws Exception {
         if(global) {
-            return new Immediate(globals.getAddress(d.getVarName(), getSize()));
+            return globals.getAddress(d.getVarName(), getSize());
         }
-        return new Immediate(locals.getAddress(d.getVarName(), getSize()));
+        return locals.getAddress(d.getVarName(), getSize());
     }
 }

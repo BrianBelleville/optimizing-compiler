@@ -5,9 +5,9 @@ import java.io.Writer;
 
 public class ArrayIndex extends NaryInstruction {
     private Value baseAddr;
-    private Value arrayAddr;
+    private int arrayAddr;
     private int[] multipliers;
-    public ArrayIndex(Value baseAddr, Value arrayAddr, int[] multipliers, ArrayList<Value> args) {
+    public ArrayIndex(Value baseAddr, int arrayAddr, int[] multipliers, ArrayList<Value> args) {
         super(Opcode.index, args);
         this.baseAddr = baseAddr;
         this.arrayAddr = arrayAddr;
@@ -53,25 +53,22 @@ public class ArrayIndex extends NaryInstruction {
         if(acc == null && immediateAcc == 0) {
             // offset entirely determined during compilation to be 0
             // load base address
-            finalOffset = arrayAddr;
+            finalOffset = new Immediate(arrayAddr);
         } else if(acc == null && immediateAcc != 0) {
             // offset entirely determined during compilation, and is not 0
-            Instruction t = new Add(arrayAddr, new Immediate(immediateAcc));
-            rval.add(t);
-            finalOffset = t;
+            finalOffset = new Immediate(immediateAcc + arrayAddr);
         } else if(acc != null && immediateAcc != 0) {
             // the final offset will be determined at runtime
             // take into account what can be determined at compile time
-            Instruction a = new Add(acc, new Immediate(immediateAcc));
+            // factor in the array address to the immediate offset
+            Instruction a = new Add(acc, new Immediate(immediateAcc + arrayAddr));
             rval.add(a);
-            Instruction f = new Add(arrayAddr, a);
-            rval.add(f);
-            finalOffset = f;
+            finalOffset = a;
         } else if (acc != null && immediateAcc == 0) {
             // final offset will be determined at runtime, there is no
             // contribution determined at compile time that needs to
             // be added
-            Instruction f = new Add(arrayAddr, acc);
+            Instruction f = new Add(new Immediate(arrayAddr), acc);
             rval.add(f);
             finalOffset = f;
         } else {                // shouldn't get here, all cases should be acounted for
