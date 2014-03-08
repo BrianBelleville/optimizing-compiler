@@ -628,7 +628,7 @@ public class Parser {
                     currentBB.addInstruction(new Ret()); 
                 }
             } else {
-                throw new Exception("Funcion body: no closing '}'");
+                throw new Exception("Function body: no closing '}'");
             }
         } else {
             throw new Exception("Function body: no opening '{'");
