@@ -22,5 +22,9 @@ public class Fetch extends UnaryInstruction {
     public void performCSE() {
 	return;			// no op, can never be common subexpressions
     }
+
+    public int getPosition() {
+        return position;
+    }
 }
 
