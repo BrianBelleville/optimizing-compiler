@@ -32,7 +32,9 @@ public class InterferenceGraph {
 
     private Integer getAvailableColor(Value node) {
         HashSet<Integer> forbiddenColors = adjacencyList.get(node).forbiddenColors;
-        Integer i = 1;
+        // start coloring from 0, these are abstract registers, so it
+        // doesn't matter that the 0 register can't be used in DLX.
+        Integer i = 0;          
         while(forbiddenColors.contains(i)) {
             i++;
         }
