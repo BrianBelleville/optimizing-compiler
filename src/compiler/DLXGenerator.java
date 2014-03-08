@@ -4,6 +4,7 @@ package compiler;
 import dlx.DLX;
 
 import ir.*;
+import support.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -11,7 +12,6 @@ public class DLXGenerator extends CodeGenerator {
     private HashMap<BasicBlock, ArrayList<Integer>> fixup = new HashMap<BasicBlock, ArrayList<Integer>>();
     private HashMap<BasicBlock, Integer> labels = new HashMap<BasicBlock, Integer>();
     private ArrayList<Integer> code = new ArrayList<Integer>();
-    private DLX dlx = new DLX();
 
     // definitions of special registers
     private static int retAddr = 31;
@@ -34,7 +34,6 @@ public class DLXGenerator extends CodeGenerator {
     private static int minAvail = zero + 1;
     private static int maxAvail = Math.max(t2 - 1, registersAvailable + minAvail - 1);
 
-
     @Override
     public int[] generate(ArrayList<Function> program) {
         int[] rval = new int[code.size()];
@@ -44,16 +43,24 @@ public class DLXGenerator extends CodeGenerator {
         return rval;
     }
 
-    // position will determine if the 
+    // position will determine if the
     private int location(Value v, int position) {
         int reg = minAvail + v.getColor();
-        
+
         if(reg > maxAvail) {
             // then this value has been spilled
             // todo: insert the code to fetch the spilled value
             return position == 1 ? t1 : t2;
         }
         return reg;
+    }
+
+    private int location1(Value v) {
+        return location(v, 1);
+    }
+
+    private int location2(Value v) {
+        return location(v, 2);
     }
 
     private int target(Value v) {
@@ -78,6 +85,14 @@ public class DLXGenerator extends CodeGenerator {
         code.add(instruction);
     }
 
+    private void push(int register) {
+        emit(DLX.assemble(DLX.PSH, register, sp, Type.getWordSize()));
+    }
+
+    private void pop(int register) {
+        emit(DLX.assemble(DLX.POP, register, sp, Type.getWordSize()));
+    }
+
     private void emitCode(BasicBlock bb) throws Exception {
         for(Instruction i : bb.instructions) {
             switch(i.getOpcode()) {
@@ -86,34 +101,77 @@ public class DLXGenerator extends CodeGenerator {
                     Add s = (Add)i;
                     if(s.getArg1() instanceof Immediate) {
                         int c = ((Immediate)s.getArg1()).getValue();
-                        emit(dlx.assemble(dlx.ADDI, target(s),
-                                          location(s.getArg2()), c))
-                            
+                        emit(DLX.assemble(DLX.ADDI, target(s),
+                                          location1(s.getArg2()), c));
+
                     } else if(s.getArg2() instanceof Immediate) {
                         int c = ((Immediate)s.getArg2()).getValue();
-                        emit(dlx.assemble(dlx.ADDI, target(s),
-                                          location(s.getArg1()), c));
+                        emit(DLX.assemble(DLX.ADDI, target(s),
+                                          location1(s.getArg1()), c));
                     } else {
-                        emit(dlx.assemble(dlx.ADD, target(s),
-                                          location(s.getArg1()),
-                                          location(s.getArg2())));
+                        emit(DLX.assemble(DLX.ADD, target(s),
+                                          location1(s.getArg1()),
+                                          location2(s.getArg2())));
                     }
-                    home(s);                    
+                    home(s);
                 }
                 break;
             case sub:
                 {
                     Sub s = (Sub)i;
+                    if(s.getArg1() instanceof Immediate) {
+                        // need to move arg1 value into t1
+                        emit(DLX.assemble(DLX.ADDI, t1, zero, ((Immediate)s.getArg1()).getValue()));
+                        emit(DLX.assemble(DLX.SUB, target(s), t1, location2(s.getArg2())));
+                    } else if(s.getArg2() instanceof Immediate) {
+                        int c = ((Immediate)s.getArg2()).getValue();
+                        emit(DLX.assemble(DLX.SUBI, target(s),
+                                          location1(s.getArg1()), c));
+                    } else {
+                        emit(DLX.assemble(DLX.SUB, target(s),
+                                          location1(s.getArg1()),
+                                          location2(s.getArg2())));
+                    }
+                    home(s);
                 }
                 break;
             case mul:
                 {
                     Mul s = (Mul)i;
+                    if(s.getArg1() instanceof Immediate) {
+                        int c = ((Immediate)s.getArg1()).getValue();
+                        emit(DLX.assemble(DLX.MULI, target(s),
+                                          location1(s.getArg2()), c));
+
+                    } else if(s.getArg2() instanceof Immediate) {
+                        int c = ((Immediate)s.getArg2()).getValue();
+                        emit(DLX.assemble(DLX.MULI, target(s),
+                                          location1(s.getArg1()), c));
+                    } else {
+                        emit(DLX.assemble(DLX.MUL, target(s),
+                                          location1(s.getArg1()),
+                                          location2(s.getArg2())));
+                    }
+                    home(s);
                 }
                 break;
             case div:
                 {
                     Div s = (Div)i;
+                    if(s.getArg1() instanceof Immediate) {
+                        // need to move arg1 value into t1
+                        emit(DLX.assemble(DLX.ADDI, t1, zero, ((Immediate)s.getArg1()).getValue()));
+                        emit(DLX.assemble(DLX.DIV, target(s), t1, location2(s.getArg2())));
+                    } else if(s.getArg2() instanceof Immediate) {
+                        int c = ((Immediate)s.getArg2()).getValue();
+                        emit(DLX.assemble(DLX.DIVI, target(s),
+                                          location1(s.getArg1()), c));
+                    } else {
+                        emit(DLX.assemble(DLX.DIV, target(s),
+                                          location1(s.getArg1()),
+                                          location2(s.getArg2())));
+                    }
+                    home(s);
                 }
                 break;
             case cmp:
@@ -123,7 +181,7 @@ public class DLXGenerator extends CodeGenerator {
                 break;
             case adda:
                 {
-                     // no op, this will be incorperated into load
+                    // no op, this will be incorperated into load
                 }
                 break;
             case load:
@@ -139,6 +197,13 @@ public class DLXGenerator extends CodeGenerator {
             case move:
                 {
                     Move s = (Move)i;
+                    if(s.getArg() instanceof Immediate) {
+                        emit(DLX.assemble(DLX.ADDI, target(s),
+                                          zero, ((Immediate)s.getArg()).getValue()));
+                    } else {
+                        emit(DLX.assemble(DLX.ADD, target(s), zero, location2(s.getArg())));
+                        home(s);
+                    }
                 }
                 break;
             case phi:
@@ -148,7 +213,7 @@ public class DLXGenerator extends CodeGenerator {
                 break;
             case end:
                 {
-                    emit(dlx.assemble(dlx.RET, zero));
+                    emit(DLX.assemble(DLX.RET, zero));
                 }
                 break;
             case bra:
@@ -189,7 +254,7 @@ public class DLXGenerator extends CodeGenerator {
             case read:
                 {
                     Read s = (Read)i;
-                    emit(dlx.assemble(dlx.RDI, target(s)));
+                    emit(DLX.assemble(DLX.RDI, target(s)));
                     home(s);
                 }
                 break;
