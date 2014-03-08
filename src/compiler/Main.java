@@ -107,6 +107,7 @@ public class Main {
             // determine the interference graph for all functions
             for(Function func : program) {
                 func.ig = func.entryPoint.calcLiveRange();
+                func.ig.colorGraph();
             }
 
             if(igOut != null) {
