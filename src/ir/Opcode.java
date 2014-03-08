@@ -8,7 +8,6 @@ public enum Opcode {
     cmp,
     adda,
     load,
-    loadi,
     store,
     move,
     phi,
@@ -25,8 +24,6 @@ public enum Opcode {
     wln,
     ret,
     call,
-    alloc,
-    immediate,
     index,
     fetch
 }
