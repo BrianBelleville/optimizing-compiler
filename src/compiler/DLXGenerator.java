@@ -37,13 +37,16 @@ public class DLXGenerator extends CodeGenerator {
     @Override
     public int[] generate(ArrayList<Function> program) {
         int[] rval = new int[code.size()];
+
+        
+        
         for(int i = 0; i < code.size(); i++) {
             rval[i] = code.get(i);
         }
         return rval;
     }
 
-    // position will determine if the
+    // position will determine if the value is put into t1 or t2
     private int location(Value v, int position) {
         int reg = minAvail + v.getColor();
 
@@ -287,6 +290,11 @@ public class DLXGenerator extends CodeGenerator {
                 throw new Exception("Unrecognized ir opcode");
             }
         }
+    }
+
+    private void makeLabel(BasicBlock bb) throws Exception {
+        labels.put(bb, code.size());
+        fixup(bb);
     }
 
     private void fixup(BasicBlock bb) throws Exception {
