@@ -42,6 +42,11 @@ public abstract class Instruction extends Value {
         color = n;
     }
 
+    @Override
+    public Integer getColor() {
+        return color;
+    }
+
     public void printInstruction(Writer w) throws Exception {
         if(isDeleted()) {
             throw new Exception("Deleted instruction printed as part of CFG");

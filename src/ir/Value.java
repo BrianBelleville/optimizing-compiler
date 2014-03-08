@@ -25,4 +25,9 @@ public abstract class Value {
     public void setColor(Integer n) {
         // default is nop
     }
+
+    public Integer getColor() {
+        // default to null since some values can't be in registers.
+        return null;
+    }
 }
