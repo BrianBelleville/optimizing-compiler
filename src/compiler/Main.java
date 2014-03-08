@@ -37,12 +37,6 @@ public class Main {
                 case "-no-dead-code-elim":
                     Globals.performDeadCodeElimination = false;
                     break;
-                case "-constant-arithmetic":
-                    Globals.performConstantArithmetic = true;
-                    break;
-                case "-no-constant-arithmetic":
-                    Globals.performConstantArithmetic = false;
-                    break;
                 case "-zero-initialize-variables":
                     Globals.zeroInitializeVariables = true;
                     break;
@@ -66,9 +60,7 @@ public class Main {
             passes.add(new DeleteMove());
             passes.add(new UpdateArguments());
 
-            if(Globals.performConstantArithmetic) {
-                passes.add(new ConstantArithmetic());
-            }
+            passes.add(new ConstantArithmetic());
             
             passes.add(new GenerateArrayIndexingComputations());
             passes.add(new UpdateArguments());
