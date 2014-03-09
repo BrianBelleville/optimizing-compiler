@@ -324,6 +324,22 @@ public class DLXGenerator extends CodeGenerator {
             case ret:
                 {
                     Ret s = (Ret)i;
+                    // todo: insert the rest of the function epilogue,
+                    // restore all registers that were saved, this
+                    // will include restoring the return address
+                    // register.
+                    emit(DLX.assemble(DLX.ADD, sp, zero, fp));
+                    pop(fp);
+                    if(!(s.getArg() instanceof NoValue)) {
+                        // need to move return address into retVal register
+                        int argLoc = location1(s.getArg());
+                        // if the return val was spilled, finding the
+                        // location might have put it where we need it
+                        if(argLoc != retVal) {
+                            emit(DLX.assemble(DLX.ADD, retVal, zero, argLoc));
+                        }
+                    }
+                    emit(DLX.assemble(DLX.RET, retAddr));
                 }
                 break;
             case call:
