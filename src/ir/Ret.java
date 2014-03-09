@@ -9,7 +9,7 @@ public class Ret extends UnaryInstruction {
 
     public Ret() {
         // don't want null values, so use a named value stand in
-        super(Opcode.ret, new NamedValue("")); 
+        super(Opcode.ret, new NoValue()); 
     }
     @Override
     public boolean isCommonSubexpression(Instruction i) {
