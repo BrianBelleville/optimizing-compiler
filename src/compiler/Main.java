@@ -42,7 +42,7 @@ public class Main {
                     break;
                 case "-no-zero-initialize-variables":
                     Globals.zeroInitializeVariables = false;
-                    break;  
+                    break;
                 default:
                     // interpret as an input filename
                     input = args[i];
@@ -56,15 +56,15 @@ public class Main {
             // create list of passes based on program arguments
             ArrayList<Pass> passes = new ArrayList<Pass>();
             passes.add(new StripVariableReference());
-            
+
             passes.add(new DeleteMove());
             passes.add(new UpdateArguments());
 
             passes.add(new ConstantArithmetic());
-            
+
             passes.add(new GenerateArrayIndexingComputations());
             passes.add(new UpdateArguments());
-            
+
             if(Globals.performCSE) {
                 passes.add(new CommonSubexpressionElimination());
             }
@@ -96,6 +96,10 @@ public class Main {
                 }
             }
 
+            if(cfgOut != null) {
+                outputCFG(cfgOut, program);
+            }
+
             // determine the interference graph for all functions
             for(Function func : program) {
                 func.ig = func.entryPoint.calcLiveRange();
@@ -106,9 +110,6 @@ public class Main {
                 outputIG(igOut, program);
             }
 
-            if(cfgOut != null) {
-                outputCFG(cfgOut, program);
-            }
             System.exit(0);
         } catch (Exception e) {
             System.out.println(e.getClass().getName() + ": " + e.getMessage());
@@ -125,7 +126,7 @@ public class Main {
         }
         out.write("}");
         out.close();
-    }    
+    }
     public static void outputCFG(String filename, ArrayList<Function> program)
         throws Exception {
         FileWriter out = new FileWriter(filename);
