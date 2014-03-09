@@ -211,7 +211,7 @@ public class DLXGenerator extends CodeGenerator {
                         emit(DLX.assemble(DLX.CMPI, t1, location1(s.getArg1()), ((Immediate)s.getArg2()).getValue()));
                     } else {
                         emit(DLX.assemble(DLX.CMP, t1, location1(s.getArg1()), location2(s.getArg2())));
-                    }                    
+                    }
                 }
                 break;
             case adda:
@@ -259,36 +259,43 @@ public class DLXGenerator extends CodeGenerator {
             case bra:
                 {
                     Bra s = (Bra)i;
+                    emit(DLX.assemble(DLX.BEQ, zero, getBranchOffset(s.getTarget())));
                 }
                 break;
             case bne:
                 {
                     Bne s = (Bne)i;
+                    emit(DLX.assemble(DLX.BNE, t1, getBranchOffset(s.getTarget())));
                 }
                 break;
             case beq:
                 {
                     Beq s = (Beq)i;
+                    emit(DLX.assemble(DLX.BEQ, t1, getBranchOffset(s.getTarget())));
                 }
                 break;
             case ble:
                 {
                     Ble s = (Ble)i;
+                    emit(DLX.assemble(DLX.BLE, t1, getBranchOffset(s.getTarget())));
                 }
                 break;
             case blt:
                 {
                     Blt s = (Blt)i;
+                    emit(DLX.assemble(DLX.BLT, t1, getBranchOffset(s.getTarget())));
                 }
                 break;
             case bge:
                 {
                     Bge s = (Bge)i;
+                    emit(DLX.assemble(DLX.BGE, t1, getBranchOffset(s.getTarget())));
                 }
                 break;
             case bgt:
                 {
                     Bgt s = (Bgt)i;
+                    emit(DLX.assemble(DLX.BGT, t1, getBranchOffset(s.getTarget())));
                 }
                 break;
             case read:
@@ -358,5 +365,22 @@ public class DLXGenerator extends CodeGenerator {
             code.set(i, instruction); // replace instruction with the fixed up version
         }
         fixupLocations.remove(bb);       // remove bb from the fixup locations
+    }
+
+    // either returns the offset or adds the current location to the fixup list
+    private int getBranchOffset(Object to) {
+        Integer label = labels.get(to);
+        if(label == null) {
+            label = -1; // should result in an infinite loop if it is not fixed up
+            ArrayList<Integer> fix = fixup.get(to);
+            if(fix == null) {
+                fix = new ArrayList<Integer>();
+                fixup.put(to, fix);
+            }
+            // this will be the index of the next instruction emited,
+            // which should be our branch
+            fix.add(code.size());
+        }
+        return label;
     }
 }
