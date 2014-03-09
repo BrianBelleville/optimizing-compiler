@@ -104,6 +104,7 @@ public class Main {
             for(Function func : program) {
                 func.ig = func.entryPoint.calcLiveRange();
                 func.ig.colorGraph();
+                func.entryPoint.makeMovesForPhis();
             }
 
             if(igOut != null) {

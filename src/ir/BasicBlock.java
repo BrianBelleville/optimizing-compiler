@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.ListIterator;
 import java.util.HashSet;
+import java.util.ArrayList;
 import support.Environment;
 import support.Identifier;
 import support.InterferenceGraph;
@@ -133,6 +134,67 @@ public class BasicBlock {
         i.setContainingBB(this);
         instructions.add(i);
         mostRecentDominating = i;
+    }
+
+    public void makeMovesForPhis() {
+        makeMovesForPhisInternal();
+        currentPass++;
+    }
+
+    private void makeMovesForPhisInternal() {
+        if(localPass == currentPass) {
+            return;
+        }
+        localPass = currentPass;
+        ArrayList<Phi> phis = new ArrayList<Phi>();
+        for(Instruction i : instructions) {
+            if(i instanceof Phi) {
+                phis.add((Phi)i);
+            } else {
+                break;
+            }
+        }
+
+        // todo: we need to do a topological sorting of phi
+        // instructions here, and insert temporaries to break cycles.
+        for(Phi p : phis) {
+            Integer color = p.getColor();
+            // insert move for first arg
+            Move m1 = new Move(p.getArg1());
+            m1.setColor(color);
+            incomingBranch1.addAtEndBeforeBranch(m1);
+
+            // insert move for second arg
+            Move m2 = new Move(p.getArg2());
+            m2.setColor(color);
+            incomingBranch2.addAtEndBeforeBranch(m2);
+        }
+
+        BasicBlock ch1 = getFallThrough();
+        BasicBlock ch2 = getBranchTarget();
+        if(ch1 != null) {
+            ch1.makeMovesForPhisInternal();
+        }
+        if(ch2 != null) {
+            ch2.makeMovesForPhisInternal();
+        }
+
+    }
+
+    private void addAtEndBeforeBranch(Instruction i) {
+        if(!instructions.isEmpty() &&
+           instructions.getLast() instanceof BranchInstruction) {
+            ListIterator<Instruction> iter =
+                instructions.listIterator(instructions.size() - 1);
+            Instruction cursor = iter.next();
+            while((cursor instanceof BranchInstruction || cursor instanceof Cmp) && iter.hasPrevious()) {
+                cursor = iter.previous();
+            }
+            iter.next();
+            iter.add(i);
+        } else {
+            instructions.add(i);
+        }
     }
 
     public void addPhi(Identifier var, Value oldVal, Value newVal)
