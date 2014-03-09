@@ -37,9 +37,6 @@ public class DLXGenerator extends CodeGenerator {
     @Override
     public int[] generate(ArrayList<Function> program) {
         int[] rval = new int[code.size()];
-
-        
-        
         for(int i = 0; i < code.size(); i++) {
             rval[i] = code.get(i);
         }
@@ -314,5 +311,6 @@ public class DLXGenerator extends CodeGenerator {
             instruction = (instruction & ~0xffff) | c;
             code.set(i, instruction); // replace instruction with the fixed up version
         }
+        fixupLocations.remove(bb);       // remove bb from the fixup locations
     }
 }
