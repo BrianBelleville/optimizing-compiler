@@ -9,8 +9,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class DLXGenerator extends CodeGenerator {
-    private HashMap<BasicBlock, ArrayList<Integer>> fixup = new HashMap<BasicBlock, ArrayList<Integer>>();
-    private HashMap<BasicBlock, Integer> labels = new HashMap<BasicBlock, Integer>();
+    private HashMap<Object, ArrayList<Integer>> fixup = new HashMap<Object, ArrayList<Integer>>();
+    private HashMap<Object, Integer> labels = new HashMap<Object, Integer>();
     private ArrayList<Integer> code = new ArrayList<Integer>();
 
     // definitions of special registers
@@ -35,8 +35,22 @@ public class DLXGenerator extends CodeGenerator {
     private static int maxAvail = Math.max(t2 - 1, registersAvailable + minAvail - 1);
 
     @Override
-    public int[] generate(ArrayList<Function> program) {
+    public int[] generate(ArrayList<Function> program) throws Exception {
         int[] rval = new int[code.size()];
+
+        // the last function should be main
+        if(!program.get(program.size() - 1).name.getString().equals("__MAIN__")) {
+            throw new Exception("Main not found");
+        }
+
+        for(int i = program.size() - 1; i >= 0; i--) {
+            Function f = program.get(i);
+            makeLabel(f.name);
+            // todo: emit code for function prologue, set up stack
+            // frame, save used registers
+            emitCode(f.entryPoint);
+        }
+
         for(int i = 0; i < code.size(); i++) {
             rval[i] = code.get(i);
         }
@@ -77,6 +91,7 @@ public class DLXGenerator extends CodeGenerator {
         if(reg > maxAvail) {
             // then this value has been spilled, the value is
             // currently in t1, insert the spill code now
+            // todo: insert spill code
         }
         // otherwise, do nothing, the value is home
     }
@@ -177,6 +192,26 @@ public class DLXGenerator extends CodeGenerator {
             case cmp:
                 {
                     Cmp s = (Cmp)i;
+                    // the comparison is statically determined,
+                    // haven't implemented the control flow
+                    // simplification that this is possible, so put
+                    // the result of the comparison into a register
+                    if(s.getArg1() instanceof Immediate && s.getArg2() instanceof Immediate) {
+                        int r = ((Immediate)s.getArg1()).getValue() - ((Immediate)s.getArg2()).getValue();
+                        if(r < 0) {
+                            r = -1;
+                        } else if(r > 0) {
+                            r = 1;
+                        } // don't need to do anything special if r == 0
+                        emit(DLX.assemble(DLX.ADDI, t1, zero, r));
+                    } else if (s.getArg1() instanceof Immediate) {
+                        emit(DLX.assemble(DLX.ADDI, t1, zero, ((Immediate)s.getArg1()).getValue()));
+                        emit(DLX.assemble(DLX.CMP, t1, t1, location2(s.getArg2())));
+                    } else if (s.getArg2() instanceof Immediate) {
+                        emit(DLX.assemble(DLX.CMPI, t1, location1(s.getArg1()), ((Immediate)s.getArg2()).getValue()));
+                    } else {
+                        emit(DLX.assemble(DLX.CMP, t1, location1(s.getArg1()), location2(s.getArg2())));
+                    }                    
                 }
                 break;
             case adda:
@@ -196,14 +231,19 @@ public class DLXGenerator extends CodeGenerator {
                 break;
             case move:
                 {
+                    // todo: if the value is destined for a memory
+                    // cell, don't do a move, do a store on the value
+                    // directly. Also need to be able to handle the
+                    // case where it is an anonymous temporary
+                    // introduced to break phi cycles.
                     Move s = (Move)i;
                     if(s.getArg() instanceof Immediate) {
                         emit(DLX.assemble(DLX.ADDI, target(s),
                                           zero, ((Immediate)s.getArg()).getValue()));
                     } else {
                         emit(DLX.assemble(DLX.ADD, target(s), zero, location2(s.getArg())));
-                        home(s);
                     }
+                    home(s);
                 }
                 break;
             case phi:
@@ -261,11 +301,17 @@ public class DLXGenerator extends CodeGenerator {
             case write:
                 {
                     Write s = (Write)i;
+                    if(s.getArg() instanceof Immediate) {
+                        emit(DLX.assemble(DLX.ADDI, t1, zero, ((Immediate)s.getArg()).getValue()));
+                        emit(DLX.assemble(DLX.WRD, t1));
+                    } else {
+                        emit(DLX.assemble(DLX.WRD, location1(s.getArg())));
+                    }
                 }
                 break;
             case wln:
                 {
-                    Wln s = (Wln)i;
+                    emit(DLX.assemble(DLX.WRL));
                 }
                 break;
             case ret:
@@ -289,12 +335,12 @@ public class DLXGenerator extends CodeGenerator {
         }
     }
 
-    private void makeLabel(BasicBlock bb) throws Exception {
+    private void makeLabel(Object bb) throws Exception {
         labels.put(bb, code.size());
         fixup(bb);
     }
 
-    private void fixup(BasicBlock bb) throws Exception {
+    private void fixup(Object bb) throws Exception {
         ArrayList<Integer> fixupLocations = fixup.get(bb);
         if(fixupLocations == null) {
             return;
