@@ -5,8 +5,10 @@ import dlx.DLX;
 
 import ir.*;
 import support.*;
+import transform.AnalyzeRegistersUsed;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 
 public class DLXGenerator extends CodeGenerator {
     private HashMap<Object, ArrayList<Integer>> fixup = new HashMap<Object, ArrayList<Integer>>();
@@ -34,6 +36,10 @@ public class DLXGenerator extends CodeGenerator {
     private static int minAvail = zero + 1;
     private static int maxAvail = Math.max(t2 - 1, registersAvailable + minAvail - 1);
 
+    // stack to be used to keep track of the order that registers need
+    // to be restored.
+    private LinkedList<Integer> regStack = new LinkedList<Integer>();
+
     @Override
     public int[] generate(ArrayList<Function> program) throws Exception {
         int[] rval = new int[code.size()];
@@ -46,11 +52,30 @@ public class DLXGenerator extends CodeGenerator {
         for(int i = program.size() - 1; i >= 0; i--) {
             Function f = program.get(i);
             makeLabel(f.name);
-            // todo: emit code for function prologue, set up stack
-            // frame, save used registers
+
+            // see what registers will be saved and how many memory cells will be needed
+            AnalyzeRegistersUsed analysis = new AnalyzeRegistersUsed(registersAvailable, retAddr);
+            f.entryPoint.runPass(analysis);
+            f.locals.allocateMemoryCells(analysis.memNeeded);
+
+            // clear the record of registers pushed onto stack from previous function
+            regStack.clear();
+            
+            // set up stack frame for local variables
+            push(fp);
+            emit(DLX.assemble(DLX.ADDI, sp, sp, f.locals.getSize()));
+
+            // save registers onto stack
+            for(Integer reg : analysis.registersUsed) {
+                regStack.push(reg); // keep track of order registers are pushed
+                push(reg);
+            }
+            
+            // emit code for the function body
             emitCode(f.entryPoint);
         }
 
+        // copy the code into an int array
         for(int i = 0; i < code.size(); i++) {
             rval[i] = code.get(i);
         }
