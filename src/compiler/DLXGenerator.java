@@ -349,10 +349,13 @@ public class DLXGenerator extends CodeGenerator {
             case ret:
                 {
                     Ret s = (Ret)i;
-                    // todo: insert the rest of the function epilogue,
-                    // restore all registers that were saved, this
-                    // will include restoring the return address
-                    // register.
+
+                    // restore registers
+                    for(Integer reg : regStack) {
+                        pop(reg);
+                    }
+                    
+                    // destroy stack frame
                     emit(DLX.assemble(DLX.ADD, sp, zero, fp));
                     pop(fp);
                     if(!(s.getArg() instanceof NoValue)) {
