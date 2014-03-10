@@ -103,7 +103,7 @@ public class DLXGenerator extends CodeGenerator {
     }
 
     private int target(Value v) {
-        int reg = maxAvail + v.getColor();
+        int reg = minAvail + v.getColor();
         if(reg > maxAvail) {
             // then this value has been spilled, will need to be put home later
             return t1;
@@ -112,7 +112,7 @@ public class DLXGenerator extends CodeGenerator {
     }
 
     private void home(Value v) {
-        int reg = maxAvail + v.getColor();
+        int reg = minAvail + v.getColor();
         if(reg > maxAvail) {
             // then this value has been spilled, the value is
             // currently in t1, insert the spill code now
