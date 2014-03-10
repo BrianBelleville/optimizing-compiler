@@ -3,20 +3,30 @@ package transform;
 import java.util.HashSet;
 import java.util.ListIterator;
 import ir.Instruction;
+import ir.Call;
 
 public class AnalyzeRegistersUsed extends Pass {
     private int registersAvailable;
-    private HashSet<Integer> registersUsed;
-    private int memNeeded;
+    public  HashSet<Integer> registersUsed;
+    public int memNeeded;
 
-    public AnalyzeRegistersUsed(int registersAvailable) {
+    private int retAddrReg;
+    
+    public AnalyzeRegistersUsed(int registersAvailable, int retReg) {
         this.registersAvailable = registersAvailable;
+        retAddrReg = retReg;
         memNeeded = 0;
     }
     
     @Override
     public void run(ListIterator<Instruction> iter){
-        Integer color = iter.next().getColor();
+        Instruction i = iter.next();
+        // if this function does any function calls, the return
+        // address will need to be saved
+        if(i instanceof Call) {
+            registersUsed.add(retAddrReg);
+        }
+        Integer color = i.getColor();
         if(color != null) {
             // color is a 0 based number, check if this value will be
             // spilled
