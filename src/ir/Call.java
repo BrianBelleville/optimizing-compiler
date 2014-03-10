@@ -34,4 +34,11 @@ public class Call extends NaryInstruction {
     public boolean isDeadCode() {
         return false;           // can not be dead code
     }
+
+    @Override
+    public boolean needsRegister() {
+        // if the value of the call is not used, it doesn't need to be
+        // put into a register
+        return !uses.isEmpty();
+    }
 }
