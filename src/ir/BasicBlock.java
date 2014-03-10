@@ -159,15 +159,18 @@ public class BasicBlock {
         // instructions here, and insert temporaries to break cycles.
         for(Phi p : phis) {
             Integer color = p.getColor();
-            // insert move for first arg
-            Move m1 = new Move(p.getArg1());
-            m1.setColor(color);
-            incomingBranch1.addAtEndBeforeBranch(m1);
-
-            // insert move for second arg
-            Move m2 = new Move(p.getArg2());
-            m2.setColor(color);
-            incomingBranch2.addAtEndBeforeBranch(m2);
+            {
+                // insert move for first arg
+                Move m1 = new Move(p.getArg1());
+                m1.setColor(color);
+                incomingBranch1.addAtEndBeforeBranch(m1);
+            }
+            {
+                // insert move for second arg
+                Move m2 = new Move(p.getArg2());
+                m2.setColor(color);
+                incomingBranch2.addAtEndBeforeBranch(m2);
+            }
         }
 
         BasicBlock ch1 = getFallThrough();
@@ -186,11 +189,26 @@ public class BasicBlock {
            instructions.getLast() instanceof BranchInstruction) {
             ListIterator<Instruction> iter =
                 instructions.listIterator(instructions.size() - 1);
-            Instruction cursor = iter.next();
-            while((cursor instanceof BranchInstruction || cursor instanceof Cmp) && iter.hasPrevious()) {
+            iter.next();        // returns last instruction
+            // also returns the last instructions, but we are now 'going backwards'
+            Instruction cursor = iter.previous();
+            // need to put the instruction before the compare and
+            // branch, a compare instruction may not be present though
+            assert(cursor instanceof BranchInstruction); // we just tested this
+
+            // if the basic block has no other instructions, then we
+            // can insert the instruction immediatly, otherwise we
+            // need to see if there is also a Cmp
+            if(iter.hasPrevious()) {
                 cursor = iter.previous();
+
+                // if we did not get a cmp, we went too far
+                if(!(cursor instanceof Cmp)) {
+                    // will return the same instruction as cursor, but now instructions will be added after it
+                    iter.next();
+                }
+                // but if we did get a Cmp, we went just the right amount
             }
-            iter.next();
             iter.add(i);
         } else {
             instructions.add(i);
