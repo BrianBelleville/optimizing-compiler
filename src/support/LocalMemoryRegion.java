@@ -34,4 +34,14 @@ public class LocalMemoryRegion extends MemoryRegion {
         usedMem.put(var, new addressRecord(address, size));
         return address;
     }
+
+    // get the address of the nth (0 based) spill cell
+    public int getCellAddress(int n) {
+        return 0;
+    }
+
+    // allocate memory for the spilled local variables
+    public void allocateMemoryCells(int cellCount) {
+        
+    }
 }
