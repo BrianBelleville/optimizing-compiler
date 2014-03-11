@@ -11,6 +11,10 @@ public class Call extends NaryInstruction {
 	functionName = function;
     }
 
+    public Identifier getFunctionName() {
+        return functionName;
+    }
+
     @Override
     public void printInstruction(Writer w) throws Exception {
 	w.write(Integer.toString(getNumber()) + ": " + getOpcode().toString());
