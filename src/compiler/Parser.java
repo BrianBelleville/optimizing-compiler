@@ -327,6 +327,8 @@ public class Parser {
             // also add unconditional branch from the end of the 'if'
             // statSequence over the else block
             currentBB.addInstruction(new Bra(nextBB));
+            // the start of the else will be placed after the if condition
+            currentBB.setNext(elseStartBB);
 
 	    // set the new current, this must be done AFTER the
 	    // branches are emited
@@ -418,6 +420,8 @@ public class Parser {
             statSequence();
             // add branch to loop header
             currentBB.addInstruction(new Bra(loopHeader));
+            // set nextBB to be laid out after the loop body
+            currentBB.setNext(nextBB);
             env.exit();
 
             loopHeader.setIncomingBranch(currentBB);
