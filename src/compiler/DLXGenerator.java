@@ -131,7 +131,7 @@ public class DLXGenerator extends CodeGenerator {
     }
 
     private void pop(int register) {
-        emit(DLX.assemble(DLX.POP, register, sp, Type.getWordSize()));
+        emit(DLX.assemble(DLX.POP, register, sp, 0 - Type.getWordSize()));
     }
 
     private void emitCode(BasicBlock bb) throws Exception {
@@ -246,7 +246,7 @@ public class DLXGenerator extends CodeGenerator {
                 break;
             case adda:
                 {
-                    // no op, this will be incorperated into load
+                    // no op, this will be incorperated into load/store 
                 }
                 break;
             case load:
@@ -402,7 +402,7 @@ public class DLXGenerator extends CodeGenerator {
 
                     // after return, pop all arguments off of the stack
                     if(args.size() > 0) {
-                        emit(DLX.assemble(DLX.ADDI, sp, sp,
+                        emit(DLX.assemble(DLX.SUBI, sp, sp,
                                           args.size() * Type.getWordSize()));
                     }
                 }
