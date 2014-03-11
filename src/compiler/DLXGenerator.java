@@ -73,6 +73,7 @@ public class DLXGenerator extends CodeGenerator {
             
             // emit code for the function body
             emitCode(f.entryPoint);
+            BasicBlock.incrementGlobalPass();
         }
 
         // copy the code into an int array
@@ -134,6 +135,10 @@ public class DLXGenerator extends CodeGenerator {
     }
 
     private void emitCode(BasicBlock bb) throws Exception {
+        if(bb.isVisited()) {
+            return;
+        }
+        bb.visit();
         for(Instruction i : bb.instructions) {
             switch(i.getOpcode()) {
             case add:
@@ -410,6 +415,18 @@ public class DLXGenerator extends CodeGenerator {
             default:
                 throw new Exception("Unrecognized ir opcode");
             }
+        }
+        BasicBlock follow = bb.getFallThrough();
+        BasicBlock branch = bb.getBranchTarget();
+        
+        // do following block first
+        if(follow != null) {
+            emitCode(follow);
+        }
+
+        // then do the branch target
+        if(branch != null) {
+            emitCode(branch);
         }
     }
 
