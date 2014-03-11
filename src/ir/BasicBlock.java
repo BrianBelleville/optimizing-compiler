@@ -32,6 +32,15 @@ public class BasicBlock {
     private int currentBranch = 1; // always initially generate incomming branch 1
     private BasicBlock incomingBranch1;
     private BasicBlock incomingBranch2;
+    private BasicBlock next;    // link to the next block as the code is layed out in program memory
+
+    public void setNext(BasicBlock bb) {
+        next = bb;
+    }
+
+    public BasicBlock getNext() {
+        return next;
+    }
 
     public boolean isVisited() {
         return localPass == currentPass;
@@ -100,6 +109,19 @@ public class BasicBlock {
 	return instructions.isEmpty();
     }
 
+    public void printBlockLayoutOrder(Writer w) throws Exception {
+        w.write(getNodeName() + " [label=\"" + getNodeName() + "\\l");
+        for(Instruction i : instructions) {
+            i.printInstruction(w);
+            w.write("\\l");
+        }
+        w.write("\"]\n");
+        if(next != null) {
+            w.write(getNodeName() + " -> " + next.getNodeName() + ";\n");
+            next.printBlock(w);
+        }
+    }
+
     public void printBlock(Writer w) throws Exception {
         if(!printed) {
             printed = true;
@@ -129,6 +151,8 @@ public class BasicBlock {
     }
     public void setFallThrough(BasicBlock b) {
         fallThrough = b;
+        // if the code will fall through to b, that will be the next block emited as machine code
+        next = b;
     }
 
     public BasicBlock getBranchTarget() {
