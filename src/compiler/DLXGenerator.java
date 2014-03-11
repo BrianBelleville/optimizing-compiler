@@ -349,7 +349,20 @@ public class DLXGenerator extends CodeGenerator {
             case ret:
                 {
                     Ret s = (Ret)i;
-
+                    
+                    // put return value in register, do this before
+                    // restoring registers and deleting local
+                    // variables
+                    if(!(s.getArg() instanceof NoValue)) {
+                        // need to move return address into retVal register
+                        int argLoc = location1(s.getArg());
+                        // if the return val was spilled, finding the
+                        // location might have put it where we need it (into t1) 
+                        if(argLoc != retVal) {
+                            emit(DLX.assemble(DLX.ADD, retVal, zero, argLoc));
+                        }
+                    }
+                    
                     // restore registers
                     for(Integer reg : regStack) {
                         pop(reg);
@@ -358,21 +371,35 @@ public class DLXGenerator extends CodeGenerator {
                     // destroy stack frame
                     emit(DLX.assemble(DLX.ADD, sp, zero, fp));
                     pop(fp);
-                    if(!(s.getArg() instanceof NoValue)) {
-                        // need to move return address into retVal register
-                        int argLoc = location1(s.getArg());
-                        // if the return val was spilled, finding the
-                        // location might have put it where we need it
-                        if(argLoc != retVal) {
-                            emit(DLX.assemble(DLX.ADD, retVal, zero, argLoc));
-                        }
-                    }
+                    
                     emit(DLX.assemble(DLX.RET, retAddr));
                 }
                 break;
             case call:
                 {
                     Call s = (Call)i;
+                    
+                    // push args onto the stack
+                    ArrayList<Value> args = s.getArguments();
+                    // go backwards through args
+                    for(int i = args.size() -1; i >= 0; i--) {
+                        Value v = args.get(i);
+                        if(v instanceof Immediate) {
+                            emit(DLX.assemble(DLX.ADDI, t1, zero, ((Immediate)v).getValue()));
+                            push(t1);
+                        } else {
+                            push(location1(v));
+                        }
+                    }
+
+                    // branch to function call
+                    emit(DLX.assemble(DLX.BSR, getBranchOffset(s.getFunctionName())));
+
+                    // after return, pop all arguments off of the stack
+                    if(args.size() > 0) {
+                        emit(DLX.assemble(DLX.ADDI, sp, sp,
+                                          args.size() * Type.getWordSize()));
+                    }
                 }
                 break;
             case fetch:
