@@ -42,8 +42,6 @@ public class DLXGenerator extends CodeGenerator {
 
     @Override
     public int[] generate(ArrayList<Function> program) throws Exception {
-        int[] rval = new int[code.size()];
-
         // the last function should be main
         if(!program.get(program.size() - 1).name.getString().equals("__MAIN__")) {
             throw new Exception("Main not found");
@@ -77,6 +75,7 @@ public class DLXGenerator extends CodeGenerator {
         }
 
         // copy the code into an int array
+        int[] rval = new int[code.size()];
         for(int i = 0; i < code.size(); i++) {
             rval[i] = code.get(i);
         }
