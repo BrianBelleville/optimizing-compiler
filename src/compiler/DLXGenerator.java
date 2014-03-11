@@ -387,8 +387,8 @@ public class DLXGenerator extends CodeGenerator {
                     // push args onto the stack
                     ArrayList<Value> args = s.getArguments();
                     // go backwards through args
-                    for(int i = args.size() -1; i >= 0; i--) {
-                        Value v = args.get(i);
+                    for(int j = args.size() -1; j >= 0; j--) {
+                        Value v = args.get(j);
                         if(v instanceof Immediate) {
                             emit(DLX.assemble(DLX.ADDI, t1, zero, ((Immediate)v).getValue()));
                             push(t1);
