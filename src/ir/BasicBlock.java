@@ -33,6 +33,18 @@ public class BasicBlock {
     private BasicBlock incomingBranch1;
     private BasicBlock incomingBranch2;
 
+    public boolean isVisited() {
+        return localPass == currentPass;
+    }
+
+    public void visit() {
+        localPass = currentPass;
+    }
+
+    public void incrementGlobalPass() {
+        currentPass++;
+    }
+    
     private int getNextBlockNum() {
         blockNum += 1;
         return blockNum;
