@@ -14,6 +14,7 @@ public class AnalyzeRegistersUsed extends Pass {
     
     public AnalyzeRegistersUsed(int registersAvailable, int retReg) {
         this.registersAvailable = registersAvailable;
+        registersUsed = new HashSet<Integer>();
         retAddrReg = retReg;
         memNeeded = 0;
     }
