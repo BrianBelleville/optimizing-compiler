@@ -134,10 +134,6 @@ public class DLXGenerator extends CodeGenerator {
     }
 
     private void emitCode(BasicBlock bb) throws Exception {
-        if(bb.isVisited()) {
-            return;
-        }
-        bb.visit();
         for(Instruction i : bb.instructions) {
             switch(i.getOpcode()) {
             case add:
@@ -420,18 +416,11 @@ public class DLXGenerator extends CodeGenerator {
                 throw new Exception("Unrecognized ir opcode");
             }
         }
-        BasicBlock follow = bb.getFallThrough();
-        BasicBlock branch = bb.getBranchTarget();
-        
-        // do following block first
-        if(follow != null) {
-            emitCode(follow);
+        BasicBlock next = bb.getNext();
+        if(next != null) {
+            emitCode(next);
         }
 
-        // then do the branch target
-        if(branch != null) {
-            emitCode(branch);
-        }
     }
 
     private void makeLabel(Object bb) throws Exception {
