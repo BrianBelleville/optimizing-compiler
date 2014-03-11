@@ -41,7 +41,7 @@ public class BasicBlock {
         localPass = currentPass;
     }
 
-    public void incrementGlobalPass() {
+    public static void incrementGlobalPass() {
         currentPass++;
     }
     
