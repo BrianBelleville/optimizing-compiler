@@ -111,6 +111,9 @@ public class Main {
                 outputIG(igOut, program);
             }
 
+            CodeGenerator codeGen = new DLXGenerator();
+            int[] code = codeGen.generate(program);
+
             System.exit(0);
         } catch (Exception e) {
             System.out.println(e.getClass().getName() + ": " + e.getMessage());
