@@ -2,6 +2,7 @@ package compiler;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.io.FileOutputStream;
 import transform.*;
 import support.IdentifierTable;
 import java.util.ArrayList;
@@ -11,7 +12,7 @@ public class Main {
 
     public static void main(String[] args) {
         try {
-            String input = null, cfgOut = null, igOut = null;
+            String input = null, cfgOut = null, igOut = null, codeOut = "a.out";
             for(int i = 0; i < args.length; i++) {
                 switch(args[i]) {
                 case "-cfg":
@@ -24,6 +25,12 @@ public class Main {
                     // interference graph output
                     i++;
                     igOut = args[i];
+                    break;
+                case "-o":
+                    // next item will be the filename of the compiler
+                    // output
+                    i++;
+                    codeOut = args[i];
                     break;
                 case "-no-cse":
                     Globals.performCSE = false;
@@ -113,7 +120,18 @@ public class Main {
 
             CodeGenerator codeGen = new DLXGenerator();
             int[] code = codeGen.generate(program);
-
+            byte[] codeBytes = new byte[code.length * 4];
+            int i = 0;
+            for(int word : code) {
+                for(int byteNum = 0; byteNum < 4; byteNum++) {
+                    codeBytes[i] = (byte)((word >> (byteNum * 8)) & 0xFF);
+                    i++;
+                }
+            }
+            FileOutputStream codeOutStream = new FileOutputStream(codeOut);
+            codeOutStream.write(codeBytes);
+            codeOutStream.close();
+            
             System.exit(0);
         } catch (Exception e) {
             System.out.println(e.getClass().getName() + ": " + e.getMessage());
