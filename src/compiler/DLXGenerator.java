@@ -358,12 +358,17 @@ public class DLXGenerator extends CodeGenerator {
                     // restoring registers and deleting local
                     // variables
                     if(!(s.getArg() instanceof NoValue)) {
-                        // need to move return address into retVal register
-                        int argLoc = location1(s.getArg());
-                        // if the return val was spilled, finding the
-                        // location might have put it where we need it (into t1) 
-                        if(argLoc != retVal) {
-                            emit(DLX.assemble(DLX.ADD, retVal, zero, argLoc));
+                        if(s.getArg() instanceof Immediate) {
+                            emit(DLX.assemble(DLX.ADDI, retVal, zero,
+                                              ((Immediate)s.getArg()).getValue()));
+                        } else {
+                            // need to move return address into retVal register
+                            int argLoc = location1(s.getArg());
+                            // if the return val was spilled, finding the
+                            // location might have put it where we need it (into t1)
+                            if(argLoc != retVal) {
+                                emit(DLX.assemble(DLX.ADD, retVal, zero, argLoc));
+                            }
                         }
                     }
                     
