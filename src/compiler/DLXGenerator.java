@@ -452,7 +452,7 @@ public class DLXGenerator extends CodeGenerator {
     private int getBranchOffset(Object to) {
         Integer label = labels.get(to);
         if(label == null) {
-            label = -1; // should result in an infinite loop if it is not fixed up
+            label = 0; // should result in an infinite loop if it is not fixed up
             ArrayList<Integer> fix = fixup.get(to);
             if(fix == null) {
                 fix = new ArrayList<Integer>();
