@@ -1,3 +1,6 @@
+// This DLX simulator was provided by Professor Michael Franz. It was
+// not written by me.
+
 // The DLX Virtual Machine
 // chs / mf 2001-08-07
 
