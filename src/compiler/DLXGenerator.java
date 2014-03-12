@@ -58,7 +58,7 @@ public class DLXGenerator extends CodeGenerator {
 
             // clear the record of registers pushed onto stack from previous function
             regStack.clear();
-            
+
             // set up stack frame for local variables
             push(fp);
             emit(DLX.assemble(DLX.ADDI, sp, sp, f.locals.getSize()));
@@ -68,7 +68,7 @@ public class DLXGenerator extends CodeGenerator {
                 regStack.push(reg); // keep track of order registers are pushed
                 push(reg);
             }
-            
+
             // emit code for the function body
             emitCode(f.entryPoint);
             BasicBlock.incrementGlobalPass();
@@ -242,7 +242,7 @@ public class DLXGenerator extends CodeGenerator {
                 break;
             case adda:
                 {
-                    // no op, this will be incorperated into load/store 
+                    // no op, this will be incorperated into load/store
                 }
                 break;
             case load:
@@ -350,7 +350,7 @@ public class DLXGenerator extends CodeGenerator {
             case ret:
                 {
                     Ret s = (Ret)i;
-                    
+
                     // put return value in register, do this before
                     // restoring registers and deleting local
                     // variables
@@ -368,23 +368,23 @@ public class DLXGenerator extends CodeGenerator {
                             }
                         }
                     }
-                    
+
                     // restore registers
                     for(Integer reg : regStack) {
                         pop(reg);
                     }
-                    
+
                     // destroy stack frame
                     emit(DLX.assemble(DLX.ADD, sp, zero, fp));
                     pop(fp);
-                    
+
                     emit(DLX.assemble(DLX.RET, retAddr));
                 }
                 break;
             case call:
                 {
                     Call s = (Call)i;
-                    
+
                     // push args onto the stack
                     ArrayList<Value> args = s.getArguments();
                     // go backwards through args
