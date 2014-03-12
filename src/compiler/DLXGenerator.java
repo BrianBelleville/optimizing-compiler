@@ -65,8 +65,9 @@ public class DLXGenerator extends CodeGenerator {
 
             // save registers onto stack
             for(Integer reg : analysis.registersUsed) {
-                regStack.push(reg); // keep track of order registers are pushed
-                push(reg);
+                int realReg = reg + minAvail;
+                regStack.push(realReg); // keep track of order registers are pushed
+                push(realReg);
             }
 
             // emit code for the function body
