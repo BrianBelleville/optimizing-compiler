@@ -70,6 +70,8 @@ public class DLXGenerator extends CodeGenerator {
             // set up stack frame for local variables
             if(!main) {
                 push(fp);
+                // fp <- sp
+                emit(DLX.assemble(DLX.ADD, fp, zero, sp));
             }
             if(f.locals.getSize() > 0) {
                 emit(DLX.assemble(DLX.ADDI, sp, sp, f.locals.getSize()));
