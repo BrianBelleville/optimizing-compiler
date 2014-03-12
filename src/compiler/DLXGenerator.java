@@ -492,6 +492,6 @@ public class DLXGenerator extends CodeGenerator {
             // which should be our branch
             fix.add(code.size());
         }
-        return label;
+        return label - code.size();
     }
 }
