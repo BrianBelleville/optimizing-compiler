@@ -437,6 +437,14 @@ public class DLXGenerator extends CodeGenerator {
             case fetch:
                 {
                     Fetch s = (Fetch)i;
+                    int position = s.getPosition();
+                    int address = (position + 1) * -4;
+                    emit(DLX.assemble(DLX.LDW, target(s), fp, address));
+                    // todo: need to ensure that if a fetch is
+                    // spilled, we just only access it from its
+                    // orriginal position on the stack
+                    home(s);
+
                 }
                 break;
             default:
