@@ -47,6 +47,14 @@ public class DLXGenerator extends CodeGenerator {
             throw new Exception("Main not found");
         }
 
+        // first instructions will be setting the stack pointer and
+        // frame pointer to point past the program code
+        // will need to be fixed up once the code size is known
+        emit(DLX.assemble(DLX.ADDI, sp, zero, 0));
+        // fp <- sp
+        emit(DLX.assemble(DLX.ADD, fp, zero, sp));
+
+        boolean main = true;    // first function will be main
         for(int i = program.size() - 1; i >= 0; i--) {
             Function f = program.get(i);
             makeLabel(f.name);
@@ -60,26 +68,40 @@ public class DLXGenerator extends CodeGenerator {
             regStack.clear();
 
             // set up stack frame for local variables
-            push(fp);
-            emit(DLX.assemble(DLX.ADDI, sp, sp, f.locals.getSize()));
+            if(!main) {
+                push(fp);
+            }
+            if(f.locals.getSize() > 0) {
+                emit(DLX.assemble(DLX.ADDI, sp, sp, f.locals.getSize()));
+            }
 
-            // save registers onto stack
-            for(Integer reg : analysis.registersUsed) {
-                int realReg = reg + minAvail;
-                regStack.push(realReg); // keep track of order registers are pushed
-                push(realReg);
+            if(!main) {
+                // save registers onto stack
+                for(Integer reg : analysis.registersUsed) {
+                    int realReg = reg + minAvail;
+                    regStack.push(realReg); // keep track of order registers are pushed
+                    push(realReg);
+                }
             }
 
             // emit code for the function body
             emitCode(f.entryPoint);
-            BasicBlock.incrementGlobalPass();
+            main = false;       // after the first function, it's not main
         }
 
+        // fix the first instruction now that the size of the text is
+        // known.
+        int spSet = code.get(0);
+        spSet = setC(spSet, 4 * code.size());
+        code.set(0, spSet);
         // copy the code into an int array
         int[] rval = new int[code.size()];
         for(int i = 0; i < code.size(); i++) {
             rval[i] = code.get(i);
         }
+        // clear code in case we use this object to generate code for
+        // multiple programs
+        code.clear();
         return rval;
     }
 
