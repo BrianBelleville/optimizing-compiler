@@ -439,14 +439,20 @@ public class DLXGenerator extends CodeGenerator {
             int instruction = code.get(i);
             // determine relative branch address
             int c = address - i;
-            if(c < 0) c ^= 0xffff0000; // c will be sign extended from 16 bit value
-            if((c & ~0xffff) != 0) {
-                throw new Exception("Illegal operand for branch instruction");
-            }
-            instruction = (instruction & ~0xffff) | c;
+            instruction = setC(instruction, c);
             code.set(i, instruction); // replace instruction with the fixed up version
         }
         fixupLocations.remove(bb);       // remove bb from the fixup locations
+    }
+
+    // this will set the 'c' value for any instruction with the F1 format
+    private int setC(int instruction, int c) throws Exception {
+        if(c < 0) c ^= 0xffff0000; // c will be sign extended from 16 bit value
+        if((c & ~0xffff) != 0) {
+            throw new Exception("Illegal operand for instruction");
+        }
+        instruction = (instruction & ~0xffff) | c;
+        return instruction;
     }
 
     // either returns the offset or adds the current location to the fixup list
