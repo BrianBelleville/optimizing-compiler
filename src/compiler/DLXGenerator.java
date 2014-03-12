@@ -290,7 +290,10 @@ public class DLXGenerator extends CodeGenerator {
                         emit(DLX.assemble(DLX.ADDI, target(s),
                                           zero, ((Immediate)s.getArg()).getValue()));
                     } else {
-                        emit(DLX.assemble(DLX.ADD, target(s), zero, location2(s.getArg())));
+                        // move is only needed if the value isn't already in the correct register
+                        if(s.getColor() != s.getArg().getColor()) {
+                            emit(DLX.assemble(DLX.ADD, target(s), zero, location2(s.getArg())));
+                        }
                     }
                     home(s);
                 }
