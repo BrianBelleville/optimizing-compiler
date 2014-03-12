@@ -134,6 +134,7 @@ public class DLXGenerator extends CodeGenerator {
     }
 
     private void emitCode(BasicBlock bb) throws Exception {
+        makeLabel(bb);
         for(Instruction i : bb.instructions) {
             switch(i.getOpcode()) {
             case add:
