@@ -274,45 +274,10 @@ public class DLXGenerator extends CodeGenerator {
                 {
                     Load s = (Load)i;
                     Adda address = (Adda)s.getArg(); // will always be Adda
-                    int a, b, c;
-                    int opcode = DLX.LDX;
-                    a = target(s);
-                    Value v = address.getArg1();
-                    if(v instanceof Immediate) {
-                        c = ((Immediate)v).getValue();
-                        opcode = DLX.LDW;
-                        v = address.getArg2();
-                        if(v.equals(Type.getGBP())) {
-                            b = gbp;
-                        } else if(v.equals(Type.getFP())) {
-                            b = fp;
-                        } else {
-                            b = location1(v);
-                        }
-                    } else {
-                        if(v.equals(Type.getGBP())) {
-                            b = gbp;
-                        } else if(v.equals(Type.getFP())) {
-                            b = fp;
-                        } else {
-                            b = location1(v);
-                        }
-                        v = address.getArg2();
-                        if(v instanceof Immediate) {
-                            c = ((Immediate)v).getValue();
-                            opcode = DLX.LDW;
-                        } else if(v.equals(Type.getGBP())) {
-                            c = gbp;
-                        } else if(v.equals(Type.getFP())) {
-                            c = fp;
-                        } else {
-                            c = location2(v);
-                        }
-                    }
-                    emit(DLX.assemble(opcode, a, b, c));
+                    emitLoadOrStore(DLX.LDX, target(s), address);
                     // todo: if loads are spilled, just access it from
                     // its location in memory when it is used
-                    home(s);    
+                    home(s);
                 }
                 break;
             case store:
@@ -498,6 +463,56 @@ public class DLXGenerator extends CodeGenerator {
             emitCode(next);
         }
 
+    }
+
+    // opcode is the opcode of the indexed addressing instruction, ie LDX/SDX,
+    // and if both of the parameters are registers, the opcode will be
+    // decremented to get to the offset addressing LDW/SDW.
+    //
+    // a is the parameter to use as a, so for loads it is the target,
+    // for stores it is the register containing the value to be stored
+    //
+    // There is the implicit assumption that all loads or stores will
+    // be offset from either the GBP or the FP, so one of the
+    // arguments will already be in a register. Because of this, if
+    // the other argument is spilled, it will always end up in t2 (I
+    // am only using location2()). This way, you can put the value to
+    // be stored into location1 (if it has been spilled).
+    private void emitLoadOrStore(int opcode, int a, Adda address) {
+        Value v = address.getArg1();
+        int b, c;
+        if(v instanceof Immediate) {
+            c = ((Immediate)v).getValue();
+            opcode = opcode - 1;
+            v = address.getArg2();
+            if(v.equals(Type.getGBP())) {
+                b = gbp;
+            } else if(v.equals(Type.getFP())) {
+                b = fp;
+            } else {
+                b = location2(v);
+            }
+        } else {
+            if(v.equals(Type.getGBP())) {
+                b = gbp;
+            } else if(v.equals(Type.getFP())) {
+                b = fp;
+            } else {
+                b = location2(v);
+            }
+            v = address.getArg2();
+            if(v instanceof Immediate) {
+                c = ((Immediate)v).getValue();
+                opcode = opcode - 1;
+            } else if(v.equals(Type.getGBP())) {
+                c = gbp;
+            } else if(v.equals(Type.getFP())) {
+                c = fp;
+            } else {
+                c = location2(v);
+            }
+        }
+        emit(DLX.assemble(opcode, a, b, c));
     }
 
     private void makeLabel(Object bb) throws Exception {
