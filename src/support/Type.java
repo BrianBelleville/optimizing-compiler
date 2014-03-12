@@ -20,10 +20,10 @@ public abstract class Type {
     public void freeze() {
         // default is nop
     }
-    protected Value getFP() {
+    public static Value getFP() {
         return new NamedValue("FP");
     }
-    protected Value getGBP() {
+    public static Value getGBP() {
         return new NamedValue("GBP");
     }
 }
