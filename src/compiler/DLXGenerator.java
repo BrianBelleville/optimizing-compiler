@@ -273,6 +273,46 @@ public class DLXGenerator extends CodeGenerator {
             case load:
                 {
                     Load s = (Load)i;
+                    Adda address = (Adda)s.getArg(); // will always be Adda
+                    int a, b, c;
+                    int opcode = DLX.LDX;
+                    a = target(s);
+                    Value v = address.getArg1();
+                    if(v instanceof Immediate) {
+                        c = ((Immediate)v).getValue();
+                        opcode = DLX.LDW;
+                        v = address.getArg2();
+                        if(v.equals(Type.getGBP())) {
+                            b = gbp;
+                        } else if(v.equals(Type.getFP())) {
+                            b = fp;
+                        } else {
+                            b = location1(v);
+                        }
+                    } else {
+                        if(v.equals(Type.getGBP())) {
+                            b = gbp;
+                        } else if(v.equals(Type.getFP())) {
+                            b = fp;
+                        } else {
+                            b = location1(v);
+                        }
+                        v = address.getArg2();
+                        if(v instanceof Immediate) {
+                            c = ((Immediate)v).getValue();
+                            opcode = DLX.LDW;
+                        } else if(v.equals(Type.getGBP())) {
+                            c = gbp;
+                        } else if(v.equals(Type.getFP())) {
+                            c = fp;
+                        } else {
+                            c = location2(v);
+                        }
+                    }
+                    emit(DLX.assemble(opcode, a, b, c));
+                    // todo: if loads are spilled, just access it from
+                    // its location in memory when it is used
+                    home(s);    
                 }
                 break;
             case store:
