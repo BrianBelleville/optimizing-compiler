@@ -283,6 +283,8 @@ public class DLXGenerator extends CodeGenerator {
             case store:
                 {
                     Store s = (Store)i;
+                    Adda address = (Adda)s.getArg1(); // will always be Adda
+                    emitLoadOrStore(DLX.STX, location1(s.getArg2()), address);
                 }
                 break;
             case move:
