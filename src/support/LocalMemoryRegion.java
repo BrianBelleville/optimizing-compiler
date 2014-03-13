@@ -11,7 +11,7 @@ public class LocalMemoryRegion extends MemoryRegion {
         // old FP is stored at FP[0], locals start at FP[1]
         freeAddress = Type.getWordSize();
         usedMem = new HashMap<Identifier, addressRecord>();
-        numMemCells = 0;
+        numSpillCells = 0;
     }
 
 
@@ -47,6 +47,6 @@ public class LocalMemoryRegion extends MemoryRegion {
 
     // allocate memory for the spilled local variables
     public void allocateMemoryCells(int cellCount) {
-        numSpillCells += cellCount * Type.getWordSize();
+        numSpillCells += cellCount;
     }
 }

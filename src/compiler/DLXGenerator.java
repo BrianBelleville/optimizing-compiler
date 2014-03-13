@@ -109,13 +109,13 @@ public class DLXGenerator extends CodeGenerator {
     }
 
     // position will determine if the value is put into t1 or t2
-    private int location(Value v, int position) {
+    private int location(Value v, int position) throws Exception {
         int reg = minAvail + v.getColor();
         
         if(reg > maxAvail) {
             // then this value has been spilled
             int spillCell = reg - maxAvail - minAvail;
-            int address = function.locals.getCellAddress(spillCell);
+            int address = currentFunction.locals.getCellAddress(spillCell);
             int target = position == 1 ? t1 : t2;
             emit(DLX.assemble(DLX.LDW, target, fp, address));
             return target;
@@ -123,11 +123,11 @@ public class DLXGenerator extends CodeGenerator {
         return reg;
     }
 
-    private int location1(Value v) {
+    private int location1(Value v) throws Exception {
         return location(v, 1);
     }
 
-    private int location2(Value v) {
+    private int location2(Value v) throws Exception {
         return location(v, 2);
     }
 
@@ -140,13 +140,13 @@ public class DLXGenerator extends CodeGenerator {
         return reg;
     }
 
-    private void home(Value v) {
+    private void home(Value v) throws Exception {
         int reg = minAvail + v.getColor();
         if(reg > maxAvail) {
             // then this value has been spilled, the value is
             // currently in t1, insert the spill code now
             int spillCell = reg - maxAvail - minAvail;
-            int address = function.locals.getCellAddress(spillCell);
+            int address = currentFunction.locals.getCellAddress(spillCell);
             emit(DLX.assemble(DLX.STW, t1, fp, address));
         }
         // otherwise, do nothing, the value is home
@@ -492,7 +492,7 @@ public class DLXGenerator extends CodeGenerator {
     // the other argument is spilled, it will always end up in t2 (I
     // am only using location2()). This way, you can put the value to
     // be stored into location1 (if it has been spilled).
-    private void emitLoadOrStore(int opcode, int a, Adda address) {
+    private void emitLoadOrStore(int opcode, int a, Adda address) throws Exception {
         Value v = address.getArg1();
         int b, c;
         if(v instanceof Immediate) {
