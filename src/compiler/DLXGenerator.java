@@ -453,6 +453,19 @@ public class DLXGenerator extends CodeGenerator {
                         emit(DLX.assemble(DLX.SUBI, sp, sp,
                                           args.size() * Type.getWordSize()));
                     }
+                    Integer color = s.getColor();
+                    // if the return value is used
+                    if(color != null) {
+                        // if the value isn't in the correct register,
+                        // need to move it. What this really does is
+                        // avoid emiting an uneccessary move if the
+                        // value has been spilled, since for moving
+                        // the value 'home' we need it to be in t1.
+                        if(target(s) != retVal) {
+                            emit(DLX.assemble(DLX.ADD, target(s), zero, retVal));
+                        }
+                        home(s);
+                    }
                 }
                 break;
             case fetch:
