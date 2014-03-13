@@ -11,11 +11,12 @@ public class AnalyzeRegistersUsed extends Pass {
     public int memNeeded;
 
     private int retAddrReg;
-    
-    public AnalyzeRegistersUsed(int registersAvailable, int retReg) {
+
+    // caller must normalize the return address register to be 0 based
+    public AnalyzeRegistersUsed(int registersAvailable, int retColor) {
         this.registersAvailable = registersAvailable;
         registersUsed = new HashSet<Integer>();
-        retAddrReg = retReg;
+        retAddrReg = retColor;
         memNeeded = 0;
     }
     

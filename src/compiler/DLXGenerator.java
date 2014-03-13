@@ -61,7 +61,7 @@ public class DLXGenerator extends CodeGenerator {
             makeLabel(f.name);
 
             // see what registers will be saved and how many memory cells will be needed
-            AnalyzeRegistersUsed analysis = new AnalyzeRegistersUsed(registersAvailable, retAddr);
+            AnalyzeRegistersUsed analysis = new AnalyzeRegistersUsed(registersAvailable, retAddr - minAvail);
             f.entryPoint.runPass(analysis);
             f.locals.allocateMemoryCells(analysis.memNeeded);
 
