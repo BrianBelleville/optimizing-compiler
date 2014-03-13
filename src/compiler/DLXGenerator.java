@@ -34,7 +34,7 @@ public class DLXGenerator extends CodeGenerator {
     private static int registersAvailable = 8;
 
     private static int minAvail = zero + 1;
-    private static int maxAvail = Math.max(t2 - 1, registersAvailable + minAvail - 1);
+    private static int maxAvail = Math.min(t2 - 1, registersAvailable + minAvail - 1);
 
     // stack to be used to keep track of the order that registers need
     // to be restored.
