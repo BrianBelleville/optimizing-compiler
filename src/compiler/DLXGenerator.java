@@ -39,7 +39,7 @@ public class DLXGenerator extends CodeGenerator {
     // stack to be used to keep track of the order that registers need
     // to be restored.
     private LinkedList<Integer> regStack = new LinkedList<Integer>();
-
+    private Function currentFunction;
     @Override
     public int[] generate(ArrayList<Function> program) throws Exception {
         // the last function should be main
@@ -57,6 +57,7 @@ public class DLXGenerator extends CodeGenerator {
         boolean main = true;    // first function will be main
         for(int i = program.size() - 1; i >= 0; i--) {
             Function f = program.get(i);
+            currentFunction = f;
             makeLabel(f.name);
 
             // see what registers will be saved and how many memory cells will be needed
@@ -110,11 +111,14 @@ public class DLXGenerator extends CodeGenerator {
     // position will determine if the value is put into t1 or t2
     private int location(Value v, int position) {
         int reg = minAvail + v.getColor();
-
+        
         if(reg > maxAvail) {
             // then this value has been spilled
-            // todo: insert the code to fetch the spilled value
-            return position == 1 ? t1 : t2;
+            int spillCell = reg - maxAvail - minAvail;
+            int address = function.locals.getCellAddress(spillCell);
+            int target = position == 1 ? t1 : t2;
+            emit(DLX.assemble(DLX.LDW, target, fp, address));
+            return target;
         }
         return reg;
     }
@@ -141,7 +145,9 @@ public class DLXGenerator extends CodeGenerator {
         if(reg > maxAvail) {
             // then this value has been spilled, the value is
             // currently in t1, insert the spill code now
-            // todo: insert spill code
+            int spillCell = reg - maxAvail - minAvail;
+            int address = function.locals.getCellAddress(spillCell);
+            emit(DLX.assemble(DLX.STW, t1, fp, address));
         }
         // otherwise, do nothing, the value is home
     }
