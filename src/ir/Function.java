@@ -19,6 +19,12 @@ public class Function {
 	w.write(name.getString() + " -> " + entryPoint.getNodeName() + ";\n");
 	entryPoint.printBlock(w);
     }
+
+    public void printLayoutOrder(Writer w) throws Exception {
+        w.write(name.getString() + " -> " + entryPoint.getNodeName() + ";\n");
+	entryPoint.printBlockLayoutOrder(w);
+    }
+    
     public Function() {
         locals = new LocalMemoryRegion();
     }

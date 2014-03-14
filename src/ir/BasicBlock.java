@@ -118,7 +118,7 @@ public class BasicBlock {
         w.write("\"]\n");
         if(next != null) {
             w.write(getNodeName() + " -> " + next.getNodeName() + ";\n");
-            next.printBlock(w);
+            next.printBlockLayoutOrder(w);
         }
     }
 

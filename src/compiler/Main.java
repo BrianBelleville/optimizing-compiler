@@ -12,7 +12,7 @@ public class Main {
 
     public static void main(String[] args) {
         try {
-            String input = null, cfgOut = null, igOut = null, codeOut = "a.out";
+            String input = null, cfgOut = null, igOut = null, layOut = null, codeOut = "a.out";
             for(int i = 0; i < args.length; i++) {
                 switch(args[i]) {
                 case "-cfg":
@@ -31,6 +31,12 @@ public class Main {
                     // output
                     i++;
                     codeOut = args[i];
+                    break;
+                case "-layout":
+                    // next item will be the filename of the layout
+                    // output
+                    i++;
+                    layOut = args[i];
                     break;
                 case "-no-cse":
                     Globals.performCSE = false;
@@ -119,6 +125,10 @@ public class Main {
                 outputIG(igOut, program);
             }
 
+            if(layOut != null) {
+                outputLayout(layOut, program);
+            }
+
             CodeGenerator codeGen = new DLXGenerator();
             int[] code = codeGen.generate(program);
             byte[] codeBytes = new byte[code.length * 4];
@@ -132,7 +142,7 @@ public class Main {
             FileOutputStream codeOutStream = new FileOutputStream(codeOut);
             codeOutStream.write(codeBytes);
             codeOutStream.close();
-            
+
             System.exit(0);
         } catch (Exception e) {
             System.out.println(e.getClass().getName() + ": " + e.getMessage());
@@ -150,6 +160,18 @@ public class Main {
         out.write("}");
         out.close();
     }
+
+    public static void outputLayout(String filename,  ArrayList<Function> program)
+        throws Exception {
+        FileWriter out = new FileWriter(filename);
+        out.write("digraph Computation {\nnode [shape=box];\n");
+        for(Function func : program) {
+            func.printLayoutOrder(out);
+        }
+        out.write("}");
+        out.close();
+    }
+    
     public static void outputCFG(String filename, ArrayList<Function> program)
         throws Exception {
         FileWriter out = new FileWriter(filename);
