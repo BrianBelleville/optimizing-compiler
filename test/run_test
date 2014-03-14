@@ -12,6 +12,7 @@ test_dir = "/home/brian/Code/cs241/test/"
 input_dir = test_dir + "cases/"
 output_dir = test_dir + "cfg/reference/"
 result_dir = test_dir + "cfg/results/"
+bin_dir = test_dir + "bin/"
 
 # run the arguments as a subprocess, with output redirected to
 # /dev/null, return true if the subprocess returns 0, otherwise return
@@ -38,7 +39,7 @@ def run_dot(in_file):
 # you can specify extra compilation options if the first line of the
 # file starts with '#%'. After that marker, the remaining contents of
 # the first line will be sent to the compiler as extra options
-def compile_pl241(in_file, out_file, no_output = True):
+def compile_pl241(in_file, code_out, cfg_out_file, no_output = True):
     extra_args = []
     if(not os.path.exists(in_file)):
         print("File", in_file, "not found, aborting test case ", end="")
@@ -48,7 +49,7 @@ def compile_pl241(in_file, out_file, no_output = True):
     fin.close()
     if(first[:2] == '#%'):
         extra_args = first[2:].split(sep=" ")
-    args = [pl241c, in_file, "-cfg", out_file] + extra_args
+    args = [pl241c, in_file, "-cfg", cfg_out_file, "-o", code_out] + extra_args
     if(no_output):
         return run_no_output(args)
     else:
@@ -70,8 +71,9 @@ def run_test(name):
     infile = input_dir + name + ".txt"
     out_ref = output_dir + name + ".gv"
     result_file = result_dir + name + ".gv"
+    code_out = bin_dir + name
     print("Running test ", name, ".. ", sep="", end="")
-    if(not compile_pl241(infile, result_file)):
+    if(not compile_pl241(infile, code_out, result_file)):
         outmsg = "Compilation error"
         print("FAIL", outmsg)
         return outmsg
@@ -116,8 +118,9 @@ if __name__ == "__main__":
                 name = argv[i]
                 infile = input_dir + name + ".txt"
                 result_file = result_dir + name + ".gv"
+                code_out = bin_dir + name                
                 print("Compiling", name)
-                compile_pl241(infile, result_file, False)
+                compile_pl241(infile, code_out, result_file, False)
             elif a == "-all":
                 tests = sorted(map(strip_file_extension,
                                    filter(is_test, os.listdir(input_dir))))
@@ -128,6 +131,8 @@ if __name__ == "__main__":
     if(tests):
         if(not os.path.isdir(result_dir)):
             os.mkdir(result_dir)
+        if(not os.path.isdir(bin_dir)):
+            os.mkdir(bin_dir)
         failures = []
         print("Starting tests\n")
         for t in tests:
