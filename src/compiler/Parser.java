@@ -34,7 +34,7 @@ public class Parser {
         }
         if(outputNewLine == null) {
             outputNewLine = idTable.addToTable("OutputNewLine");
-        }            
+        }
     }
 
     // parse should return a cfg, should basically be a list of functions
@@ -250,13 +250,13 @@ public class Parser {
                 throw new Exception("funcCall: no closing ')'");
             }
         } while (false);
-        
+
         Instruction rval = makeCall(funcName, args);
         currentBB.addInstruction(rval);
         return rval;
     }
 
-    
+
     private Instruction makeCall(Identifier name, ArrayList<Value> args)
         throws Exception {
         if(name.equals(inputNum)) {
@@ -397,20 +397,22 @@ public class Parser {
         BasicBlock oldCurrent = currentBB;
         BasicBlock oldJoin = currentJoinBlock;
         BasicBlock loopHeader = new LoopHeader(oldCurrent);
-        BasicBlock loopBodyStart = new BasicBlock(loopHeader);
-        BasicBlock nextBB = new BasicBlock(loopHeader);
         // the previous basic block will fall through to the header
         oldCurrent.setFallThrough(loopHeader);
-        // and the header will fall through to the loop body
-        loopHeader.setFallThrough(loopBodyStart);
 
         // set up the incomming basic block for the loop header
         loopHeader.setCurrentBranch(1);
         loopHeader.setIncomingBranch(oldCurrent);
-        
         currentBB = loopHeader;
-        currentJoinBlock = loopHeader; // relations can't perform assignment, so it's all good
         Cmp comp = relation();
+
+        BasicBlock loopBodyStart = new BasicBlock(loopHeader);
+        BasicBlock nextBB = new BasicBlock(loopHeader);
+        // the header will fall through to the loop body
+        loopHeader.setFallThrough(loopBodyStart);
+
+        currentJoinBlock = loopHeader;
+
         // add the branch instruction
         loopHeader.addInstruction(makeProperBranch(comp, nextBB));
         loopHeader.setCurrentBranch(2);
@@ -444,7 +446,7 @@ public class Parser {
 
     private void returnStatement_rest() throws Exception
     {
-        Instruction r = null;        
+        Instruction r = null;
         if(scan.sym == Token.closecurly || scan.sym == Token.semicolon) {
             // if there is no expression to be returned
             r = inMain ? new End() : new Ret();
@@ -630,7 +632,7 @@ public class Parser {
                 scan.next();
                 if(!currentBB.hasFinalReturn()) {
                     // make sure all functions end in a return
-                    currentBB.addInstruction(new Ret()); 
+                    currentBB.addInstruction(new Ret());
                 }
             } else {
                 throw new Exception("Function body: no closing '}'");
@@ -652,7 +654,7 @@ public class Parser {
             // to be emited, but will be stored in env
             while(scan.sym == Token.var || scan.sym == Token.array) {
                 // these are global variables, but could be optimized to become main local variables.
-                currentFunction = main; 
+                currentFunction = main;
                 varDecl(true);
             }
             while(scan.sym == Token.function || scan.sym == Token.procedure) {
