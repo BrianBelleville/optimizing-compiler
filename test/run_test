@@ -10,8 +10,8 @@ dot = "dot"
 pl241c = "/home/brian/Code/cs241/pl241c"
 test_dir = "/home/brian/Code/cs241/test/"
 input_dir = test_dir + "cases/"
-output_dir = test_dir + "cfg/reference/"
-result_dir = test_dir + "cfg/results/"
+cft_output_dir = test_dir + "cfg/reference/"
+cfg_result_dir = test_dir + "cfg/results/"
 bin_dir = test_dir + "bin/"
 
 # run the arguments as a subprocess, with output redirected to
@@ -69,23 +69,23 @@ def is_test(name):
 # for all of my other command running functions, but it makes things easy.
 def run_test(name):
     infile = input_dir + name + ".txt"
-    out_ref = output_dir + name + ".gv"
-    result_file = result_dir + name + ".gv"
+    cfg_out_ref = cft_output_dir + name + ".gv"
+    cfg_result_file = cfg_result_dir + name + ".gv"
     code_out = bin_dir + name
     tested_anything = False
     print("Running test ", name, ".. ", sep="", end="")
-    if(not compile_pl241(infile, code_out, result_file)):
+    if(not compile_pl241(infile, code_out, cfg_result_file)):
         outmsg = "Compilation error"
         print("FAIL", outmsg)
         return outmsg
     # if the cfg is testable
-    if(os.path.exists(out_ref)):
+    if(os.path.exists(cfg_out_ref)):
         tested_anything = True
-        if(not run_dot(result_file)):
+        if(not run_dot(cfg_result_file)):
             outmsg = ".gv -> .png layout failed"
             print("FAIL", outmsg)
             return outmsg
-        if(not run_diff(out_ref, result_file)):
+        if(not run_diff(cfg_out_ref, cfg_result_file)):
             outmsg = "Output incorrect"
             print("FAIL", outmsg)
             return outmsg
@@ -100,7 +100,7 @@ def run_test(name):
 # your compiler
 def generate_ref_out(name):
     infile = input_dir + name + ".txt"
-    out_file = output_dir + name + ".gv"
+    out_file = cft_output_dir + name + ".gv"
     print("Generating reference output for ", name, ".. ", sep="", end="")
     if(not compile_pl241(infile, out_file)):
        print("ERROR Compilation error")
@@ -112,7 +112,7 @@ if __name__ == "__main__":
     if(len(argv) == 1):
         tests = sorted(map(strip_file_extension,
                            filter(lambda name: file_extension(name) == '.gv'
-                                  , os.listdir(output_dir))))
+                                  , os.listdir(cft_output_dir))))
     else:
         tests = []
         i = 1
@@ -125,7 +125,7 @@ if __name__ == "__main__":
                 i += 1
                 name = argv[i]
                 infile = input_dir + name + ".txt"
-                result_file = result_dir + name + ".gv"
+                result_file = cfg_result_dir + name + ".gv"
                 code_out = bin_dir + name                
                 print("Compiling", name)
                 compile_pl241(infile, code_out, result_file, False)
@@ -137,8 +137,8 @@ if __name__ == "__main__":
             i += 1
 
     if(tests):
-        if(not os.path.isdir(result_dir)):
-            os.mkdir(result_dir)
+        if(not os.path.isdir(cfg_result_dir)):
+            os.mkdir(cfg_result_dir)
         if(not os.path.isdir(bin_dir)):
             os.mkdir(bin_dir)
         failures = []
