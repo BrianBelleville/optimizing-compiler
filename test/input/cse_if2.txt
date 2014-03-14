@@ -1,0 +1,19 @@
+#% -cse
+# Brian Belleville 2014
+
+main
+var j, temp;
+array[30] a;
+{
+  let j <- call InputNum();
+  let temp <- j + 2;
+  let temp <- j + 3;
+  if a[j] > a[j+1]
+  then
+   let temp <- a[j+1];
+   let a[j+1] <- a[j];
+   let a[j] <- temp;
+   call OutputNum(j + 2)
+  fi;
+  call OutputNum(j + 3)
+}.
