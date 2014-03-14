@@ -1,4 +1,4 @@
 bin/*
 *.png
 *.svg
-test/results/*
+test/cfg/results/*

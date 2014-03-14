@@ -9,9 +9,9 @@ diff = "diff"
 dot = "dot"
 pl241c = "/home/brian/Code/cs241/pl241c"
 test_dir = "/home/brian/Code/cs241/test/"
-input_dir = test_dir + "input/"
-output_dir = test_dir + "output/"
-result_dir = test_dir + "results/"
+input_dir = test_dir + "cases/"
+output_dir = test_dir + "cfg/reference/"
+result_dir = test_dir + "cfg/results/"
 
 # run the arguments as a subprocess, with output redirected to
 # /dev/null, return true if the subprocess returns 0, otherwise return
