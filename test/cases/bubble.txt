@@ -1,3 +1,8 @@
+# this is the correct bubble sort algorithm, it will scan the array
+# until it makes no substitutions
+
+# this was derived from the bubble2.txt from Mohaned.
+
 main
 var j, temp, i;
 array[30] a;
