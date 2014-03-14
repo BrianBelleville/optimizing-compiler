@@ -288,6 +288,14 @@ public class Parser {
     // node/ next basic block following the if statement.
     private void ifStatement_rest() throws Exception
     {
+        // parse relation before anything else since it is part of the current block
+        Cmp comp = relation();
+        if(scan.sym != Token.then) {
+            throw new Exception("Misformed if statement, no 'then' keyword");
+        }
+        // sym == "then"
+        scan.next();
+
         // make basic blocks preemptivly
         BasicBlock oldCurrent = currentBB;
         BasicBlock oldJoin = currentJoinBlock;
@@ -297,13 +305,6 @@ public class Parser {
 
         // if branch must exist
         oldCurrent.setFallThrough(ifStartBB);
-
-        Cmp comp = relation();
-        if(scan.sym != Token.then) {
-            throw new Exception("Misformed if statement, no 'then' keyword");
-        }
-        // sym == "then"
-        scan.next();
 
 	// set currentBB to be the start of the 'if' body
         currentBB = ifStartBB;
