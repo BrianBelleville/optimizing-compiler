@@ -1,24 +1,27 @@
 digraph Computation {
 node [shape=box];
 max -> b_1;
-b_1 [label="b_1\l1: fetch a1\l2: fetch a2\l3: fetch a3\l4: fetch a4\l5: fetch a5\l58: adda FP #8\l7: store (58) (1)\l59: adda FP #12\l9: store (59) (2)\l60: adda FP #16\l11: store (60) (3)\l61: adda FP #20\l13: store (61) (4)\l62: adda FP #24\l15: store (62) (5)\l19: load (58)\l"]
+b_1 [label="b_1\l1: fetch a1\l2: fetch a2\l3: fetch a3\l4: fetch a4\l5: fetch a5\l59: adda FP #8\l7: store (59) (1)\l60: adda FP #12\l9: store (60) (2)\l61: adda FP #16\l11: store (61) (3)\l62: adda FP #20\l13: store (62) (4)\l63: adda FP #24\l15: store (63) (5)\l19: load (59)\l"]
 b_1 -> b_2;
-b_2 [label="b_2\l34: phi #2 (32) \"i\"\l31: phi (19) (29) \"temp\"\l21: cmp (34) #5\l22: bgt b_4\l"]
+b_2 [label="b_2\l35: phi #2 (33) \"i\"\l32: phi (19) (29) \"temp\"\l21: cmp (35) #5\l22: bgt b_4\l"]
 b_2 -> b_3;
-b_3 [label="b_3\l64: mul (34) #4\l65: add #4 (64)\l66: adda FP (65)\l24: load (66)\l25: cmp (24) (31)\l30: ble b_7\l"]
+b_3 [label="b_3\l65: mul (35) #4\l66: add #4 (65)\l67: adda FP (66)\l24: load (67)\l25: cmp (24) (32)\l30: ble b_6\l"]
 b_3 -> b_5;
-b_5 [label="b_5\l27: load (66)\l"]
+b_5 [label="b_5\l27: load (67)\l31: bra b_7\l"]
 b_5 -> b_7;
-b_7 [label="b_7\l29: phi (27) (31) \"temp\"\l32: add (34) #1\l35: bra b_2\l"]
+b_7 [label="b_7\l29: phi (27) (32) \"temp\"\l33: add (35) #1\l36: bra b_2\l"]
 b_7 -> b_2;
 b_7 -> b_3[color="green"];
 b_5 -> b_3[color="green"];
-b_3 -> b_7;
+b_3 -> b_6;
+b_6 [label="b_6\l"]
+b_6 -> b_7;
+b_6 -> b_3[color="green"];
 b_3 -> b_2[color="green"];
 b_2 -> b_4;
-b_4 [label="b_4\l36: ret (31)\l"]
+b_4 [label="b_4\l37: ret (32)\l"]
 b_4 -> b_2[color="green"];
 b_2 -> b_1[color="green"];
 __MAIN__ -> b_8;
-b_8 [label="b_8\l70: adda FP #8\l38: store (70) #22\l71: adda FP #12\l40: store (71) #61\l72: adda FP #16\l42: store (72) #17\l73: adda FP #20\l44: store (73) #34\l74: adda FP #24\l46: store (74) #11\l48: load (70)\l50: load (71)\l52: load (72)\l54: load (73)\l55: call max (48) (50) (52) (54)\l57: end\l"]
+b_8 [label="b_8\l71: adda FP #8\l39: store (71) #22\l72: adda FP #12\l41: store (72) #61\l73: adda FP #16\l43: store (73) #17\l74: adda FP #20\l45: store (74) #34\l75: adda FP #24\l47: store (75) #11\l49: load (71)\l51: load (72)\l53: load (73)\l55: load (74)\l56: call max (49) (51) (53) (55)\l58: end\l"]
 }

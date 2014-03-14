@@ -1,9 +1,9 @@
 digraph Computation {
 node [shape=box];
 foo -> b_1;
-b_1 [label="b_1\l9: cmp #1 #2\l31: bge b_3\l"]
+b_1 [label="b_1\l9: cmp #1 #2\l32: bge b_3\l"]
 b_1 -> b_2;
-b_2 [label="b_2\l16: cmp #2 #3\l27: bge b_7\l"]
+b_2 [label="b_2\l16: cmp #2 #3\l27: bge b_6\l"]
 b_2 -> b_5;
 b_5 [label="b_5\l"]
 b_5 -> b_8;
@@ -13,32 +13,35 @@ b_9 [label="b_9\l22: add (24) #1\l25: bra b_8\l"]
 b_9 -> b_8;
 b_9 -> b_8[color="green"];
 b_8 -> b_10;
-b_10 [label="b_10\l"]
+b_10 [label="b_10\l28: bra b_7\l"]
 b_10 -> b_7;
-b_7 [label="b_7\l26: phi (24) #2 \"a\"\l19: phi #9 #3 \"c\"\l32: bra b_4\l"]
+b_7 [label="b_7\l26: phi (24) #2 \"a\"\l19: phi #9 #3 \"c\"\l33: bra b_4\l"]
 b_7 -> b_4;
-b_4 [label="b_4\l62: phi #8 #425 \"h\"\l60: phi #4 (59) \"d\"\l38: phi #6 #7 \"f\"\l35: phi #2 (52) \"b\"\l30: phi #9 #7 \"g\"\l28: phi (19) (42) \"c\"\l15: phi #6 #5 \"e\"\l12: phi (26) #1 \"a\"\l63: write (12)\l64: write (35)\l65: write (28)\l66: write (60)\l67: write (15)\l68: write (38)\l69: write (62)\l70: ret \l"]
+b_4 [label="b_4\l63: phi #8 #425 \"h\"\l61: phi #4 (60) \"d\"\l39: phi #6 #7 \"f\"\l36: phi #2 (53) \"b\"\l31: phi #9 #7 \"g\"\l29: phi (19) (43) \"c\"\l15: phi #6 #5 \"e\"\l12: phi (26) #1 \"a\"\l64: write (12)\l65: write (36)\l66: write (29)\l67: write (61)\l68: write (15)\l69: write (39)\l70: write (63)\l71: ret \l"]
 b_4 -> b_1[color="green"];
 b_7 -> b_2[color="green"];
 b_10 -> b_8[color="green"];
 b_8 -> b_5[color="green"];
 b_5 -> b_2[color="green"];
-b_2 -> b_7;
+b_2 -> b_6;
+b_6 [label="b_6\l"]
+b_6 -> b_7;
+b_6 -> b_2[color="green"];
 b_2 -> b_1[color="green"];
 b_1 -> b_3;
-b_3 [label="b_3\l39: cmp #1 #3\l53: bge b_12\l"]
+b_3 [label="b_3\l40: cmp #1 #3\l54: bge b_12\l"]
 b_3 -> b_11;
 b_11 [label="b_11\l"]
 b_11 -> b_14;
-b_14 [label="b_14\l50: phi #9 (48) \"c\"\l47: phi #1 (45) \"b\"\l43: cmp (47) (50)\l44: bge b_16\l"]
+b_14 [label="b_14\l51: phi #9 (49) \"c\"\l48: phi #1 (46) \"b\"\l44: cmp (48) (51)\l45: bge b_16\l"]
 b_14 -> b_15;
-b_15 [label="b_15\l45: add (47) #1\l48: sub (50) #1\l51: bra b_14\l"]
+b_15 [label="b_15\l46: add (48) #1\l49: sub (51) #1\l52: bra b_14\l"]
 b_15 -> b_14;
 b_15 -> b_14[color="green"];
 b_14 -> b_16;
-b_16 [label="b_16\l54: bra b_13\l"]
+b_16 [label="b_16\l55: bra b_13\l"]
 b_16 -> b_13;
-b_13 [label="b_13\l59: phi #4 #5 \"d\"\l52: phi (47) #1 \"b\"\l42: phi (50) #12 \"c\"\l"]
+b_13 [label="b_13\l60: phi #4 #5 \"d\"\l53: phi (48) #1 \"b\"\l43: phi (51) #12 \"c\"\l"]
 b_13 -> b_4;
 b_13 -> b_3[color="green"];
 b_16 -> b_14[color="green"];
@@ -50,5 +53,5 @@ b_12 -> b_13;
 b_12 -> b_3[color="green"];
 b_3 -> b_1[color="green"];
 __MAIN__ -> b_17;
-b_17 [label="b_17\l71: call foo\l72: end\l"]
+b_17 [label="b_17\l72: call foo\l73: end\l"]
 }

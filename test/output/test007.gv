@@ -5,14 +5,17 @@ b_1 [label="b_1\l3: cmp #1 #2\l7: ble b_3\l"]
 b_1 -> b_2;
 b_2 [label="b_2\l8: bra b_4\l"]
 b_2 -> b_4;
-b_4 [label="b_4\l11: phi #2 #3 \"b\"\l6: phi #2 #1 \"a\"\l12: cmp (6) (11)\l16: bge b_7\l"]
+b_4 [label="b_4\l11: phi #2 #3 \"b\"\l6: phi #2 #1 \"a\"\l12: cmp (6) (11)\l16: bge b_6\l"]
 b_4 -> b_5;
-b_5 [label="b_5\l13: sub (6) #1\l"]
+b_5 [label="b_5\l13: sub (6) #1\l17: bra b_7\l"]
 b_5 -> b_7;
-b_7 [label="b_7\l15: phi (13) (6) \"a\"\l17: write (15)\l18: write (11)\l19: end\l"]
+b_7 [label="b_7\l15: phi (13) (6) \"a\"\l18: write (15)\l19: write (11)\l20: end\l"]
 b_7 -> b_4[color="green"];
 b_5 -> b_4[color="green"];
-b_4 -> b_7;
+b_4 -> b_6;
+b_6 [label="b_6\l"]
+b_6 -> b_7;
+b_6 -> b_4[color="green"];
 b_4 -> b_1[color="green"];
 b_2 -> b_1[color="green"];
 b_1 -> b_3;

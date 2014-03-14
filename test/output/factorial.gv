@@ -13,14 +13,17 @@ b_4 [label="b_4\l13: ret (8)\l"]
 b_4 -> b_2[color="green"];
 b_2 -> b_1[color="green"];
 factRec -> b_5;
-b_5 [label="b_5\l14: fetch n\l15: cmp (14) #1\l17: bgt b_8\l"]
+b_5 [label="b_5\l14: fetch n\l15: cmp (14) #1\l17: bgt b_7\l"]
 b_5 -> b_6;
-b_6 [label="b_6\l16: ret #1\l"]
+b_6 [label="b_6\l16: ret #1\l18: bra b_8\l"]
 b_6 -> b_8;
-b_8 [label="b_8\l18: sub (14) #1\l19: call factRec (18)\l20: mul (19) (14)\l21: ret (20)\l"]
+b_8 [label="b_8\l19: sub (14) #1\l20: call factRec (19)\l21: mul (20) (14)\l22: ret (21)\l"]
 b_8 -> b_5[color="green"];
 b_6 -> b_5[color="green"];
-b_5 -> b_8;
+b_5 -> b_7;
+b_7 [label="b_7\l"]
+b_7 -> b_8;
+b_7 -> b_5[color="green"];
 __MAIN__ -> b_9;
-b_9 [label="b_9\l22: read\l24: call factIter (22)\l25: write (24)\l26: wln\l27: call factRec (22)\l28: write (27)\l29: wln\l30: end\l"]
+b_9 [label="b_9\l23: read\l25: call factIter (23)\l26: write (25)\l27: wln\l28: call factRec (23)\l29: write (28)\l30: wln\l31: end\l"]
 }
