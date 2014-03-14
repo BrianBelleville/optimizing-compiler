@@ -8,10 +8,16 @@ from sys import argv
 diff = "diff"
 dot = "dot"
 pl241c = "/home/brian/Code/cs241/pl241c"
+dlx = "/home/brian/Code/cs241/dlx"
 test_dir = "/home/brian/Code/cs241/test/"
 input_dir = test_dir + "cases/"
 cft_output_dir = test_dir + "cfg/reference/"
 cfg_result_dir = test_dir + "cfg/results/"
+
+sim_ref_output_dir = test_dir + "sim/reference_output/"
+sim_result_dir = test_dir + "sim/results/"
+sim_input_dir = test_dir + "sim/input/"
+
 bin_dir = test_dir + "bin/"
 
 # run the arguments as a subprocess, with output redirected to
@@ -55,6 +61,18 @@ def compile_pl241(in_file, code_out, cfg_out_file, no_output = True):
     else:
         return run(args)
 
+def run_sim(exe, input_file, output_file):
+    if(os.path.exists(input_file)):
+        input_stream = open(input_file)
+    else:
+        input_stream = open("/dev/null")
+    output_stream = open(output_file, 'w')
+    proc  = subprocess.Popen([dlx, exe],stdout=output_stream, stdin=input_stream)
+    ret = proc.wait()
+    input_stream.close()
+    output_stream.close()
+    return ret == 0
+        
 def strip_file_extension(name):
     return os.path.splitext(name)[0]
 
@@ -71,6 +89,9 @@ def run_test(name):
     infile = input_dir + name + ".txt"
     cfg_out_ref = cft_output_dir + name + ".gv"
     cfg_result_file = cfg_result_dir + name + ".gv"
+    sim_out_ref = sim_ref_output_dir + name + ".out"
+    sim_result_out = sim_result_dir + name + ".out"
+    sim_input = sim_input_dir + name + ".in"
     code_out = bin_dir + name
     tested_anything = False
     print("Running test ", name, ".. ", sep="", end="")
@@ -87,6 +108,17 @@ def run_test(name):
             return outmsg
         if(not run_diff(cfg_out_ref, cfg_result_file)):
             outmsg = "Output incorrect"
+            print("FAIL", outmsg)
+            return outmsg
+    # if runtime output is testable
+    if(os.path.exists(sim_out_ref)):
+        tested_anything = True
+        if(not run_sim(code_out, sim_input, sim_result_out)):
+            outmsg = "Error during simulation"
+            print("FAIL", outmsg)
+            return outmsg
+        if(not run_diff(sim_out_ref, sim_result_out)):
+            outmsg = "Runtime output incorrect"
             print("FAIL", outmsg)
             return outmsg
     if(not tested_anything):
@@ -110,9 +142,11 @@ if __name__ == "__main__":
     # if there are no command line arguments, run all tests that have
     # reference output available
     if(len(argv) == 1):
-        tests = sorted(map(strip_file_extension,
+        tests = sorted(list(map(strip_file_extension,
                            filter(lambda name: file_extension(name) == '.gv'
-                                  , os.listdir(cft_output_dir))))
+                                  , os.listdir(cft_output_dir)))) +
+                       list(map(strip_file_extension,
+                           os.listdir(sim_ref_output_dir))))
     else:
         tests = []
         i = 1
@@ -141,6 +175,8 @@ if __name__ == "__main__":
             os.mkdir(cfg_result_dir)
         if(not os.path.isdir(bin_dir)):
             os.mkdir(bin_dir)
+        if(not os.path.isdir(sim_result_dir)):
+            os.mkdir(sim_result_dir)
         failures = []
         print("Starting tests\n")
         for t in tests:
