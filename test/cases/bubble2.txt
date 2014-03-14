@@ -1,0 +1,56 @@
+# the bubble sort is performed incorrectly, but for the input it does sort.
+# This was provided by Mohaned Q.
+
+main
+var j, temp, i;
+array[30] a;
+var x,y;
+{
+//	let a[] <- ;
+//	let a[] <- ;
+//	let a[] <- ;
+//	let a[] <- ;
+//	let a[] <- ;
+
+	let i <- 29;
+	while i >= 0
+	do
+		let a[i] <- 29 - i;
+		let i <- i - 1
+	od;
+
+	let i <- 0;
+	while i < 30 do
+		call OutputNum(a[i]);
+		let i <- i + 1
+	od;
+	
+	
+	
+	let i <- 0;
+	let j <- 0;
+	while i < 30 do
+		let j <- i+1;
+		while j < 30 do
+			if a[i] > a[j]
+			then
+				let temp <- a[i];
+				let a[i] <- a[j];
+				let a[j] <- temp
+			fi;
+			let j <- j + 1
+		od;
+		let i <- i+1
+	od;
+
+	call OutputNewLine();
+
+	let i <- 0;
+	while i < 30 
+	do
+		call OutputNum(a[i]);
+		let i <- i + 1
+	od
+
+	
+}.
