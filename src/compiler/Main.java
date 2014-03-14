@@ -74,6 +74,7 @@ public class Main {
 
             if(Globals.performCSE) {
                 passes.add(new CommonSubexpressionElimination());
+                passes.add(new UpdateArguments());
             }
             // the CSE pass will make the dominator information change
             // as instructions are deleted, so this pass will clear
