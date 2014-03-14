@@ -1,0 +1,14 @@
+main
+var j, temp, i;
+var x,y;
+{
+	let i <- 0;
+	let j <- 0;
+	while i < 30 do
+		let j <- i+1;
+		while j < 30 do
+			let j <- j + 1
+		od;
+		let i <- i+1
+	od
+}.
