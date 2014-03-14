@@ -72,17 +72,25 @@ def run_test(name):
     out_ref = output_dir + name + ".gv"
     result_file = result_dir + name + ".gv"
     code_out = bin_dir + name
+    tested_anything = False
     print("Running test ", name, ".. ", sep="", end="")
     if(not compile_pl241(infile, code_out, result_file)):
         outmsg = "Compilation error"
         print("FAIL", outmsg)
         return outmsg
-    if(not run_dot(result_file)):
-        outmsg = ".gv -> .png layout failed"
-        print("FAIL", outmsg)
-        return outmsg
-    if(not run_diff(out_ref, result_file)):
-        outmsg = "Output incorrect"
+    # if the cfg is testable
+    if(os.path.exists(out_ref)):
+        tested_anything = True
+        if(not run_dot(result_file)):
+            outmsg = ".gv -> .png layout failed"
+            print("FAIL", outmsg)
+            return outmsg
+        if(not run_diff(out_ref, result_file)):
+            outmsg = "Output incorrect"
+            print("FAIL", outmsg)
+            return outmsg
+    if(not tested_anything):
+        outmsg = "No reference outputs"
         print("FAIL", outmsg)
         return outmsg
     print("PASS")
