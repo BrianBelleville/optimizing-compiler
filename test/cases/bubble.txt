@@ -1,0 +1,50 @@
+main
+var j, temp, i;
+array[30] a;
+var x,y;
+{
+//	let a[] <- ;
+//	let a[] <- ;
+//	let a[] <- ;
+//	let a[] <- ;
+//	let a[] <- ;
+
+	let i <- 29;
+	while i >= 0
+	do
+		let a[i] <- 29 - i;
+		let i <- i - 1
+	od;
+
+	let i <- 0;
+	while i < 30 do
+		call OutputNum(a[i]);
+		let i <- i + 1
+	od;
+	
+	call OutputNewLine();
+	
+	let i <- 1;
+	while i == 1 do
+		let j <- 0;
+		let i <- 0;
+		while j < 29 do
+			if a[j] > a[j+1]
+			then
+				let temp <- a[j+1];
+				let a[j+1] <- a[j];
+				let a[j] <- temp;
+				let i <- 1
+			fi;
+			let j <- j + 1
+		od
+	od;
+
+	let i <- 0;
+	while i < 30 
+	do
+		call OutputNum(a[i]);
+		let i <- i + 1
+	od;
+	call OutputNewLine()
+}.
