@@ -320,16 +320,28 @@ public class Parser {
         currentJoinBlock.setIncomingBranch(currentBB);
 
         currentJoinBlock.setCurrentBranch(2);
+
+
+        // even if there is no 'else' clause in this if statement, we
+        // will still insert the empty basic block for the else
+        // branch, other wise we will introduce critical edges.
+        // Critical edges are edges that connect a block with multiple
+        // successors in the CFG to a block with multiple
+        // predecessors. By always inserting the else block we avoid
+        // this and always have a safe place to put the moves needed
+        // resolve phi instructions.
+        
+        // the else block will be the target of the branch
+        oldCurrent.addInstruction(makeProperBranch(comp, elseStartBB));
+        // also add unconditional branch from the end of the 'if'
+        // statSequence over the else block
+        currentBB.addInstruction(new Bra(nextBB));
+        // the start of the else will be placed after the if condition
+        currentBB.setNext(elseStartBB);
+
         if(scan.sym == Token.else_t) {
 	    scan.next();
 
-            // the else block will be the target of the branch
-            oldCurrent.addInstruction(makeProperBranch(comp, elseStartBB));
-            // also add unconditional branch from the end of the 'if'
-            // statSequence over the else block
-            currentBB.addInstruction(new Bra(nextBB));
-            // the start of the else will be placed after the if condition
-            currentBB.setNext(elseStartBB);
 
 	    // set the new current, this must be done AFTER the
 	    // branches are emited
@@ -342,11 +354,9 @@ public class Parser {
             currentBB.setFallThrough(nextBB);
             currentJoinBlock.setIncomingBranch(currentBB);
         } else {
-            // otherwise, no else, so the next block will be the target of the branch
-            oldCurrent.addInstruction(makeProperBranch(comp, nextBB));
-            // 'if' branch will fall through
-            currentBB.setFallThrough(nextBB);
-            currentJoinBlock.setIncomingBranch(oldCurrent);
+            // otherwise, no else statement, still use the else block as the target
+            currentJoinBlock.setIncomingBranch(elseStartBB);
+            elseStartBB.setFallThrough(nextBB);
         }
         if(scan.sym == Token.fi) {
             scan.next();
