@@ -1,0 +1,110 @@
+# Matrix multiplacation test provided by Mohaned Q. The orriginal
+# version had a slight error in the algorithm which I have corrected.
+
+main
+var i,j,k;
+array[10][10] a;
+array[10][10] b;
+array[10][10] c;
+var x,y;
+{
+	
+	let j <- 0;
+	let i <- 0;
+	while i < 10
+	do
+		while j < 10
+		do
+			let a[i][j] <- i * j + j;
+			let j <- j + 1
+		od;
+		let j <- 0;
+		let i <- i + 1
+	od;
+	
+	let j <- 0;
+	let i <- 0;
+	while i < 10
+	do
+		while j < 10
+		do
+			call OutputNum(a[i][j]);
+			let j <- j + 1
+		od;
+		call OutputNewLine();
+		let j <- 0;
+		let i <- i + 1
+	od;
+	
+	call OutputNewLine();
+	call OutputNewLine();	
+	
+	
+	let j <- 0;
+	let i <- 0;
+	while i < 10
+	do
+		while j < 10
+		do
+			let b[i][j] <- i + j;
+			
+			let j <- j + 1
+		od;
+		let j <- 0;
+		let i <- i + 1
+	od;
+
+
+	let j <- 0;
+	let i <- 0;
+	while i < 10
+	do
+		while j < 10
+		do
+			call OutputNum(b[i][j]);
+			let j <- j + 1
+		od;
+		call OutputNewLine();
+		let j <- 0;
+		let i <- i + 1
+	od;
+	
+	call OutputNewLine();
+	call OutputNewLine();
+	
+	let i <- 0;
+	let j <- 0;
+	let k <- 0;
+	while i < 10 do
+		while j < 10 do
+			let c[i][j] <- 0;
+			while k < 10
+			do
+				let c[i][j] <- c[i][j] + (a[i][k] * b[k][j]);
+				let k <- k + 1
+			od;
+			let k <- 0;
+			let j <- j+1
+		od;
+		let j <- 0;
+		let i <- i+1
+	od;
+
+	call OutputNewLine();
+	
+	let j <- 0;
+	let i <- 0;
+	while i < 10
+	do
+		while j < 10
+		do
+			call OutputNum(c[i][j]);
+			let j <- j + 1
+		od;
+		call OutputNewLine();
+		let j <- 0;
+		let i <- i + 1
+	od
+
+	
+}.
