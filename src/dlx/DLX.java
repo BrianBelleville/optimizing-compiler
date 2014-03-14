@@ -15,7 +15,9 @@ public class DLX {
 	// processor state variables
 	static int R[] = new int [32];
 	static int PC, op, a, b, c, format; 
-	
+
+    static BufferedReader stdin = null;
+    
 	// emulated memory
 	static final int MemSize = 10000; // bytes in memory (divisible by 4)
 	static int M[] = new int [MemSize/4];
@@ -211,7 +213,10 @@ public class DLX {
 					break;
 				case RDI:
 					System.out.print("?: ");
-					String line = (new BufferedReader(new InputStreamReader(System.in))).readLine();
+                                        if(stdin == null) {
+                                            stdin = new BufferedReader(new InputStreamReader(System.in));
+                                        }
+					String line = stdin.readLine();
 					R[a] = Integer.parseInt(line);
 					break;
 				case WRD:
