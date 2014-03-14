@@ -139,14 +139,18 @@ def generate_ref_out(name):
     print("DONE")
 
 if __name__ == "__main__":
+    cfg_tests = sorted(list(map(strip_file_extension,
+                           filter(lambda name: file_extension(name) == '.gv'
+                                  , os.listdir(cfg_output_dir)))))
+    sim_tests = sorted(list(map(strip_file_extension,
+                                os.listdir(sim_ref_output_dir))))
+
+            
+    
     # if there are no command line arguments, run all tests that have
     # reference output available
     if(len(argv) == 1):
-        tests = sorted(list(map(strip_file_extension,
-                           filter(lambda name: file_extension(name) == '.gv'
-                                  , os.listdir(cfg_output_dir)))) +
-                       list(map(strip_file_extension,
-                           os.listdir(sim_ref_output_dir))))
+        tests = sorted( cfg_tests + sim_tests )
     else:
         tests = []
         i = 1
@@ -155,6 +159,10 @@ if __name__ == "__main__":
             if a == "-ref":
                 i += 1
                 generate_ref_out(argv[i])
+            elif a == "-cfg":
+                tests += cfg_tests
+            elif a == "-sim":
+                tests += sim_tests
             elif a == "-compile":
                 i += 1
                 name = argv[i]
