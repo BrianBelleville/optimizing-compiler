@@ -53,7 +53,7 @@ public class BasicBlock {
     public static void incrementGlobalPass() {
         currentPass++;
     }
-    
+
     private int getNextBlockNum() {
         blockNum += 1;
         return blockNum;
@@ -444,9 +444,19 @@ public class BasicBlock {
                         G.addEdge(i, v);
                     }
                 }
-                for(Value v : i.getArguments()) {
+                ArrayList<Value> args = i.getArguments();
+                for(int pos = 0; pos < args.size(); pos++) {
+                    Value v = args.get(pos);
                     if(v.needsRegister()) {
                         live.add(v);
+                    }
+                    // because of the way I do cse the adda may not be
+                    // right next to the load or store, and adda doesn't
+                    // need a register, so we need to ensure that the adda
+                    // arguments live until they are used in any load or
+                    // store.
+                    if(v instanceof Adda) {
+                        args.addAll(((Adda)v).getArguments());
                     }
                 }
             }
