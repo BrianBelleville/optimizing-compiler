@@ -11,7 +11,7 @@ pl241c = "/home/brian/Code/cs241/pl241c"
 dlx = "/home/brian/Code/cs241/dlx"
 test_dir = "/home/brian/Code/cs241/test/"
 input_dir = test_dir + "cases/"
-cft_output_dir = test_dir + "cfg/reference/"
+cfg_output_dir = test_dir + "cfg/reference/"
 cfg_result_dir = test_dir + "cfg/results/"
 
 sim_ref_output_dir = test_dir + "sim/reference_output/"
@@ -87,7 +87,7 @@ def is_test(name):
 # for all of my other command running functions, but it makes things easy.
 def run_test(name):
     infile = input_dir + name + ".txt"
-    cfg_out_ref = cft_output_dir + name + ".gv"
+    cfg_out_ref = cfg_output_dir + name + ".gv"
     cfg_result_file = cfg_result_dir + name + ".gv"
     sim_out_ref = sim_ref_output_dir + name + ".out"
     sim_result_out = sim_result_dir + name + ".out"
@@ -132,7 +132,7 @@ def run_test(name):
 # your compiler
 def generate_ref_out(name):
     infile = input_dir + name + ".txt"
-    out_file = cft_output_dir + name + ".gv"
+    out_file = cfg_output_dir + name + ".gv"
     print("Generating reference output for ", name, ".. ", sep="", end="")
     if(not compile_pl241(infile, out_file)):
        print("ERROR Compilation error")
@@ -144,7 +144,7 @@ if __name__ == "__main__":
     if(len(argv) == 1):
         tests = sorted(list(map(strip_file_extension,
                            filter(lambda name: file_extension(name) == '.gv'
-                                  , os.listdir(cft_output_dir)))) +
+                                  , os.listdir(cfg_output_dir)))) +
                        list(map(strip_file_extension,
                            os.listdir(sim_ref_output_dir))))
     else:
