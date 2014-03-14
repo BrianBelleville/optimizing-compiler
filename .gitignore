@@ -3,3 +3,4 @@ bin/*
 *.svg
 test/cfg/results/*
 test/bin/*
+test/sim/results/*
