@@ -6,15 +6,16 @@ main
 procedure depTest;
 var x,y,z;
 {
-  let x <- call InputNum();
+  let x <- call InputNum(); 	# if you input -1, this will loop forever, don't do that
   let y <- x;
   let z <- 0;
   # x and y will have a dependancy between them, the order of moves
   # needs to ensure that the phi semantics is preserved
   while z == 0 do
+    let z <- x;
     let x <- y;
     let y <- y + 1;
-    let z <- 1
+    let z <- 1 + z
   od;
   call OutputNum(x);
   call OutputNum(y)
