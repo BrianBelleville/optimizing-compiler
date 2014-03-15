@@ -1,0 +1,25 @@
+# Brian Belleville 2014
+# Test to excercise phi generation when the dependancies between
+# variables forms a cycle
+
+main
+
+procedure cycleTest;
+var x,y,z,t;
+{
+  let x <- call InputNum();
+  let y <- call InputNum();
+  let z <- 0;
+  while z == 0 do
+    let t <- x;
+    let x <- y;
+    let y <- t;
+    let z <- 1
+  od;
+  call OutputNum(x);
+  call OutputNum(y)
+};
+
+{
+  call cycleTest	
+}.
