@@ -99,13 +99,13 @@ def run_test(name):
         outmsg = "Compilation error"
         print("FAIL", outmsg)
         return outmsg
+    if(not run_dot(cfg_result_file)):
+        outmsg = ".gv -> .png layout failed"
+        print("FAIL", outmsg)
+        return outmsg
     # if the cfg is testable
     if(os.path.exists(cfg_out_ref)):
         tested_anything = True
-        if(not run_dot(cfg_result_file)):
-            outmsg = ".gv -> .png layout failed"
-            print("FAIL", outmsg)
-            return outmsg
         if(not run_diff(cfg_out_ref, cfg_result_file)):
             outmsg = "Output incorrect"
             print("FAIL", outmsg)
