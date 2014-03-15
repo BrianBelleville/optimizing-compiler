@@ -4,6 +4,7 @@
 import os
 import subprocess
 from sys import argv
+from collections import OrderedDict
 
 diff = "diff"
 dot = "dot"
@@ -72,7 +73,7 @@ def run_sim(exe, input_file, output_file):
     input_stream.close()
     output_stream.close()
     return ret == 0
-        
+
 def strip_file_extension(name):
     return os.path.splitext(name)[0]
 
@@ -145,8 +146,8 @@ if __name__ == "__main__":
     sim_tests = sorted(list(map(strip_file_extension,
                                 os.listdir(sim_ref_output_dir))))
 
-            
-    
+
+
     # if there are no command line arguments, run all tests that have
     # reference output available
     if(len(argv) == 1):
@@ -168,7 +169,7 @@ if __name__ == "__main__":
                 name = argv[i]
                 infile = input_dir + name + ".txt"
                 result_file = cfg_result_dir + name + ".gv"
-                code_out = bin_dir + name                
+                code_out = bin_dir + name
                 print("Compiling", name)
                 compile_pl241(infile, code_out, result_file, False)
             elif a == "-all":
@@ -179,6 +180,8 @@ if __name__ == "__main__":
             i += 1
 
     if(tests):
+        # remove duplicate entries from tests
+        tests = list(OrderedDict.fromkeys(tests))
         if(not os.path.isdir(cfg_result_dir)):
             os.mkdir(cfg_result_dir)
         if(not os.path.isdir(bin_dir)):
