@@ -330,7 +330,7 @@ public class Parser {
         // predecessors. By always inserting the else block we avoid
         // this and always have a safe place to put the moves needed
         // resolve phi instructions.
-        
+
         // the else block will be the target of the branch
         oldCurrent.addInstruction(makeProperBranch(comp, elseStartBB));
         // also add unconditional branch from the end of the 'if'
@@ -457,15 +457,18 @@ public class Parser {
     private void returnStatement_rest() throws Exception
     {
         Instruction r = null;
-        if(scan.sym == Token.closecurly || scan.sym == Token.semicolon) {
-            // if there is no expression to be returned
-            r = inMain ? new End() : new Ret();
-        } else {
-            // else there is an expression to be returned
+        // if there is an expression
+        if(scan.sym == Token.ident
+           || scan.sym == Token.num
+           || scan.sym == Token.openparen
+           || scan.sym == Token.call) {
             if(inMain) {
                 throw new Exception("Attempt to return value from __MAIN__");
             }
             r = new Ret(expression());
+        } else {
+            // else there is no expression to be returned
+            r = inMain ? new End() : new Ret();
         }
         currentBB.addInstruction(r);
     }
