@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.ListIterator;
 import java.util.HashSet;
+import java.util.HashMap;
 import java.util.ArrayList;
 import support.Environment;
 import support.Identifier;
@@ -172,12 +173,12 @@ public class BasicBlock {
         mostRecentDominating = i;
     }
 
-    public void makeMovesForPhis() {
+    public void makeMovesForPhis() throws Exception {
         makeMovesForPhisInternal();
         currentPass++;
     }
 
-    private void makeMovesForPhisInternal() {
+    private void makeMovesForPhisInternal() throws Exception {
         if(localPass == currentPass) {
             return;
         }
@@ -191,23 +192,8 @@ public class BasicBlock {
             }
         }
 
-        // todo: we need to do a topological sorting of phi
-        // instructions here, and insert temporaries to break cycles.
-        for(Phi p : phis) {
-            Integer color = p.getColor();
-            {
-                // insert move for first arg
-                Move m1 = new Move(p.getArg1());
-                m1.setColor(color);
-                incomingBranch1.addAtEndBeforeBranch(m1);
-            }
-            {
-                // insert move for second arg
-                Move m2 = new Move(p.getArg2());
-                m2.setColor(color);
-                incomingBranch2.addAtEndBeforeBranch(m2);
-            }
-        }
+        insertTopoOrderedMoves(phis, 1);
+        insertTopoOrderedMoves(phis, 2);
 
         BasicBlock ch1 = getFallThrough();
         BasicBlock ch2 = getBranchTarget();
@@ -218,6 +204,69 @@ public class BasicBlock {
             ch2.makeMovesForPhisInternal();
         }
 
+    }
+
+    private void insertTopoOrderedMoves(ArrayList<Phi> phis, int branchNum)
+        throws Exception {
+        BasicBlock incommingBlock = branchNum == 1 ? incomingBranch1 : incomingBranch2;
+        HashMap<Integer, Phi> colorToNode = new HashMap<Integer, Phi>();
+        HashMap<Phi, HashSet<Phi>> outGoingEdges = new HashMap<Phi, HashSet<Phi>>();
+        HashMap<Phi, HashSet<Phi>> incommingEdges = new HashMap<Phi, HashSet<Phi>>();
+        HashSet<Phi> noIncomming = new HashSet<Phi>(phis); // initially every node has no incomming edges
+        // initialize data structures
+        for(Phi p : phis) {
+            colorToNode.put(p.getColor(), p);
+            outGoingEdges.put(p, new HashSet<Phi>());
+            incommingEdges.put(p, new HashSet<Phi>());
+        }
+        // create directed edges between conflicting moves
+        for(Phi p : phis) {
+            Value v = branchNum == 1 ? p.getArg1() : p.getArg2();
+            Integer color = v.getColor();
+            if(color == null) {
+                continue;
+            }
+
+            Phi conflict = colorToNode.get(color);
+            // don't make nodes conflict with themselves 
+            if(conflict == null || conflict == p) {
+                continue;
+            }
+
+            noIncomming.remove(conflict);
+            outGoingEdges.get(p).add(conflict);
+            incommingEdges.get(conflict).add(p);
+        }
+
+        // perform topological sorting and emit moves in that order
+        while(!(noIncomming.isEmpty())) {
+            // get an arbitrary element, we need to get a new iterator
+            // each time through the loop since we may add to
+            // noIncomming
+            Phi p = noIncomming.iterator().next();
+            if(!(incommingEdges.get(p).isEmpty())) {
+                throw new Exception("Sanity check failed");
+            }
+            noIncomming.remove(p);
+            // remove edges from p to phis which must have moves after
+            for(Phi after : outGoingEdges.get(p)) {
+                HashSet<Phi> incomming = incommingEdges.get(after);
+                incomming.remove(p);
+                if(incomming.isEmpty()) {
+                    noIncomming.add(after);
+                }
+            }
+            outGoingEdges.remove(p);
+            incommingEdges.remove(p);
+
+            // emit the move for p
+            Move m = new Move(branchNum == 1 ? p.getArg1() : p.getArg2());
+            m.setColor(p.getColor());
+            incommingBlock.addAtEndBeforeBranch(m);
+        }
+        if(!(outGoingEdges.isEmpty() && incommingEdges.isEmpty())) {
+            throw new Exception("Cycle detected in Phi move dependencies, terminating compilation");
+        }
     }
 
     private void addAtEndBeforeBranch(Instruction i) {
