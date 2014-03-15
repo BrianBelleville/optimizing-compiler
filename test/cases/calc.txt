@@ -1,0 +1,66 @@
+# Brian Belleville 2014
+
+main
+var resultPosition;
+array[8] history;
+var dummy;
+
+# op: 1 -> addition
+#     2 -> subtraction
+#     3 -> multiplication
+#     4 -> division
+#     other -> end
+# returns: 0 if the result of the computation is written in var
+#          result, -1 if received unknown operation to indicate
+#          to terminate the program.
+function calc(x, y, op);
+{
+  if op == 1 then
+    let history[resultPosition] <- x + y
+  else
+    if op == 2 then
+      let history[resultPosition] <- x - y
+    else
+      if op == 3 then
+        let history[resultPosition] <- x * y
+      else
+        if op == 4 then
+	  let history[resultPosition] <- x / y
+	else
+	  return 0 - 1
+	fi
+      fi
+    fi
+  fi;
+  return 0
+};
+
+{
+  let resultPosition <- 0;
+  let dummy <- 0;
+  while dummy == 0 do
+    if call calc(call InputNum(), call InputNum(), call InputNum()) == 0 then
+      call OutputNewLine;
+      call OutputNum(history[resultPosition]);
+      let resultPosition <- resultPosition + 1;
+      if resultPosition == 8 then
+        let resultPosition <- 0
+      fi
+    else
+      # else we are to exit, first print the history starting from the
+      # most recent value computed
+      call OutputNewLine;
+      let dummy <- resultPosition;
+      while 1 == 1 do
+	let dummy <- dummy - 1;
+	if dummy < 0 then
+	  let dummy <- 7
+	fi;
+	call OutputNum(history[dummy]);
+	if dummy == resultPosition then
+	  return
+	fi
+      od
+    fi
+  od
+}.
