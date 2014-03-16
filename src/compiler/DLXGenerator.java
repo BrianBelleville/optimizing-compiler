@@ -140,13 +140,22 @@ public class DLXGenerator extends CodeGenerator {
         return reg;
     }
 
+    private boolean isSpilled(Value v) {
+        int reg = minAvail + v.getColor();
+        return reg > maxAvail;
+    }
+
+    private int getSpillAddress(Value v) throws Exception {
+        int color = v.getColor();
+        return currentFunction.locals.getCellAddress(color - maxAvail);
+    }
+
     private void home(Value v) throws Exception {
         int reg = minAvail + v.getColor();
         if(reg > maxAvail) {
             // then this value has been spilled, the value is
             // currently in t1, insert the spill code now
-            int spillCell = reg - maxAvail - minAvail;
-            int address = currentFunction.locals.getCellAddress(spillCell);
+            int address = getSpillAddress(v);
             emit(DLX.assemble(DLX.STW, t1, fp, address));
         }
         // otherwise, do nothing, the value is home
@@ -301,22 +310,26 @@ public class DLXGenerator extends CodeGenerator {
                 break;
             case move:
                 {
-                    // todo: if the value is destined for a memory
-                    // cell, don't do a move, do a store on the value
-                    // directly. Also need to be able to handle the
+                    // todo: Need to be able to handle the
                     // case where it is an anonymous temporary
                     // introduced to break phi cycles.
                     Move s = (Move)i;
                     if(s.getArg() instanceof Immediate) {
                         emit(DLX.assemble(DLX.ADDI, target(s),
                                           zero, ((Immediate)s.getArg()).getValue()));
+                        home(s);
                     } else {
                         // move is only needed if the value isn't already in the correct register
                         if(s.getColor() != s.getArg().getColor()) {
+                            if(isSpilled(s)) {
+                                int spillAddress = getSpillAddress(s);
+                                emit(DLX.assemble(DLX.STW, location1(s.getArg()), fp, spillAddress));
+                            }
                             emit(DLX.assemble(DLX.ADD, target(s), zero, location2(s.getArg())));
+                            home(s);
                         }
                     }
-                    home(s);
+
                 }
                 break;
             case phi:
