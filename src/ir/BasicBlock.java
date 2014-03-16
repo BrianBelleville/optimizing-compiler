@@ -512,30 +512,69 @@ public class BasicBlock {
             // this.live = copy(live)
             this.live = new HashSet<Value>(live);
         }
-        // for all phi instructions do backwards
+
+
+
+        ArrayList<Instruction> phis = new ArrayList<Instruction>();
         Iterator<Instruction> iter = instructions.descendingIterator();
         while(iter.hasNext()) {
             Instruction i = iter.next();
             if(i instanceof Phi) {
-                Phi p = (Phi)i;
-                live.remove(p);
-                // phi instructoins will always need a register
-                G.addNode(i);
-                for(Value v : live) {
-                    G.addEdge(p, v);
-                }
-                // add phi argument to live based on the branch number
-                Value add = null;
-                if(branch.equals(incomingBranch1)) {
-                    add = p.getArg1();
-                } else if (branch.equals(incomingBranch2)) {
-                    add = p.getArg2();
-                } else {
-                    throw new Exception("Branch doesn't match");
-                }
-                if(add.needsRegister()) {
-                    live.add(add);
-                }
+                phis.add(i);
+            }
+        }
+
+
+        // for all phi instructions do backwards
+        // (phis will contain the phi instructions in backwards order
+        //  already)
+        for(Instruction i : phis) {
+            Phi p = (Phi)i;
+            live.remove(p);
+            // phi instructions will always need a register
+            G.addNode(i);
+            for(Value v : live) {
+                G.addEdge(p, v);
+            }
+            // add phi argument to live based on the branch number if
+            // we can resolve cycles in phi moves, adding the
+            // arguments at this point shouldn't be stricktly
+            // necessary, but it looks like it can actually lead to
+            // worse code, you'll use less registers during the
+            // computation, but will require additional instructions
+            // for moves.
+            Value add = null;
+            if(branch.equals(incomingBranch1)) {
+                add = p.getArg1();
+            } else if (branch.equals(incomingBranch2)) {
+                add = p.getArg2();
+            } else {
+                throw new Exception("Branch doesn't match");
+            }
+            if(add.needsRegister()) {
+                live.add(add);
+            }
+        }
+
+        // add the phi arguments to live since the semantics of phi
+        // instructions is that they all happen in parallel, and if
+        // the arg of one phi is another phi (can happen when there is
+        // a backwards branch in a loop), that arg will have been
+        // removed from the live range, but it is imperative that the
+        // arguments are all live when this block is entered.
+        for(Instruction i : phis) {
+            Phi p = (Phi)i;
+            // add phi argument to live based on the branch number
+            Value add = null;
+            if(branch.equals(incomingBranch1)) {
+                add = p.getArg1();
+            } else if (branch.equals(incomingBranch2)) {
+                add = p.getArg2();
+            } else {
+                throw new Exception("Branch doesn't match");
+            }
+            if(add.needsRegister()) {
+                live.add(add);
             }
         }
 
