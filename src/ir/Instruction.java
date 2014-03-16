@@ -109,6 +109,10 @@ public abstract class Instruction extends Value {
         uses.add(i);
     }
 
+    public final int getUseCount() {
+        return uses.size();
+    }
+
     public final void removeUse(Instruction i)
     throws Exception {
         if(!uses.remove(i)) {
