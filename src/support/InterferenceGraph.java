@@ -1,18 +1,21 @@
 package support;
 
 import ir.Value;
-import ir.Instruction;
-import ir.Fetch;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.Map.Entry;
 import java.io.Writer;
 
 public class InterferenceGraph {
     private HashMap<Value, HashSet<Value>> adjacencyList;
+    private ArrayList<Value> deletedNodes;
+    private ArrayList<HashSet<Value>> deletedEdges;
     
     public InterferenceGraph () {
         adjacencyList = new HashMap<Value, HashSet<Value>>();
+        deletedNodes = new ArrayList<Value>();
+        deletedEdges = new ArrayList<HashSet<Value>>();
     }
 
     private Integer getAvailableColor(Value node) {
@@ -38,8 +41,45 @@ public class InterferenceGraph {
         return rval;
     }
 
+    // doesn't seek to answer the question in general, just for the
+    // assumptions made by our algorithm, just checks if there are
+    // nodes with >= k edges.
+    private boolean isKColorable(int k) {
+        for(HashSet<Value> edges : adjacencyList.values()) {
+            if(edges.size() >= k) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private void selectAndSpillValue() {
+        Value spill = null;
+        int maxEdges = 0;
+        for(Entry<Value, HashSet<Value>> v  : adjacencyList.entrySet()) {
+            if(v.getValue().size() > maxEdges) {
+                spill = v.getKey();
+                maxEdges = v.getValue().size();
+            }
+        }
+        deleteNode(spill);
+    }
+
     public void colorGraph() {
+        colorGraph(8);
+    }
+
+    public void colorGraph(int k) {
+        while(!isKColorable(k)) {
+            selectAndSpillValue();
+        }
         for(Value v  : adjacencyList.keySet()) {
+            v.setColor(getAvailableColor(v));
+        }
+        // add back spilled variables and give them a color
+        for(int i = 0; i < deletedNodes.size(); i++) {
+            Value v = deletedNodes.get(i);
+            restoreNode(v, deletedEdges.get(i));
             v.setColor(getAvailableColor(v));
         }
     }
@@ -50,14 +90,25 @@ public class InterferenceGraph {
         }
     }
 
-    public void deleteNode(Value n) {
+    // remove a node and its edges from the graph, but store them so
+    // that they can be restored to the interference graph
+    private void deleteNode(Value n) {
         HashSet<Value> edges = adjacencyList.get(n);
         adjacencyList.remove(n);
         for(Value e : edges) {
             adjacencyList.get(e).remove(n);
         }
+        deletedNodes.add(n);
+        deletedEdges.add(edges);
     }
 
+    private void restoreNode(Value n, HashSet<Value> edges) {
+        addNode(n);
+        for(Value v : edges) {
+            addEdge(n, v);
+        }
+    }
+    
     public void addEdge(Value v1, Value v2) {
         HashSet<Value> v1Edges = adjacencyList.get(v1);
         HashSet<Value> v2Edges = adjacencyList.get(v2);
