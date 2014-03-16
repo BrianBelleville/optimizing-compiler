@@ -1,0 +1,57 @@
+# Brian Belleville 2014
+
+# Slightly more interesting test case to validate spill code. Requires
+# 10 values to be live, so with 8 registers, some will be spilled
+
+main
+var a, b, c, d, e, f, g, h, i, j;
+
+{
+
+  let a <- call InputNum();
+  let b <- call InputNum();
+  let c <- call InputNum();
+  let d <- call InputNum();
+  let e <- call InputNum();
+  let f <- call InputNum();
+  let g <- call InputNum();
+  let h <- call InputNum();
+  let i <- call InputNum();
+  let j <- call InputNum();
+
+  if 1 == 1 then 
+    let a <- a + 1;
+    let b <- b + 1;
+    let c <- c + 1;
+    let d <- d + 1;
+    let e <- e + 1;
+    let f <- f + 1;
+    let g <- g + 1;
+    let h <- h + 1;
+    let i <- i + 1;
+    let j <- j + 1
+  else
+    let a <- a - 1;
+    let b <- b - 1;
+    let c <- c - 1;
+    let d <- d - 1;
+    let e <- e - 1;
+    let f <- f - 1;
+    let g <- g - 1;
+    let h <- h - 1;
+    let i <- i - 1;
+    let j <- j - 1
+  fi;
+      
+  call OutputNum(a);
+  call OutputNum(b);
+  call OutputNum(c);
+  call OutputNum(d);
+  call OutputNum(e);
+  call OutputNum(f);
+  call OutputNum(g);
+  call OutputNum(h);
+  call OutputNum(i);
+  call OutputNum(j)
+  
+}.
