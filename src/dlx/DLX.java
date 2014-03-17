@@ -17,6 +17,7 @@ public class DLX {
 	static int PC, op, a, b, c, format; 
 
     static BufferedReader stdin = null;
+    static int timeSteps;
     
 	// emulated memory
 	static final int MemSize = 10000; // bytes in memory (divisible by 4)
@@ -35,18 +36,20 @@ public class DLX {
 		           // to ERR in order to detect 'fall off the edge' errors
 	}
 	
-	public static void execute() throws IOException {
+	public static int execute() throws IOException {
 		int origc = 0; // used for F2 instruction RET
 		for (int i = 0; i < 32; i++) { R[i] = 0; };
 		PC = 0; R[30] = MemSize - 1;
-
+                
+                timeSteps = 0;
+                
 		try {
 
 		execloop:
 		while (true) {
 			R[0] = 0;
 			disassem(M[PC]); // initializes op, a, b, c
-
+                        timeSteps++;
 			int nextPC = PC + 1;
 			if (format==2) {
 				origc = c; // used for RET
@@ -132,7 +135,8 @@ public class DLX {
 					break;
 				case LDW:
 				case LDX: // remember: c == R[origc] because of F2 format
-					R[a] = M[(R[b]+c) / 4]; 
+					R[a] = M[(R[b]+c) / 4];
+                                        timeSteps += 9; // load penalty
 					break;
 				case STW:
 				case STX: // remember: c == R[origc] because of F2 format
@@ -141,7 +145,8 @@ public class DLX {
 				case POP:
 					R[a] = M[R[b] / 4];
 					R[b] = R[b] + c;
-					break;
+                                        timeSteps += 9; // basically a load, so pay the penalty
+                                        break;
 				case PSH:
 					R[b] = R[b] + c;
 					M[R[b] / 4] = R[a];
@@ -243,6 +248,9 @@ public class DLX {
 		catch (java.lang.ArrayIndexOutOfBoundsException e ) {
 		  System.out.println( "failed at " + PC*4 + ",   "  + disassemble( M[PC] ) );
 		}
+                return timeSteps;
+
+
 
 	}
 
