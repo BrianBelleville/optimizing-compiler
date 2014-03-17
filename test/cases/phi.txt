@@ -26,7 +26,7 @@ var x, y, z;
   let x <- call InputNum();
   let y <- x + 2;
   let z <- y;
-  while x > 4 do
+  while x < 4 do
     # phi will be created for z, choosing between the same values
     let z <- y;
     # test if phi is updated correctly

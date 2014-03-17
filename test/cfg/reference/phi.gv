@@ -15,7 +15,7 @@ b_3 -> b_1[color="green"];
 WhileTest -> b_5;
 b_5 [label="b_5\l15: read\l17: add (15) #2\l"]
 b_5 -> b_6;
-b_6 [label="b_6\l28: phi (15) (26) \"x\"\l23: phi (17) (24) \"z\"\l20: cmp (28) #4\l21: ble b_8\l"]
+b_6 [label="b_6\l28: phi (15) (26) \"x\"\l23: phi (17) (24) \"z\"\l20: cmp (28) #4\l21: bge b_8\l"]
 b_6 -> b_7;
 b_7 [label="b_7\l24: add (17) #8\l26: add (28) #1\l29: bra b_6\l"]
 b_7 -> b_6;
