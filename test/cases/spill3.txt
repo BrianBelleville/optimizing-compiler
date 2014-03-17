@@ -1,0 +1,37 @@
+# Brian Belleville 2014
+
+# Simple test case to validate spill code. Requires 10 values to be
+# live, so with 8 registers, some will be spilled
+
+main
+var a, b, c, d, e, f, g, h, i, j;
+var temp;
+
+{
+  # Temp should not be spilled
+  let temp <- call InputNum();
+  let a <- call InputNum();
+  let b <- call InputNum();
+  let c <- call InputNum();
+  let d <- call InputNum();
+  let e <- call InputNum();
+  let f <- call InputNum();
+  let g <- call InputNum();
+  # temp is no longer live, so doesn't need to be spilled
+  call OutputNum(temp);		
+  let h <- call InputNum();
+  let i <- call InputNum();
+  let j <- call InputNum();
+
+  call OutputNum(a);
+  call OutputNum(b);
+  call OutputNum(c);
+  call OutputNum(d);
+  call OutputNum(e);
+  call OutputNum(f);
+  call OutputNum(g);
+  call OutputNum(h);
+  call OutputNum(i);
+  call OutputNum(j)
+  
+}.
