@@ -303,8 +303,6 @@ public class DLXGenerator extends CodeGenerator {
                     Load s = (Load)i;
                     Adda address = (Adda)s.getArg(); // will always be Adda
                     emitLoadOrStore(DLX.LDX, target(s), address);
-                    // todo: if loads are spilled, just access it from
-                    // its location in memory when it is used
                     home(s);
                 }
                 break;
@@ -508,11 +506,7 @@ public class DLXGenerator extends CodeGenerator {
                     }
                     int address = getFetchAddress(s);
                     emit(DLX.assemble(DLX.LDW, target(s), fp, address));
-                    // todo: need to ensure that if a fetch is
-                    // spilled, we just only access it from its
-                    // orriginal position on the stack
                     home(s);
-
                 }
                 break;
             default:

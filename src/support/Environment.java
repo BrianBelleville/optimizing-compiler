@@ -14,11 +14,6 @@ public class Environment {
         types = new ArrayList< HashMap<Identifier, Type>>();
     }
 
-    // todo: enter and exit will create a lot of uneccesary entries in
-    //       the types table. New types for variables can only occur
-    //       at function declarations, while new values may be added for
-    //       basic blocks. However the basic block level enter and exit
-    //       seems to work.
     public void enter() {
 	env.add(new HashMap<Identifier, VariableReference>());
         types.add(new HashMap<Identifier, Type>());

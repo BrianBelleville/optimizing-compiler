@@ -15,8 +15,6 @@ import ir.Ret;
 import ir.End;
 import java.io.Writer;
 
-// todo: have a table containing the most recent instance of a
-//       opcode, this can be used to perform CSE faster
 public class BasicBlock {
     private BasicBlock dominator;
     public LinkedList<Instruction> instructions;
