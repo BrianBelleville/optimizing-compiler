@@ -111,10 +111,18 @@ public class DLXGenerator extends CodeGenerator {
     // position will determine if the value is put into t1 or t2
     private int location(Value v, int position) throws Exception {
         if(isSpilled(v)) {
-            // then this value has been spilled
-            int address = getSpillAddress(v);
             int target = position == 1 ? t1 : t2;
-            emit(DLX.assemble(DLX.LDW, target, fp, address));
+            // if this is a special spill case
+            if(v.getColor() < 0) {
+                if(!(v instanceof Fetch)) {
+                    throw new Exception("No case to handle special spill");
+                }
+                int address = getFetchAddress((Fetch)v);
+                emit(DLX.assemble(DLX.LDW, target, fp, address));
+            } else {
+                int address = getSpillAddress(v);
+                emit(DLX.assemble(DLX.LDW, target, fp, address));
+            }
             return target;
         }
         int reg = minAvail + v.getColor();
@@ -140,7 +148,7 @@ public class DLXGenerator extends CodeGenerator {
 
     private boolean isSpilled(Value v) {
         int reg = minAvail + v.getColor();
-        return reg > maxAvail;
+        return reg > maxAvail || v.getColor() < 0;
     }
 
     private int getSpillAddress(Value v) throws Exception {
@@ -152,6 +160,14 @@ public class DLXGenerator extends CodeGenerator {
         if(isSpilled(v)) {
             // then this value has been spilled, the value is
             // currently in t1, insert the spill code now
+
+            // if the color is less than 0, it is 'spilled', but
+            // doesn't need to be put into a home since it is never
+            // used
+            if(v.getColor() < 0) {
+                return;
+            }
+
             int address = getSpillAddress(v);
             emit(DLX.assemble(DLX.STW, t1, fp, address));
         }
@@ -316,8 +332,10 @@ public class DLXGenerator extends CodeGenerator {
                                           zero, ((Immediate)s.getArg()).getValue()));
                         home(s);
                     } else {
-                        // move is only needed if the value isn't already in the correct register
-                        if(s.getColor() != s.getArg().getColor()) {
+                        // move is only needed if the value isn't
+                        // already in the correct register, or if the
+                        // value is actually going to be used
+                        if((s.getColor() != s.getArg().getColor()) && (s.getColor() >= 0)) {
                             if(isSpilled(s)) {
                                 int spillAddress = getSpillAddress(s);
                                 emit(DLX.assemble(DLX.STW, location1(s.getArg()), fp, spillAddress));
@@ -481,8 +499,12 @@ public class DLXGenerator extends CodeGenerator {
             case fetch:
                 {
                     Fetch s = (Fetch)i;
-                    int position = s.getPosition();
-                    int address = (position + 1) * -4;
+                    // if it is spilled, the argument will be accessed
+                    // from the location it was passed on the stack
+                    if(isSpilled(s)) {
+                        continue;
+                    }
+                    int address = getFetchAddress(s);
                     emit(DLX.assemble(DLX.LDW, target(s), fp, address));
                     // todo: need to ensure that if a fetch is
                     // spilled, we just only access it from its
@@ -500,6 +522,12 @@ public class DLXGenerator extends CodeGenerator {
             emitCode(next);
         }
 
+    }
+
+    private int getFetchAddress(Fetch f) {
+        int position = f.getPosition();
+        int address = (position + 1) * -4;
+        return address;
     }
 
     // opcode is the opcode of the indexed addressing instruction, ie LDX/SDX,

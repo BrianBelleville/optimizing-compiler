@@ -1,6 +1,8 @@
 package support;
 
 import ir.Value;
+import ir.Instruction;
+import ir.Fetch;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.ArrayList;
@@ -11,7 +13,7 @@ public class InterferenceGraph {
     private HashMap<Value, HashSet<Value>> adjacencyList;
     private ArrayList<Value> deletedNodes;
     private ArrayList<HashSet<Value>> deletedEdges;
-    
+
     public InterferenceGraph () {
         adjacencyList = new HashMap<Value, HashSet<Value>>();
         deletedNodes = new ArrayList<Value>();
@@ -65,11 +67,45 @@ public class InterferenceGraph {
         deleteNode(spill);
     }
 
+    // fetch instructions that are used once (or never) can be spilled
+    // for free, just access the value from the memory location when
+    // it is needed. Other instructions that are never used don't need
+    // a register either.
+    public void freeSpills() {
+        ArrayList<Value> permanentDeletions = new ArrayList<Value>();
+        for(Value v : adjacencyList.keySet()) {
+            if(v instanceof Fetch) {
+                if(((Instruction)v).getUseCount() <= 1) {
+                    // placeholder color to access it directly
+                    // from its memory location
+                    v.setColor(-1);
+                    permanentDeletions.add(v);
+                }
+            } else if(v instanceof Instruction) {
+                if(((Instruction)v).getUseCount() == 0) {
+                    v.setColor(-1);
+                    permanentDeletions.add(v);
+                }
+            }
+        }
+        // These nodes will have already been given their color now,
+        // and can be permanantly removed from the graph, they will no
+        // longer interfer with resources needed by any other nodes,
+        // so we don't ever need to add them back in.
+        for(Value v : permanentDeletions) {
+            permanentlyDeleteNode(v);
+        }
+    }
+
+
     public void colorGraph() {
         colorGraph(8);
     }
 
     public void colorGraph(int k) {
+        if(!isKColorable(k)) {
+            freeSpills();
+        }
         while(!isKColorable(k)) {
             selectAndSpillValue();
         }
@@ -80,6 +116,12 @@ public class InterferenceGraph {
         for(int i = 0; i < deletedNodes.size(); i++) {
             Value v = deletedNodes.get(i);
             restoreNode(v, deletedEdges.get(i));
+            if(v instanceof Fetch) {
+                // fetches will just be accessed from the location
+                // they were passed on the stack, no need to give them
+                // a separate memory cell
+                v.setColor(-1);
+            }
             v.setColor(getAvailableColor(v));
         }
     }
@@ -102,13 +144,19 @@ public class InterferenceGraph {
         deletedEdges.add(edges);
     }
 
+    private void permanentlyDeleteNode(Value n) {
+        deleteNode(n);
+        deletedNodes.remove(deletedNodes.size() - 1);
+        deletedEdges.remove(deletedEdges.size() - 1);
+    }
+
     private void restoreNode(Value n, HashSet<Value> edges) {
         addNode(n);
         for(Value v : edges) {
             addEdge(n, v);
         }
     }
-    
+
     public void addEdge(Value v1, Value v2) {
         HashSet<Value> v1Edges = adjacencyList.get(v1);
         HashSet<Value> v2Edges = adjacencyList.get(v2);
