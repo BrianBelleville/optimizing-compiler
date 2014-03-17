@@ -339,9 +339,11 @@ public class DLXGenerator extends CodeGenerator {
                             if(isSpilled(s)) {
                                 int spillAddress = getSpillAddress(s);
                                 emit(DLX.assemble(DLX.STW, location1(s.getArg()), fp, spillAddress));
+                            } else {
+                                emit(DLX.assemble(DLX.ADD, target(s), zero, location2(s.getArg())));
+                                home(s);
                             }
-                            emit(DLX.assemble(DLX.ADD, target(s), zero, location2(s.getArg())));
-                            home(s);
+
                         }
                     }
 
