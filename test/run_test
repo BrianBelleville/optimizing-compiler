@@ -134,8 +134,9 @@ def run_test(name):
 def generate_ref_out(name):
     infile = input_dir + name + ".txt"
     out_file = cfg_output_dir + name + ".gv"
+    code_out = bin_dir + name
     print("Generating reference output for ", name, ".. ", sep="", end="")
-    if(not compile_pl241(infile, out_file)):
+    if(not compile_pl241(infile, code_out, out_file)):
        print("ERROR Compilation error")
     print("DONE")
 
