@@ -110,16 +110,14 @@ public class DLXGenerator extends CodeGenerator {
 
     // position will determine if the value is put into t1 or t2
     private int location(Value v, int position) throws Exception {
-        int reg = minAvail + v.getColor();
-        
-        if(reg > maxAvail) {
+        if(isSpilled(v)) {
             // then this value has been spilled
-            int spillCell = reg - maxAvail - minAvail;
-            int address = currentFunction.locals.getCellAddress(spillCell);
+            int address = getSpillAddress(v);
             int target = position == 1 ? t1 : t2;
             emit(DLX.assemble(DLX.LDW, target, fp, address));
             return target;
         }
+        int reg = minAvail + v.getColor();
         return reg;
     }
 
@@ -132,11 +130,11 @@ public class DLXGenerator extends CodeGenerator {
     }
 
     private int target(Value v) {
-        int reg = minAvail + v.getColor();
-        if(reg > maxAvail) {
+        if(isSpilled(v)) {
             // then this value has been spilled, will need to be put home later
             return t1;
         }
+        int reg = minAvail + v.getColor();
         return reg;
     }
 
@@ -151,8 +149,7 @@ public class DLXGenerator extends CodeGenerator {
     }
 
     private void home(Value v) throws Exception {
-        int reg = minAvail + v.getColor();
-        if(reg > maxAvail) {
+        if(isSpilled(v)) {
             // then this value has been spilled, the value is
             // currently in t1, insert the spill code now
             int address = getSpillAddress(v);
