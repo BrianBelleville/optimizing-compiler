@@ -21,6 +21,9 @@ sim_input_dir = test_dir + "sim/input/"
 
 bin_dir = test_dir + "bin/"
 
+# keep count of simulated time 
+sim_time_steps = 0
+
 # run the arguments as a subprocess, with output redirected to
 # /dev/null, return true if the subprocess returns 0, otherwise return
 # false.
@@ -68,10 +71,12 @@ def run_sim(exe, input_file, output_file):
     else:
         input_stream = open("/dev/null")
     output_stream = open(output_file, 'w')
-    proc  = subprocess.Popen([dlx, exe],stdout=output_stream, stdin=input_stream)
+    proc  = subprocess.Popen([dlx, exe, "-time"],stdout=output_stream, stdin=input_stream, stderr=subprocess.PIPE)
     ret = proc.wait()
     input_stream.close()
     output_stream.close()
+    global sim_time_steps
+    sim_time_steps += int(proc.stderr.read())
     return ret == 0
 
 def strip_file_extension(name):
@@ -201,6 +206,9 @@ if __name__ == "__main__":
                 print(s)
         else:
             print("\nAll tests passed!")
+
+        if(sim_time_steps != 0):
+            print("\nElapsed simulated time: ", sim_time_steps)
 
 
 
