@@ -307,7 +307,7 @@ public class BasicBlock {
         }
     }
 
-    private void addAtEndBeforeBranch(Instruction i) {
+    public void addAtEndBeforeBranch(Instruction i) throws Exception {
         if(!instructions.isEmpty() &&
            instructions.getLast() instanceof BranchInstruction) {
             ListIterator<Instruction> iter =
@@ -332,9 +332,12 @@ public class BasicBlock {
                 }
                 // but if we did get a Cmp, we went just the right amount
             }
+            i.setDominating(cursor.getDominating());
+            cursor.setDominating(i);
+            i.setContainingBB(this);
             iter.add(i);
         } else {
-            instructions.add(i);
+            addInstruction(i);
         }
     }
 

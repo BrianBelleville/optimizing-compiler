@@ -89,8 +89,8 @@ public class Main {
             // consistent as possible. This just allows bugs to be
             // caught more easily if subsequent passes make use of the
             // dominator information.
+            passes.add(new RemoveKill());
             passes.add(new InvalidateDominatorInformation());
-
             passes.add(new ConstructUseChain());
 
             // This depends on having the use information to determine

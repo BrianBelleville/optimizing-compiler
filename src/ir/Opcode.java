@@ -25,5 +25,6 @@ public enum Opcode {
     ret,
     call,
     index,
-    fetch
+    fetch,
+    kill
 }

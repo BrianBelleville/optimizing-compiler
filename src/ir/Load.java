@@ -34,14 +34,6 @@ public class Load extends UnaryInstruction {
     public void performCSE() throws Exception {
         Instruction i = getDominating();
         while(i != null) {
-            if(!this.getContainingBB().equals(i.getContainingBB())) {
-                // only perform CSE for loads within a basic block
-                // since there could be calls or stores in non
-                // dominating basic blocks along control flow paths to
-                // this instruction that aren't being taken into
-                // account at this point
-                return;
-            }
             if(this.isCommonSubexpression(i)) {
                 this.delete((Instruction)i.getSubstitute());
                 return;
@@ -54,6 +46,11 @@ public class Load extends UnaryInstruction {
                 // global variables can be modified by function calls,
                 // so kill search on call if global
                 return;
+            } else if (i instanceof Kill) {
+                Identifier killVar = ((Kill)i).getVariable();
+                if(killVar.equals(this.getVariable())) {
+                    return;
+                }
             }
             i = i.getDominating();
         }

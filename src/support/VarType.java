@@ -2,6 +2,7 @@ package support;
 
 import ir.Immediate;
 import ir.BasicBlock;
+import ir.Kill;
 import ir.Adda;
 import ir.Load;
 import ir.Store;
@@ -32,6 +33,9 @@ public class VarType extends Type {
             cur.addInstruction(ad);
             Store st = new Store(d.getVarName(), ad, newVal);
             cur.addInstruction(st);
+            if(join != null) {
+                join.addAtEndBeforeBranch(new Kill(d.getVarName()));
+            }
         } else {
             Identifier var = d.getVarName();
             Value old = env.get(var);

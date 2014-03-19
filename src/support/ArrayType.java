@@ -1,6 +1,7 @@
 package support;
 
 import ir.BasicBlock;
+import ir.Kill;
 import ir.Load;
 import ir.Store;
 import ir.ArrayIndex;
@@ -49,6 +50,9 @@ public class ArrayType extends Type {
         Value a = emitIndexingCode((ArrayDesignator)d, cur);
         Store s = new Store(d.getVarName(), a, newVal);
         cur.addInstruction(s);
+        if(join != null) {
+            join.addAtEndBeforeBranch(new Kill(d.getVarName()));
+        }
     }
 
     @Override

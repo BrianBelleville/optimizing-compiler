@@ -522,6 +522,8 @@ public class DLXGenerator extends CodeGenerator {
                     home(s);
                 }
                 break;
+            case kill:
+            	break;
             default:
                 throw new Exception("Unrecognized ir opcode");
             }
