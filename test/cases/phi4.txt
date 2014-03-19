@@ -1,0 +1,62 @@
+# Brian Belleville 2014
+# Test to excercise phi generation when the dependancies between
+# variables forms a cycle
+
+main
+
+# one cycle involving all variables
+procedure cycleTest1(a, b, c, d, e, f);
+var t, q;
+{
+  let q <- 0;
+  while q < 3 do
+    let t <- a;
+    let a <- b;
+    let b <- c;
+    let c <- d;
+    let d <- e;
+    let e <- f;
+    let f <- t;
+    let q <- q + 1
+  od;
+  call OutputNum(a);
+  call OutputNum(b);
+  call OutputNum(c);
+  call OutputNum(d);
+  call OutputNum(e);
+  call OutputNum(f)
+};
+
+# several disjoint cycles
+procedure cycleTest2(a, b, c, d, e, f);
+var t, q;
+{
+  let q <- 0;
+  while q < 2 do
+    let t <- a;
+    let a <- b;
+    let b <- t;
+
+    let t <- c;
+    let c <- d;
+    let d <- t;
+
+    let t <- e;
+    let e <- f;
+    let f <- t;
+
+    let q <- q + 1
+  od;
+  call OutputNum(a);
+  call OutputNum(b);
+  call OutputNum(c);
+  call OutputNum(d);
+  call OutputNum(e);
+  call OutputNum(f)
+};
+
+{
+  call cycleTest1(1,2,3,4,5,6);
+  call OutputNewLine;
+  call cycleTest2(1,2,3,4,5,6)
+}.
