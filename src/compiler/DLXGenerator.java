@@ -92,6 +92,12 @@ public class DLXGenerator extends CodeGenerator {
             main = false;       // after the first function, it's not main
         }
 
+        // code for all functions has been generated, check if there
+        // are unresolved labels
+        if(!fixup.isEmpty()) {
+            throw new Exception("Unresolved branch location");
+        }
+        
         // fix the first instruction now that the size of the text is
         // known.
         int spSet = code.get(0);
@@ -594,7 +600,7 @@ public class DLXGenerator extends CodeGenerator {
             instruction = setC(instruction, c);
             code.set(i, instruction); // replace instruction with the fixed up version
         }
-        fixupLocations.remove(bb);       // remove bb from the fixup locations
+        fixup.remove(bb);       // remove bb from the fixup locations
     }
 
     // this will set the 'c' value for any instruction with the F1 format
