@@ -345,7 +345,6 @@ public class DLXGenerator extends CodeGenerator {
                                 emit(DLX.assemble(DLX.STW, location1(s.getArg()), fp, spillAddress));
                             } else {
                                 emit(DLX.assemble(DLX.ADD, target(s), zero, location2(s.getArg())));
-                                home(s);
                             }
 
                         }
