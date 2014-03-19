@@ -470,7 +470,7 @@ public class BasicBlock {
         }
     }
 
-    private HashSet<Value> calcLiveRangeInternal(BasicBlock branch, boolean secondTime, InterferenceGraph G)
+    private HashSet<Value> calcLiveRangeInternal(BasicBlock branch, boolean secondTime, InterferenceGraph G, LinkedList<LoopHeader> enclosingHeaders)
         throws Exception {
         HashSet<Value> live;
         if(localLiveRangePass >= currentLiveRangePass) {
@@ -479,41 +479,28 @@ public class BasicBlock {
             localLiveRangePass++;
             live = new HashSet<Value>();
             if(secondTime) {
-                // go through all loop headers and add them to b.live
+                // go through all enclosing loop headers and add them to b.live
                 // search through loop headers in breadth first order
-                LinkedList<BasicBlock> blocks = new LinkedList<BasicBlock>();
-                blocks.add(this);       // start on current BB
-                while(!blocks.isEmpty()) {
-                    BasicBlock bb = blocks.pop();
-                    // need to change this to use a different pass
-                    // number variable
-                    if(bb.localPass == currentPass) {
-                        continue;
-                    }
-                    bb.localPass = currentPass;
-                    if(bb instanceof LoopHeader) {
-                        this.live.addAll(bb.getLive());
-                    }
-                    BasicBlock ch1 = bb.getFallThrough();
-                    BasicBlock ch2 = bb.getBranchTarget();
-                    if(ch1 != null) {
-                        blocks.add(ch1);
-                    }
-                    if(ch2 != null) {
-                        blocks.add(ch2);
-                    }
+                for(LoopHeader he : enclosingHeaders) {
+                    this.live.addAll(he.getLive());
                 }
-                currentPass++;
             }
 
             BasicBlock ch1 = getFallThrough();
             BasicBlock ch2 = getBranchTarget();
             if(ch1 != null) {
-                HashSet<Value> t = ch1.calcLiveRangeInternal(this, secondTime, G);
+                // if this is a loop header, it will enclose all basic blocks folowing its fall through
+                if(this instanceof LoopHeader) {
+                    enclosingHeaders.push((LoopHeader)this);
+                }
+                HashSet<Value> t = ch1.calcLiveRangeInternal(this, secondTime, G, enclosingHeaders);
+                if(this instanceof LoopHeader) {
+                    enclosingHeaders.pop();
+                }
                 live.addAll(t);
             }
             if(ch2 != null) {
-                HashSet<Value> t = ch2.calcLiveRangeInternal(this, secondTime, G);
+                HashSet<Value> t = ch2.calcLiveRangeInternal(this, secondTime, G, enclosingHeaders);
                 live.addAll(t);
             }
 
@@ -621,9 +608,10 @@ public class BasicBlock {
 
     public InterferenceGraph calcLiveRange() throws Exception {
         InterferenceGraph g = new InterferenceGraph();
-        calcLiveRangeInternal(this, false, g);
+        LinkedList<LoopHeader> enclosingHeaders = new LinkedList<LoopHeader>();
+        calcLiveRangeInternal(this, false, g, enclosingHeaders);
         currentLiveRangePass++;
-        calcLiveRangeInternal(this, true, g);
+        calcLiveRangeInternal(this, true, g, enclosingHeaders);
         currentLiveRangePass++;
         return g;
     }
