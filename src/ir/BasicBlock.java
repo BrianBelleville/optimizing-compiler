@@ -7,6 +7,7 @@ import java.util.LinkedList;
 import java.util.ListIterator;
 import java.util.HashSet;
 import java.util.HashMap;
+import java.util.Map.Entry;
 import java.util.ArrayList;
 import support.Environment;
 import support.Identifier;
@@ -226,7 +227,7 @@ public class BasicBlock {
             }
 
             Phi conflict = colorToNode.get(color);
-            // don't make nodes conflict with themselves 
+            // don't make nodes conflict with themselves
             if(conflict == null || conflict == p) {
                 continue;
             }
@@ -236,34 +237,73 @@ public class BasicBlock {
             incommingEdges.get(conflict).add(p);
         }
 
-        // perform topological sorting and emit moves in that order
-        while(!(noIncomming.isEmpty())) {
-            // get an arbitrary element, we need to get a new iterator
-            // each time through the loop since we may add to
-            // noIncomming
-            Phi p = noIncomming.iterator().next();
-            if(!(incommingEdges.get(p).isEmpty())) {
-                throw new Exception("Sanity check failed");
+        while(true) {
+            // perform topological sorting and emit moves in that order
+            while(!(noIncomming.isEmpty())) {
+                // get an arbitrary element, we need to get a new iterator
+                // each time through the loop since we may add to
+                // noIncomming
+                Phi p = noIncomming.iterator().next();
+                if(!(incommingEdges.get(p).isEmpty())) {
+                    throw new Exception("Sanity check failed");
+                }
+                noIncomming.remove(p);
+                // remove edges from p to phis which must have moves after
+                for(Phi after : outGoingEdges.get(p)) {
+                    HashSet<Phi> incomming = incommingEdges.get(after);
+                    incomming.remove(p);
+                    if(incomming.isEmpty()) {
+                        noIncomming.add(after);
+                    }
+                }
+                outGoingEdges.remove(p);
+                incommingEdges.remove(p);
+
+                // emit the move for p
+                Move m = new Move(branchNum == 1 ? p.getArg1() : p.getArg2());
+                m.setColor(p.getColor());
+                incommingBlock.addAtEndBeforeBranch(m);
             }
-            noIncomming.remove(p);
-            // remove edges from p to phis which must have moves after
-            for(Phi after : outGoingEdges.get(p)) {
-                HashSet<Phi> incomming = incommingEdges.get(after);
-                incomming.remove(p);
-                if(incomming.isEmpty()) {
-                    noIncomming.add(after);
+            if((outGoingEdges.isEmpty() && incommingEdges.isEmpty())) {
+                return;         // we are done, graph is empty
+            } else {
+                // Else there is a cycle, we need to insert anonymous
+                // temporaries. Each cycle should be able to be broken
+                // with a single temporary, and once broken we will be
+                // able to insert moves again. If we encounter a
+                // second cycle, the first should have already been
+                // resoved, so we can then reuse that temporary.
+                
+                // get a node and its argument
+                Entry<Phi, HashSet<Phi>>  e = outGoingEdges.entrySet().iterator().next();
+                Phi p = e.getKey();
+                HashSet<Phi> outGoing = e.getValue();
+
+                // insert the move here
+                Value arg = branchNum == 1 ? p.getArg1() : p.getArg2();
+                Move m = new Move(arg);
+                // move to temporary. This will be assigned to a register during code generation
+                m.setColor(-2);
+                incommingBlock.addAtEndBeforeBranch(m);
+                p.updateArgument(arg, new Temporary(), branchNum);
+
+                // remove outgoing edges of p, its arg is now safe in
+                // a temporary, so there is no longer a dependance on
+                // the other moves coming after
+                for(Phi after : outGoing) {
+                    HashSet<Phi> incomming = incommingEdges.get(after);
+                    incomming.remove(p);
+                    if(incomming.isEmpty()) {
+                        noIncomming.add(after);
+                    }
+                }
+                outGoing.clear();
+
+                // if we didn't make a node with no incoming edges, we're screwed
+                if(noIncomming.isEmpty()) {
+                    throw new Exception("Phi cycle not resolved by a single temporary");
                 }
             }
-            outGoingEdges.remove(p);
-            incommingEdges.remove(p);
-
-            // emit the move for p
-            Move m = new Move(branchNum == 1 ? p.getArg1() : p.getArg2());
-            m.setColor(p.getColor());
-            incommingBlock.addAtEndBeforeBranch(m);
-        }
-        if(!(outGoingEdges.isEmpty() && incommingEdges.isEmpty())) {
-            throw new Exception("Cycle detected in Phi move dependencies, terminating compilation");
         }
     }
 

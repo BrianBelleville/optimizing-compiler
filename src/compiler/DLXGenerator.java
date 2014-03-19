@@ -97,7 +97,7 @@ public class DLXGenerator extends CodeGenerator {
         if(!fixup.isEmpty()) {
             throw new Exception("Unresolved branch location");
         }
-        
+
         // fix the first instruction now that the size of the text is
         // known.
         int spSet = code.get(0);
@@ -116,15 +116,18 @@ public class DLXGenerator extends CodeGenerator {
 
     // position will determine if the value is put into t1 or t2
     private int location(Value v, int position) throws Exception {
-        if(isSpilled(v)) {
+        if(isSpilled(v) || v.getColor() == -2) {
             int target = position == 1 ? t1 : t2;
             // if this is a special spill case
             if(v.getColor() < 0) {
-                if(!(v instanceof Fetch)) {
+                if(v instanceof Fetch) {
+                    int address = getFetchAddress((Fetch)v);
+                    emit(DLX.assemble(DLX.LDW, target, fp, address));
+                } else if (v instanceof Temporary) {
+                    return t2;
+                } else {
                     throw new Exception("No case to handle special spill");
                 }
-                int address = getFetchAddress((Fetch)v);
-                emit(DLX.assemble(DLX.LDW, target, fp, address));
             } else {
                 int address = getSpillAddress(v);
                 emit(DLX.assemble(DLX.LDW, target, fp, address));
@@ -144,6 +147,10 @@ public class DLXGenerator extends CodeGenerator {
     }
 
     private int target(Value v) {
+        // -2 signifies temporary inserted to resolve phi cycles
+        if(v.getColor() == -2) {
+            return t2;
+        }
         if(isSpilled(v)) {
             // then this value has been spilled, will need to be put home later
             return t1;
@@ -154,7 +161,7 @@ public class DLXGenerator extends CodeGenerator {
 
     private boolean isSpilled(Value v) {
         int reg = minAvail + v.getColor();
-        return reg > maxAvail || v.getColor() < 0;
+        return reg > maxAvail || v.getColor() == -1;
     }
 
     private int getSpillAddress(Value v) throws Exception {
@@ -339,12 +346,13 @@ public class DLXGenerator extends CodeGenerator {
                         // move is only needed if the value isn't
                         // already in the correct register, or if the
                         // value is actually going to be used
-                        if((s.getColor() != s.getArg().getColor()) && (s.getColor() >= 0)) {
+                        if((s.getColor() != s.getArg().getColor()) && ((s.getColor() >= 0)
+                                                                       || (s.getColor() == -2))) {
                             if(isSpilled(s)) {
                                 int spillAddress = getSpillAddress(s);
                                 emit(DLX.assemble(DLX.STW, location1(s.getArg()), fp, spillAddress));
                             } else {
-                                emit(DLX.assemble(DLX.ADD, target(s), zero, location2(s.getArg())));
+                                emit(DLX.assemble(DLX.ADD, target(s), zero, location1(s.getArg())));
                             }
 
                         }
