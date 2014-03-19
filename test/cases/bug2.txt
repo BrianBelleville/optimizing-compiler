@@ -1,0 +1,13 @@
+main
+var j, temp, i;
+array[2] z;
+var x,y;
+{
+  let z[0] <- 3;
+  if z[0] < 3 then
+    call OutputNum(z[0])
+  else
+    let z[0] <- 2
+  fi;
+  call OutputNum(z[0])
+}.
