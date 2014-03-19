@@ -29,7 +29,8 @@ public class AnalyzeRegistersUsed extends Pass {
             registersUsed.add(retAddrReg);
         }
         Integer color = i.getColor();
-        if(color != null) {
+        // negative values are used as special placeholders
+        if(color != null && color >= 0) {
             // color is a 0 based number, check if this value will be
             // spilled
             if(color >= registersAvailable) {
