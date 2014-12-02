@@ -3,23 +3,23 @@ node [shape=box];
 __MAIN__ -> b_1;
 b_1 [label="b_1\l"]
 b_1 -> b_2;
-b_2 [label="b_2\l16: phi #0 (14) \"x\"\l2: cmp (16) #8\l3: bge b_4\l"]
+b_2 [label="b_2\l17: phi #0 (15) \"x\"\l2: cmp (17) #8\l3: bge b_4\l"]
 b_2 -> b_3;
 b_3 [label="b_3\l"]
 b_3 -> b_5;
-b_5 [label="b_5\l12: phi #0 (10) \"y\"\l6: cmp (12) #8\l7: bge b_7\l"]
+b_5 [label="b_5\l13: phi #0 (11) \"y\"\l6: cmp (13) #8\l7: bge b_7\l"]
 b_5 -> b_6;
-b_6 [label="b_6\l22: mul (16) #32\l23: mul (12) #4\l24: add (22) (23)\l25: add #4 (24)\l26: adda FP (25)\l9: store (26) #0\l10: add (12) #1\l13: bra b_5\l"]
+b_6 [label="b_6\l23: mul (17) #32\l24: mul (13) #4\l25: add (23) (24)\l26: add #4 (25)\l27: adda FP (26)\l9: store (27) #0\l11: add (13) #1\l14: bra b_5\l"]
 b_6 -> b_5;
 b_6 -> b_5[color="green"];
 b_5 -> b_7;
-b_7 [label="b_7\l14: add (16) #1\l17: bra b_2\l"]
+b_7 [label="b_7\l15: add (17) #1\l18: bra b_2\l"]
 b_7 -> b_2;
 b_7 -> b_5[color="green"];
 b_5 -> b_3[color="green"];
 b_3 -> b_2[color="green"];
 b_2 -> b_4;
-b_4 [label="b_4\l27: adda FP #148\l19: load (27)\l20: write (19)\l21: end\l"]
+b_4 [label="b_4\l28: adda FP #148\l20: load (28)\l21: write (20)\l22: end\l"]
 b_4 -> b_2[color="green"];
 b_2 -> b_1[color="green"];
 }

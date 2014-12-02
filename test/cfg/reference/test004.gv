@@ -7,9 +7,9 @@ b_2 [label="b_2\l35: phi #2 (33) \"i\"\l32: phi (19) (29) \"temp\"\l21: cmp (35)
 b_2 -> b_3;
 b_3 [label="b_3\l65: mul (35) #4\l66: add #4 (65)\l67: adda FP (66)\l24: load (67)\l25: cmp (24) (32)\l30: ble b_6\l"]
 b_3 -> b_5;
-b_5 [label="b_5\l27: load (67)\l31: bra b_7\l"]
+b_5 [label="b_5\l31: bra b_7\l"]
 b_5 -> b_7;
-b_7 [label="b_7\l29: phi (27) (32) \"temp\"\l33: add (35) #1\l36: bra b_2\l"]
+b_7 [label="b_7\l29: phi (24) (32) \"temp\"\l33: add (35) #1\l36: bra b_2\l"]
 b_7 -> b_2;
 b_7 -> b_3[color="green"];
 b_5 -> b_3[color="green"];

@@ -25,17 +25,17 @@ b_2 -> b_1[color="green"];
 constantsTest -> b_8;
 b_8 [label="b_8\l"]
 b_8 -> b_9;
-b_9 [label="b_9\l38: phi #1 (36) \"w\"\l25: cmp (38) #0\l26: ble b_11\l"]
+b_9 [label="b_9\l39: phi #1 (37) \"w\"\l25: cmp (39) #0\l26: ble b_11\l"]
 b_9 -> b_10;
-b_10 [label="b_10\l27: add (38) #2\l28: add (27) #3\l29: add (28) #4\l30: write (29)\l51: mul (38) #256\l52: add (51) #196\l53: adda FP (52)\l32: store (53) #64\l34: load (53)\l35: write (34)\l36: read\l39: bra b_9\l"]
+b_10 [label="b_10\l27: add (39) #2\l28: add (27) #3\l29: add (28) #4\l30: write (29)\l52: mul (39) #256\l53: add (52) #196\l54: adda FP (53)\l32: store (54) #64\l35: load (54)\l36: write (35)\l37: read\l40: bra b_9\l"]
 b_10 -> b_9;
 b_10 -> b_9[color="green"];
 b_9 -> b_11;
-b_11 [label="b_11\l40: ret \l"]
+b_11 [label="b_11\l41: ret \l"]
 b_11 -> b_9[color="green"];
 b_9 -> b_8[color="green"];
 foo -> b_12;
-b_12 [label="b_12\l41: fetch x\l42: fetch y\l43: fetch z\l44: write (41)\l45: write (42)\l46: write (43)\l47: ret \l"]
+b_12 [label="b_12\l42: fetch x\l43: fetch y\l44: fetch z\l45: write (42)\l46: write (43)\l47: write (44)\l48: ret \l"]
 __MAIN__ -> b_13;
-b_13 [label="b_13\l48: call test1\l49: call constantsTest\l50: end\l"]
+b_13 [label="b_13\l49: call test1\l50: call constantsTest\l51: end\l"]
 }

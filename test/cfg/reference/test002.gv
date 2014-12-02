@@ -3,37 +3,37 @@ node [shape=box];
 foo -> b_1;
 b_1 [label="b_1\l"]
 b_1 -> b_2;
-b_2 [label="b_2\l23: phi #0 (21) \"i\"\l20: phi #0 (18) \"d\"\l2: cmp (23) #10\l3: bge b_4\l"]
+b_2 [label="b_2\l25: phi #0 (23) \"i\"\l22: phi #0 (20) \"d\"\l2: cmp (25) #10\l3: bge b_4\l"]
 b_2 -> b_3;
-b_3 [label="b_3\l4: adda GBP #-4\l5: load (4)\l6: add (5) #2\l8: store (4) (6)\l9: adda GBP #-8\l10: load (9)\l11: add (10) #2\l12: adda GBP #-12\l13: store (12) (11)\l15: load (4)\l17: load (12)\l18: add (15) (17)\l21: add (23) #1\l24: bra b_2\l"]
+b_3 [label="b_3\l4: adda GBP #-4\l5: load (4)\l6: add (5) #2\l8: store (4) (6)\l10: adda GBP #-8\l11: load (10)\l12: add (11) #2\l13: adda GBP #-12\l14: store (13) (12)\l17: load (4)\l19: load (13)\l20: add (17) (19)\l23: add (25) #1\l26: bra b_2\l"]
 b_3 -> b_2;
 b_3 -> b_2[color="green"];
 b_2 -> b_4;
-b_4 [label="b_4\l25: ret (20)\l"]
+b_4 [label="b_4\l27: ret (22)\l"]
 b_4 -> b_2[color="green"];
 b_2 -> b_1[color="green"];
 bar -> b_5;
-b_5 [label="b_5\l26: fetch x\l27: fetch z\l"]
+b_5 [label="b_5\l28: fetch x\l29: fetch z\l"]
 b_5 -> b_6;
-b_6 [label="b_6\l45: phi #0 (43) \"i\"\l40: phi #0 (38) \"j\"\l30: cmp (45) #4\l31: bge b_8\l"]
+b_6 [label="b_6\l49: phi #0 (47) \"i\"\l43: phi #0 (41) \"j\"\l32: cmp (49) #4\l33: bge b_8\l"]
 b_6 -> b_7;
 b_7 [label="b_7\l"]
 b_7 -> b_9;
-b_9 [label="b_9\l38: phi (40) (36) \"j\"\l32: cmp (38) #4\l33: bge b_11\l"]
+b_9 [label="b_9\l41: phi (43) (39) \"j\"\l34: cmp (41) #4\l35: bge b_11\l"]
 b_9 -> b_10;
-b_10 [label="b_10\l63: mul (45) #16\l64: mul (38) #4\l65: add (63) (64)\l66: add #-76 (65)\l67: adda GBP (66)\l35: store (67) (38)\l36: add (38) #1\l39: bra b_9\l"]
+b_10 [label="b_10\l67: mul (49) #16\l68: mul (41) #4\l69: add (67) (68)\l70: add #-76 (69)\l71: adda GBP (70)\l37: store (71) (41)\l39: add (41) #1\l42: bra b_9\l"]
 b_10 -> b_9;
 b_10 -> b_9[color="green"];
 b_9 -> b_11;
-b_11 [label="b_11\l68: mul (45) #4\l69: add #-92 (68)\l70: adda GBP (69)\l42: store (70) (45)\l43: add (45) #1\l46: bra b_6\l"]
+b_11 [label="b_11\l72: mul (49) #4\l73: add #-92 (72)\l74: adda GBP (73)\l45: store (74) (49)\l47: add (49) #1\l50: bra b_6\l"]
 b_11 -> b_6;
 b_11 -> b_9[color="green"];
 b_9 -> b_7[color="green"];
 b_7 -> b_6[color="green"];
 b_6 -> b_8;
-b_8 [label="b_8\l47: ret \l"]
+b_8 [label="b_8\l51: ret \l"]
 b_8 -> b_6[color="green"];
 b_6 -> b_5[color="green"];
 __MAIN__ -> b_12;
-b_12 [label="b_12\l48: adda GBP #-8\l49: store (48) #0\l50: adda GBP #-4\l51: store (50) #0\l52: adda GBP #-12\l53: store (52) #0\l55: load (48)\l57: load (52)\l58: call bar (55) (57)\l59: call foo\l61: write (59)\l62: end\l"]
+b_12 [label="b_12\l52: adda GBP #-8\l53: store (52) #0\l54: adda GBP #-4\l55: store (54) #0\l56: adda GBP #-12\l57: store (56) #0\l59: load (52)\l61: load (56)\l62: call bar (59) (61)\l63: call foo\l65: write (63)\l66: end\l"]
 }

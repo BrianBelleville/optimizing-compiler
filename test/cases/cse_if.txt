@@ -23,8 +23,7 @@ array[100] t;
     let v <- z + w
   fi;
   
-  # this load should not be eliminated since we should only be
-  # searching within the same BB
+  # this load should be eliminated
   let a <- t[4];
   
   # this should not be eliminated, z + w is not in a dominated BB
